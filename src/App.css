@@ -9,6 +9,28 @@ body {
   font-family: "Inter", sans-serif;
 }
 
+/* width */
+::-webkit-scrollbar {
+  width: 0px;
+  height: 2px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #fff;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #c00000;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #c00000d8;
+  cursor: pointer;
+}
+
 .animate {
   width: 100% !important;
   height: 100vh !important;
@@ -107,4 +129,9 @@ body {
     transform: translate(0) rotate(0) scale(1);
     opacity: 1;
   }
+}
+
+.bg {
+  background: #c00000;
+  background: linear-gradient(90deg, #c00000 0%, #e21c1c 49%, #c00000 100%);
 }
