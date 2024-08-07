@@ -33,7 +33,7 @@ const CancelRideModal = ({ isOpen, setIsOpen, setFind }) => {
           <button
             onClick={() => {
               setIsOpen(false);
-              setFind && setFind(false);
+              // setFind && setFind(false);
               navigate("Home", "/home");
             }}
             className="text-white bg-[#c00000] hover:bg-[#c00000d7] w-auto px-4 py-1 rounded-full text-sm font-medium"
