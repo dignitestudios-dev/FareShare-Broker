@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import { FaApple, FaFacebook, FaFacebookF } from "react-icons/fa";
 import { FiUser } from "react-icons/fi";
 import { TiUserAddOutline } from "react-icons/ti";
+import { AppContext } from "../../context/AppContext";
 
 const VerifyOtp = () => {
+  const { navigate } = useContext(AppContext);
   return (
     <section className="bg-white">
       <div className="flex justify-center min-h-screen">
@@ -82,7 +84,12 @@ const VerifyOtp = () => {
                           />
                         </div>
                       </div>
-                      <button class="h-14 text-lg font-semibold w-[24rem] bg-[#c00000] text-white rounded-full ">
+                      <button
+                        onClick={() =>
+                          navigate("Change Password", "/change-password")
+                        }
+                        class="h-14 text-lg font-semibold w-[24rem] bg-[#c00000] text-white rounded-full "
+                      >
                         Submit
                       </button>
                       <button class="h-14 text-lg font-semibold w-[24rem] border-2 border-[#c00000] text-[#c00000] rounded-full transition-all duration-200 hover:bg-[#c00000] hover:text-white">

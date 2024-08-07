@@ -85,14 +85,6 @@ const PersonalInfo = () => {
                   </div>
                 </div>
 
-                <div class="md:col-span-5 text-right">
-                  <div class="inline-flex items-end">
-                    <button class="bg-[#c00000] hover:bg-[#c00000d8] text-white font-bold py-2 px-4 rounded">
-                      Save
-                    </button>
-                  </div>
-                </div>
-
                 {/* <div class="md:col-span-3">
                   <label for="address">Address / Street</label>
                   <input
@@ -297,14 +289,6 @@ const PersonalInfo = () => {
                     />
                   </div>
                 </div>
-
-                <div class="md:col-span-5 text-right">
-                  <div class="inline-flex items-end">
-                    <button class="bg-[#c00000] hover:bg-[#c00000d8] text-white font-bold py-2 px-4 rounded">
-                      Save
-                    </button>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -337,7 +321,7 @@ const PersonalInfo = () => {
               onClick={() =>
                 navigate("Request a ride", "/ride/new-request/where-to")
               }
-              class="bg-[#c00000] w-full hover:bg-[#c00000d8] text-white font-bold py-2 px-4 rounded-full"
+              class="bg-[#c00000] w-full hover:bg-[#c00000d8] text-white font-bold h-12 px-4 rounded-full"
             >
               Proceed
             </button>

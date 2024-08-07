@@ -13,6 +13,7 @@ import Profile from "../pages/app/Profile";
 import DriverArrived from "../pages/app/RideBooking/DriverArrived";
 import DriverArriving from "../pages/app/RideBooking/DriverArriving";
 import PersonalInfo from "../pages/app/RideBooking/PersonalInfo";
+import SchdeuleForLater from "../pages/app/RideBooking/ScheduleForLater";
 import WhereTo from "../pages/app/RideBooking/WhereTo";
 import RideRequests from "../pages/app/RideRequests";
 import Settings from "../pages/app/Settings";
@@ -54,6 +55,11 @@ export const AppRoutes = [
     title: "Request a ride",
     url: "/ride/new-request/where-to",
     page: <AppLayout page={<WhereTo />} />,
+  },
+  {
+    title: "Request a ride",
+    url: "/ride/new-request/schedule-for-later",
+    page: <AppLayout page={<SchdeuleForLater />} />,
   },
   {
     title: "Request a ride",

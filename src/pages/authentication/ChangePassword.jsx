@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import { FaApple, FaFacebook, FaFacebookF } from "react-icons/fa";
 import { FiUser } from "react-icons/fi";
 import { TiUserAddOutline } from "react-icons/ti";
+import { AppContext } from "../../context/AppContext";
 
 const ChangePassword = () => {
+  const { navigate } = useContext(AppContext);
   return (
     <section class="bg-white ">
       <div class="flex justify-center min-h-screen">
@@ -57,7 +59,10 @@ const ChangePassword = () => {
                 />
               </div>
 
-              <button class="flex items-center justify-center gap-4 w-full  px-6 py-3 text-sm tracking-wide text-white capitalize transition-colors duration-300 transform bg-[#c00000] rounded-full hover:bg-[#c00000] focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50">
+              <button
+                onClick={() => navigate("Sign in", "/login")}
+                class="flex items-center justify-center gap-4 w-full  px-6 py-3 text-sm tracking-wide text-white capitalize transition-colors duration-300 transform bg-[#c00000] rounded-full hover:bg-[#c00000] focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50"
+              >
                 <span>Submit </span>
 
                 <svg

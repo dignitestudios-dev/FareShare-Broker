@@ -4,7 +4,7 @@ import Navbar from "../components/layout/Navbar";
 
 const AppLayout = ({ page }) => {
   return (
-    <div className="w-screen h-screen flex justify-start items-start relative">
+    <div className="w-screen bg-white h-screen flex justify-start items-start relative">
       <Sidebar />
       <div className="w-full h-full lg:w-[80%] xl:w-[80%] flex flex-col justify-start items-start relative">
         <Navbar />

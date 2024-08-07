@@ -1,11 +1,14 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import CancelRideModal from "../../../components/app/ride/CancelRideModal";
 
 const DriverArriving = () => {
   const navigate = useNavigate();
   useEffect(() => {
     setTimeout(() => navigate("/ride/driver-arrived/"), 3000);
   }, []);
+
+  const [isCancelOpen, setIsCancelOpen] = useState(false);
   return (
     <div className="w-full h-auto flex flex-col justify-start items-start gap-4">
       <div className="w-full h-auto flex justify-between items-end">
@@ -111,11 +114,15 @@ const DriverArriving = () => {
           Meet Your Driver
         </button>
         <button
-          to="/ride/schedule-for-later/" //later
+          onClick={() => setIsCancelOpen(true)} //later
           className="w-full  flex justify-center items-center text-[#c00000] text-md px-8 font-semibold h-12 rounded-full bg-[#c00000]/[0.12]"
         >
           Cancel Ride
         </button>
+
+        {isCancelOpen && (
+          <CancelRideModal isOpen={isCancelOpen} setIsOpen={setIsCancelOpen} />
+        )}
       </div>
     </div>
   );

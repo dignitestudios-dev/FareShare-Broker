@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
+import InvoiceModal from "../../components/app/paymentsandinvoice/InvoiceModal";
 
 const PaymentsInvoice = () => {
+  const [isOpen, setIsOpen] = useState(false);
   return (
     <div className="w-full h-auto flex flex-col justify-start items-start gap-2">
       <div className="w-full overflow-x-auto rounded-2xl border  border-gray-300 bg-white   ">
@@ -70,7 +72,10 @@ const PaymentsInvoice = () => {
               </td>
 
               <td className="px-6 lg:px-4  py-4 capitalize">
-                <button className="text-[#c00000] text-xs font-semibold">
+                <button
+                  onClick={() => setIsOpen(true)}
+                  className="text-[#c00000] text-xs font-semibold"
+                >
                   View More
                 </button>
               </td>
@@ -91,7 +96,10 @@ const PaymentsInvoice = () => {
               </td>
 
               <td className="px-6 lg:px-4  py-4 capitalize">
-                <button className="text-[#c00000] text-xs font-semibold">
+                <button
+                  onClick={() => setIsOpen(true)}
+                  className="text-[#c00000] text-xs font-semibold"
+                >
                   View More
                 </button>
               </td>
@@ -112,7 +120,10 @@ const PaymentsInvoice = () => {
               </td>
 
               <td className="px-6 lg:px-4  py-4 capitalize">
-                <button className="text-[#c00000] text-xs font-semibold">
+                <button
+                  onClick={() => setIsOpen(true)}
+                  className="text-[#c00000] text-xs font-semibold"
+                >
                   View More
                 </button>
               </td>
@@ -133,7 +144,10 @@ const PaymentsInvoice = () => {
               </td>
 
               <td className="px-6 lg:px-4  py-4 capitalize">
-                <button className="text-[#c00000] text-xs font-semibold">
+                <button
+                  onClick={() => setIsOpen(true)}
+                  className="text-[#c00000] text-xs font-semibold"
+                >
                   View More
                 </button>
               </td>
@@ -154,7 +168,10 @@ const PaymentsInvoice = () => {
               </td>
 
               <td className="px-6 lg:px-4  py-4 capitalize">
-                <button className="text-[#c00000] text-xs font-semibold">
+                <button
+                  onClick={() => setIsOpen(true)}
+                  className="text-[#c00000] text-xs font-semibold"
+                >
                   View More
                 </button>
               </td>
@@ -175,7 +192,10 @@ const PaymentsInvoice = () => {
               </td>
 
               <td className="px-6 lg:px-4  py-4 capitalize">
-                <button className="text-[#c00000] text-xs font-semibold">
+                <button
+                  onClick={() => setIsOpen(true)}
+                  className="text-[#c00000] text-xs font-semibold"
+                >
                   View More
                 </button>
               </td>
@@ -196,7 +216,10 @@ const PaymentsInvoice = () => {
               </td>
 
               <td className="px-6 lg:px-4  py-4 capitalize">
-                <button className="text-[#c00000] text-xs font-semibold">
+                <button
+                  onClick={() => setIsOpen(true)}
+                  className="text-[#c00000] text-xs font-semibold"
+                >
                   View More
                 </button>
               </td>
@@ -217,7 +240,10 @@ const PaymentsInvoice = () => {
               </td>
 
               <td className="px-6 lg:px-4  py-4 capitalize">
-                <button className="text-[#c00000] text-xs font-semibold">
+                <button
+                  onClick={() => setIsOpen(true)}
+                  className="text-[#c00000] text-xs font-semibold"
+                >
                   View More
                 </button>
               </td>
@@ -238,13 +264,18 @@ const PaymentsInvoice = () => {
               </td>
 
               <td className="px-6 lg:px-4  py-4 capitalize">
-                <button className="text-[#c00000] text-xs font-semibold">
+                <button
+                  onClick={() => setIsOpen(true)}
+                  className="text-[#c00000] text-xs font-semibold"
+                >
                   View More
                 </button>
               </td>
             </tr>
           </tbody>
         </table>
+
+        <InvoiceModal setIsOpen={setIsOpen} isOpen={isOpen} />
       </div>
     </div>
   );

@@ -1,8 +1,10 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { AppContext } from "../../../context/AppContext";
+import CancelRideModal from "../ride/CancelRideModal";
 
 const RideRequestTable = () => {
   const { navigate } = useContext(AppContext);
+  const [isCancelOpen, setIsCancelOpen] = useState(false);
   return (
     <div className="w-full overflow-x-auto rounded-2xl border  border-gray-300 bg-white   ">
       <div class="w-full h-14 px-4 flex justify-between items-center">
@@ -99,7 +101,10 @@ const RideRequestTable = () => {
               </button>
             </td>
             <td className="px-6 lg:px-4  py-4 capitalize">
-              <button class="w-28 h-8 bg-[#c00000] flex items-center justify-center rounded-full text-xs font-semibold transition-all duration-300 text-[#fff] hover:bg-gray-800">
+              <button
+                onClick={() => setIsCancelOpen(true)}
+                class="w-28 h-8 bg-[#c00000] flex items-center justify-center rounded-full text-xs font-semibold transition-all duration-300 text-[#fff] hover:bg-gray-800"
+              >
                 Cancel Request
               </button>
             </td>
@@ -143,7 +148,10 @@ const RideRequestTable = () => {
               </button>
             </td>
             <td className="px-6 lg:px-4  py-4 capitalize">
-              <button class="w-28 h-8 bg-[#c00000] flex items-center justify-center rounded-full text-xs font-semibold transition-all duration-300 text-[#fff] hover:bg-gray-800">
+              <button
+                onClick={() => setIsCancelOpen(true)}
+                class="w-28 h-8 bg-[#c00000] flex items-center justify-center rounded-full text-xs font-semibold transition-all duration-300 text-[#fff] hover:bg-gray-800"
+              >
                 Cancel Request
               </button>
             </td>
@@ -187,7 +195,10 @@ const RideRequestTable = () => {
               </button>
             </td>
             <td className="px-6 lg:px-4  py-4 capitalize">
-              <button class="w-28 h-8 bg-[#c00000] flex items-center justify-center rounded-full text-xs font-semibold transition-all duration-300 text-[#fff] hover:bg-gray-800">
+              <button
+                onClick={() => setIsCancelOpen(true)}
+                class="w-28 h-8 bg-[#c00000] flex items-center justify-center rounded-full text-xs font-semibold transition-all duration-300 text-[#fff] hover:bg-gray-800"
+              >
                 Cancel Request
               </button>
             </td>
@@ -231,12 +242,16 @@ const RideRequestTable = () => {
               </button>
             </td>
             <td className="px-6 lg:px-4  py-4 capitalize">
-              <button class="w-28 h-8 bg-[#c00000] flex items-center justify-center rounded-full text-xs font-semibold transition-all duration-300 text-[#fff] hover:bg-gray-800">
+              <button
+                onClick={() => setIsCancelOpen(true)}
+                class="w-28 h-8 bg-[#c00000] flex items-center justify-center rounded-full text-xs font-semibold transition-all duration-300 text-[#fff] hover:bg-gray-800"
+              >
                 Cancel Request
               </button>
             </td>
           </tr>
         </tbody>
+        <CancelRideModal isOpen={isCancelOpen} setIsOpen={setIsCancelOpen} />
       </table>
     </div>
   );

@@ -8,7 +8,7 @@ export const AppContextProvider = ({ children }) => {
   const prodUrl = "";
 
   const [activeLink, setActiveLink] = useState("Home");
-  const [tab, setTab] = useState("medical");
+  const [tab, setTab] = useState("");
   const push = useNavigate();
   const navigate = (name, url) => {
     push(url);

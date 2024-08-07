@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import { FaApple, FaFacebook, FaFacebookF } from "react-icons/fa";
 import { FiUser } from "react-icons/fi";
 import { TiUserAddOutline } from "react-icons/ti";
+import { AppContext } from "../../context/AppContext";
 
 const Login = () => {
+  const { navigate } = useContext(AppContext);
   return (
     <section class="bg-white ">
       <div class="flex justify-center min-h-screen">
@@ -21,10 +23,16 @@ const Login = () => {
           <div class="w-full">
             <div class="mb-6">
               <div className="w-full border h-12 rounded-full flex gap-1 justify-start items-start">
-                <button className="w-full h-full rounded-full bg-[#c00000] text-white font-medium hover:bg-[#c00000] hover:text-white flex items-center justify-center">
+                <button
+                  onClick={() => navigate("Sign in", "/login")}
+                  className="w-full h-full rounded-full bg-[#c00000] text-white font-medium hover:bg-[#c00000] hover:text-white flex items-center justify-center"
+                >
                   Sign In
                 </button>
-                <button className="w-full h-full rounded-full hover:bg-[#c00000] font-medium text-gray-600 hover:text-white flex items-center justify-center">
+                <button
+                  onClick={() => navigate("Sign up", "/signup")}
+                  className="w-full h-full rounded-full hover:bg-[#c00000] font-medium text-gray-600 hover:text-white flex items-center justify-center"
+                >
                   Sign Up
                 </button>
               </div>
@@ -53,12 +61,14 @@ const Login = () => {
                   <label for="password" class="text-sm text-gray-600 ">
                     Password
                   </label>
-                  <a
-                    href="#"
+                  <button
+                    onClick={() =>
+                      navigate("Forgot Password", "/forgot-password")
+                    }
                     class="text-sm text-gray-400 focus:text-[#c00000] hover:text-[#c00000] hover:underline"
                   >
                     Forgot password?
-                  </a>
+                  </button>
                 </div>
 
                 <input
@@ -70,7 +80,10 @@ const Login = () => {
                 />
               </div>
 
-              <button class="flex items-center justify-center gap-4 w-full  px-6 py-3 text-sm tracking-wide text-white capitalize transition-colors duration-300 transform bg-[#c00000] rounded-full hover:bg-[#c00000] focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50">
+              <button
+                onClick={() => navigate("Home", "/home")}
+                class="flex items-center justify-center gap-4 w-full  px-6 py-3 text-sm tracking-wide text-white capitalize transition-colors duration-300 transform bg-[#c00000] rounded-full hover:bg-[#c00000] focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50"
+              >
                 <span>Sign In </span>
 
                 <svg

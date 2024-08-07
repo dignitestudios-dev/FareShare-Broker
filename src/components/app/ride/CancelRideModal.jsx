@@ -1,4 +1,5 @@
-import React, { useRef } from "react";
+import React, { useContext, useRef } from "react";
+import { AppContext } from "../../../context/AppContext";
 
 const CancelRideModal = ({ isOpen, setIsOpen, setFind }) => {
   const cancelRef = useRef();
@@ -8,6 +9,8 @@ const CancelRideModal = ({ isOpen, setIsOpen, setFind }) => {
       setIsOpen(false);
     }
   };
+
+  const { navigate } = useContext(AppContext);
   return (
     <div
       id="cancel-ride"
@@ -30,7 +33,8 @@ const CancelRideModal = ({ isOpen, setIsOpen, setFind }) => {
           <button
             onClick={() => {
               setIsOpen(false);
-              setFind(false);
+              setFind && setFind(false);
+              navigate("Home", "/home");
             }}
             className="text-white bg-[#c00000] hover:bg-[#c00000d7] w-auto px-4 py-1 rounded-full text-sm font-medium"
           >
