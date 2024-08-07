@@ -162,3 +162,7 @@ body {
 .rainbow-time-picker_time-select-value {
   color: #c00000 !important;
 }
+
+.rainbow-date-picker_calendar-details-header {
+  background-color: #c00000 !important;
+}
