@@ -3,9 +3,45 @@ import { FaApple, FaFacebook, FaFacebookF } from "react-icons/fa";
 import { FiUser } from "react-icons/fi";
 import { TiUserAddOutline } from "react-icons/ti";
 import { AppContext } from "../../context/AppContext";
+import { useFormik } from "formik";
+import axios from "axios";
+import Cookies from "js-cookie";
+import { loginValues } from "../../data/authentication";
+import { loginSchema } from "../../schema/loginSchema";
+import authentication from "../../api/authenticationInterceptor";
+import { useState } from "react";
+import Error from "../../components/app/global/Error";
 
 const Login = () => {
-  const { navigate } = useContext(AppContext);
+  const { navigate, error, setError } = useContext(AppContext);
+  const [loading, setLoading] = useState(false);
+  const { values, handleBlur, handleChange, handleSubmit, errors, touched } =
+    useFormik({
+      initialValues: loginValues,
+      validationSchema: loginSchema,
+      validateOnChange: true,
+      validateOnBlur: false,
+
+      onSubmit: async (values, action) => {
+        setLoading(true);
+        try {
+          // API call to login using Axios interceptor
+          const response = await authentication.post("/auth/brokerSignIn", {
+            email: values.email,
+            password: values.password,
+          });
+
+          // Handle the response (e.g., save token, redirect)
+          console.log("Login successful:", response.data);
+        } catch (error) {
+          // Handle errors (e.g., show error message)
+          setError("There is an error");
+          // console.error("Login failed:", error.response?.data);
+        } finally {
+          setLoading(false);
+        }
+      },
+    });
   return (
     <section class="bg-white ">
       <div class="flex justify-center min-h-screen">
@@ -24,12 +60,14 @@ const Login = () => {
             <div class="mb-6">
               <div className="w-full border h-12 rounded-full flex gap-1 justify-start items-start">
                 <button
+                  type="button"
                   onClick={() => navigate("Sign in", "/login")}
                   className="w-full h-full rounded-full bg-[#c00000] text-white font-medium hover:bg-[#c00000] hover:text-white flex items-center justify-center"
                 >
                   Sign In
                 </button>
                 <button
+                  type="button"
                   onClick={() => navigate("Sign up", "/signup")}
                   className="w-full h-full rounded-full hover:bg-[#c00000] font-medium text-gray-600 hover:text-white flex items-center justify-center"
                 >
@@ -37,6 +75,8 @@ const Login = () => {
                 </button>
               </div>
             </div>
+            <Error error={error} setError={setError} />
+
             <h1 class="text-2xl font-semibold tracking-wider text-gray-800 capitalize ">
               Login to your account.
             </h1>
@@ -45,16 +85,30 @@ const Login = () => {
               Enter your credentials below to access your account.
             </p>
 
-            <form class="flex flex-col gap-6 mt-8 ">
+            <form onSubmit={handleSubmit} class="flex flex-col gap-6 mt-8 ">
               <div className="w-full">
                 <label class="block mb-2 text-sm text-gray-600 ">
                   Email address
                 </label>
                 <input
-                  type="email"
+                  type="text"
+                  id="email"
+                  name="email"
+                  value={values.email}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
                   placeholder="johnsnow@example.com"
-                  class="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40"
+                  class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40 transition-colors duration-300 ${
+                    errors.email && touched.email
+                      ? "border-red-600 shake"
+                      : null
+                  }`}
                 />
+                {errors.email && touched.email ? (
+                  <p className="text-red-700 text-sm font-medium">
+                    {errors.email}
+                  </p>
+                ) : null}
               </div>
               <div class="w-full">
                 <div class="flex justify-between mb-2">
@@ -62,6 +116,7 @@ const Login = () => {
                     Password
                   </label>
                   <button
+                    type="button"
                     onClick={() =>
                       navigate("Forgot Password", "/forgot-password")
                     }
@@ -75,15 +130,37 @@ const Login = () => {
                   type="password"
                   name="password"
                   id="password"
+                  value={values.password}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
                   placeholder="Your Password"
-                  class="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40"
+                  class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40  transition-colors duration-300 ${
+                    errors.email && touched.email
+                      ? "border-red-600 shake"
+                      : null
+                  }`}
                 />
+                {errors.password && touched.password ? (
+                  <p className="text-red-700 text-sm font-medium">
+                    {errors.password}
+                  </p>
+                ) : null}
               </div>
 
               <button
-                onClick={() => navigate("Home", "/home")}
+                type="submit"
+                disabled={loading}
                 class="flex items-center justify-center gap-4 w-full  px-6 py-3 text-sm tracking-wide text-white capitalize transition-colors duration-300 transform bg-[#c00000] rounded-full hover:bg-[#c00000] focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50"
               >
+                {loading && (
+                  <div
+                    class="animate-spin inline-block size-4 border-[3px] border-current border-t-transparent text-white rounded-full"
+                    role="status"
+                    aria-label="loading"
+                  >
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                )}
                 <span>Sign In </span>
 
                 <svg
@@ -108,6 +185,7 @@ const Login = () => {
 
               <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-3">
                 <button
+                  type="button"
                   aria-label="Sign in with Google"
                   class="flex items-center bg-white border border-button-border-light rounded-lg p-1 pr-3"
                 >
@@ -142,6 +220,7 @@ const Login = () => {
                   </span>
                 </button>
                 <button
+                  type="button"
                   aria-label="Sign in with Google"
                   class="flex items-center bg-white border border-button-border-light rounded-lg p-1 pr-3"
                 >
@@ -153,6 +232,7 @@ const Login = () => {
                   </span>
                 </button>
                 <button
+                  type="button"
                   aria-label="Sign in with Facebook"
                   class="flex items-center bg-white border border-button-border-light rounded-lg p-1 pr-3"
                 >

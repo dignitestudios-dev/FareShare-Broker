@@ -166,3 +166,24 @@ body {
 .rainbow-date-picker_calendar-details-header {
   background-color: #c00000 !important;
 }
+
+.shake {
+  animation: horizontal-shaking 0.5s linear;
+}
+@keyframes horizontal-shaking {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(5px);
+  }
+  50% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}

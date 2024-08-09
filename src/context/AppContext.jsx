@@ -14,6 +14,9 @@ export const AppContextProvider = ({ children }) => {
     push(url);
     setActiveLink(name);
   };
+
+  // Global Error State
+  const [error, setError] = useState(false);
   return (
     <AppContext.Provider
       value={{
@@ -24,6 +27,8 @@ export const AppContextProvider = ({ children }) => {
         setActiveLink,
         tab,
         setTab,
+        error,
+        setError,
       }}
     >
       {children}

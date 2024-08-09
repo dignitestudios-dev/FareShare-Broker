@@ -1,11 +1,76 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { FaApple, FaFacebook, FaFacebookF } from "react-icons/fa";
 import { FiUser } from "react-icons/fi";
 import { TiUserAddOutline } from "react-icons/ti";
 import { AppContext } from "../../context/AppContext";
+import { signupValues } from "../../data/authentication";
+import { signupSchema } from "../../schema/signupSchema";
+import { useFormik } from "formik";
+
+// firebase:
+import { auth } from "../../firebase/firebase"; // Adjust the import based on your file structure
+import { createUserWithEmailAndPassword, getIdToken } from "firebase/auth";
 
 const Signup = () => {
-  const { navigate } = useContext(AppContext);
+  const { navigate, error, setError } = useContext(AppContext);
+  const [loading, setLoading] = useState(false);
+  const [idToken, setIdToken] = useState(null);
+  const { values, handleBlur, handleChange, handleSubmit, errors, touched } =
+    useFormik({
+      initialValues: signupValues,
+      validationSchema: signupSchema,
+      validateOnChange: true,
+      validateOnBlur: false,
+
+      onSubmit: async (values, action) => {
+        setLoading(true);
+        try {
+          // Sign up the user
+          const userCredential = await createUserWithEmailAndPassword(
+            auth,
+            values.email,
+            values.password
+          );
+          const user = userCredential.user;
+
+          // Get the ID token
+          const token = await getIdToken(user);
+          setIdToken(token);
+
+          if (token) {
+            try {
+              // API call to login using Axios interceptor
+              const response = await authentication.post("/auth/brokerSignUp", {
+                companyName: values.companyName,
+                accountHandlerName: values.accountHandlerName,
+                email: values.email,
+                companyTaxIdenfication: values.companyTaxIdenfication,
+                password: values.password,
+                confirmPassword: values.confirmPassword,
+                department: values.department,
+                idToken: token,
+              });
+
+              // Handle the response (e.g., save token, redirect)
+              console.log("Login successful:", response.data);
+            } catch (error) {
+              // Handle errors (e.g., show error message)
+              setError("There is an error");
+              // console.error("Login failed:", error.response?.data);
+            } finally {
+              setLoading(false);
+            }
+          } else {
+            setError("Error creating the Id Token for this email and password");
+            setLoading(false);
+          }
+        } catch (error) {
+          setError(error.message);
+        } finally {
+          setLoading(false);
+        }
+      },
+    });
   return (
     <section class="bg-white ">
       <div class="flex justify-center min-h-screen">
@@ -24,6 +89,7 @@ const Signup = () => {
             <div class="mb-6">
               <div className="w-full border h-12 rounded-full flex gap-1 justify-start items-start">
                 <button
+                  type="button"
                   onClick={() => navigate("Sign in", "/login")}
                   className="w-full h-full rounded-full  font-medium hover:bg-[#c00000]  text-gray-600 hover:text-white flex items-center justify-center"
                 >
@@ -31,6 +97,7 @@ const Signup = () => {
                 </button>
 
                 <button
+                  type="button"
                   onClick={() => navigate("Sign up", "/signup")}
                   className="w-full h-full rounded-full bg-[#c00000] text-white hover:bg-[#c00000] font-medium hover:text-white flex items-center justify-center"
                 >
@@ -48,7 +115,10 @@ const Signup = () => {
               and begin setting up your profile.
             </p>
 
-            <form class="grid grid-cols-1 gap-6 mt-8 md:grid-cols-2">
+            <form
+              onSubmit={handleSubmit}
+              class="grid grid-cols-1 gap-6 mt-8 md:grid-cols-2"
+            >
               <div>
                 <label class="block mb-2 text-sm text-gray-600 ">
                   Comapny Name
@@ -56,8 +126,22 @@ const Signup = () => {
                 <input
                   type="text"
                   placeholder="John"
-                  class="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40"
+                  id="companyName"
+                  name="companyName"
+                  value={values.companyName}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40 transition-colors duration-300 ${
+                    errors.companyName && touched.companyName
+                      ? "border-red-600 shake"
+                      : null
+                  }`}
                 />
+                {errors.companyName && touched.companyName ? (
+                  <p className="text-red-700 text-sm font-medium">
+                    {errors.companyName}
+                  </p>
+                ) : null}
               </div>
 
               <div>
@@ -67,8 +151,22 @@ const Signup = () => {
                 <input
                   type="text"
                   placeholder="Snow"
-                  class="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40"
+                  id="accountHandlerName"
+                  name="accountHandlerName"
+                  value={values.accountHandlerName}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40 transition-colors duration-300 ${
+                    errors.accountHandlerName && touched.accountHandlerName
+                      ? "border-red-600 shake"
+                      : null
+                  }`}
                 />
+                {errors.accountHandlerName && touched.accountHandlerName ? (
+                  <p className="text-red-700 text-sm font-medium">
+                    {errors.accountHandlerName}
+                  </p>
+                ) : null}
               </div>
 
               <div>
@@ -78,8 +176,24 @@ const Signup = () => {
                 <input
                   type="text"
                   placeholder="XXX-XX-XXXX-XXX"
-                  class="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40"
+                  id="companyTaxIdentification"
+                  name="companyTaxIdentification"
+                  value={values.companyTaxIdentification}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40 transition-colors duration-300 ${
+                    errors.companyTaxIdentification &&
+                    touched.companyTaxIdentification
+                      ? "border-red-600 shake"
+                      : null
+                  }`}
                 />
+                {errors.companyTaxIdentification &&
+                touched.companyTaxIdentification ? (
+                  <p className="text-red-700 text-sm font-medium">
+                    {errors.companyTaxIdentification}
+                  </p>
+                ) : null}
               </div>
 
               <div>
@@ -88,9 +202,23 @@ const Signup = () => {
                 </label>
                 <input
                   type="email"
+                  id="email"
+                  name="email"
+                  value={values.email}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
                   placeholder="johnsnow@example.com"
-                  class="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40"
+                  class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40 transition-colors duration-300 ${
+                    errors.email && touched.email
+                      ? "border-red-600 shake"
+                      : null
+                  }`}
                 />
+                {errors.email && touched.email ? (
+                  <p className="text-red-700 text-sm font-medium">
+                    {errors.email}
+                  </p>
+                ) : null}
               </div>
 
               <div>
@@ -99,9 +227,23 @@ const Signup = () => {
                 </label>
                 <input
                   type="password"
+                  name="password"
+                  id="password"
+                  value={values.password}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
                   placeholder="Enter your password"
-                  class="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40"
+                  class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40 transition-colors duration-300 ${
+                    errors.password && touched.password
+                      ? "border-red-600 shake"
+                      : null
+                  }`}
                 />
+                {errors.password && touched.password ? (
+                  <p className="text-red-700 text-sm font-medium">
+                    {errors.password}
+                  </p>
+                ) : null}
               </div>
 
               <div>
@@ -110,46 +252,84 @@ const Signup = () => {
                 </label>
                 <input
                   type="password"
+                  name="confirmPassword"
+                  id="confirmPassword"
+                  value={values.confirmPassword}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
                   placeholder="Enter your password"
-                  class="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40"
+                  class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40 transition-colors duration-300 ${
+                    errors.confirmPassword && touched.confirmPassword
+                      ? "border-red-600 shake"
+                      : null
+                  }`}
                 />
+                {errors.confirmPassword && touched.confirmPassword ? (
+                  <p className="text-red-700 text-sm font-medium">
+                    {errors.confirmPassword}
+                  </p>
+                ) : null}
               </div>
 
-              <div class="w-full h-auto py-2.5 ml-1 flex justify-start items-center col-span-2 gap-6">
-                <div class="w-auto flex gap-1 justify-start items-center h-auto">
-                  <input
-                    type="radio"
-                    id="corporate-service"
-                    class="w-4 h-4 accent-[#c00000]"
-                    required=""
-                  />
-                  <label
-                    for="corporate-service"
-                    class="block  text-md text-gray-600 font-medium"
-                  >
-                    Corporate
-                  </label>
+              <div className="w-full flex flex-col justify-start items-start col-span-2">
+                <div class="w-full h-auto py-2.5 ml-1 flex justify-start items-center  gap-6">
+                  <div class="w-auto flex gap-1 justify-start items-center h-auto">
+                    <input
+                      type="radio"
+                      id="department"
+                      name="department"
+                      value="Corporate"
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      class="w-4 h-4 accent-[#c00000]"
+                      required=""
+                    />
+                    <label
+                      for="department"
+                      class="block  text-md text-gray-600 font-medium"
+                    >
+                      Corporate
+                    </label>
+                  </div>
+                  <div class="w-auto flex gap-1 justify-start items-center h-auto">
+                    <input
+                      type="radio"
+                      id="department"
+                      name="department"
+                      value="Medical"
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      class="w-4 h-4 accent-[#c00000]"
+                      required=""
+                    />
+                    <label
+                      for="department"
+                      class="block  text-md text-gray-600 font-medium"
+                    >
+                      Medical
+                    </label>
+                  </div>
                 </div>
-                <div class="w-auto flex gap-1 justify-start items-center h-auto">
-                  <input
-                    type="radio"
-                    id="medical-service"
-                    class="w-4 h-4 accent-[#c00000]"
-                    required=""
-                  />
-                  <label
-                    for="medical-service"
-                    class="block  text-md text-gray-600 font-medium"
-                  >
-                    Medical
-                  </label>
-                </div>
+                {errors.department && touched.department ? (
+                  <p className="text-red-700 text-sm font-medium">
+                    {errors.department}
+                  </p>
+                ) : null}
               </div>
 
               <button
-                onClick={() => navigate("Add Bank", "/add-bank")}
+                type="submit"
                 class="flex items-center justify-center gap-4 w-full col-span-2 px-6 py-3 text-sm tracking-wide text-white capitalize transition-colors duration-300 transform bg-[#c00000] rounded-full hover:bg-[#c00000] focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50"
               >
+                {loading && (
+                  <div
+                    class="animate-spin inline-block size-4 border-[3px] border-current border-t-transparent text-white rounded-full"
+                    role="status"
+                    aria-label="loading"
+                  >
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                )}
                 <span>Sign Up </span>
 
                 <svg
