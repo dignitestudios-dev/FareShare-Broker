@@ -16,6 +16,9 @@ authentication.interceptors.request.use(
       "/auth/brokerSocialSignup",
       "/auth/brokerSignUp",
       "/auth/brokerSignIn",
+      "/auth/validatePassOTP",
+      "/auth/sendPassOTP",
+      "/auth/updatePassOTP",
       // Add more endpoints here
     ];
 

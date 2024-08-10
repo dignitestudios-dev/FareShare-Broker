@@ -6,10 +6,11 @@ import { AppContext } from "../../context/AppContext";
 import { signupValues } from "../../data/authentication";
 import { signupSchema } from "../../schema/signupSchema";
 import { useFormik } from "formik";
-
+import authentication from "../../api/authenticationInterceptor";
 // firebase:
 import { auth } from "../../firebase/firebase"; // Adjust the import based on your file structure
 import { createUserWithEmailAndPassword, getIdToken } from "firebase/auth";
+import Error from "../../components/app/global/Error";
 
 const Signup = () => {
   const { navigate, error, setError } = useContext(AppContext);
@@ -83,6 +84,8 @@ const Signup = () => {
             />
           </div>
         </div>
+
+        <Error error={error} setError={setError} />
 
         <div class="flex items-center w-full max-w-3xl p-8 mx-auto lg:px-12 lg:w-3/5">
           <div class="w-full">
@@ -201,7 +204,7 @@ const Signup = () => {
                   Company Email
                 </label>
                 <input
-                  type="email"
+                  type="text"
                   id="email"
                   name="email"
                   value={values.email}

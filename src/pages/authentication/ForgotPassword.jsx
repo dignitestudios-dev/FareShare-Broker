@@ -1,11 +1,43 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { FaApple, FaFacebook, FaFacebookF } from "react-icons/fa";
 import { FiUser } from "react-icons/fi";
 import { TiUserAddOutline } from "react-icons/ti";
 import { AppContext } from "../../context/AppContext";
+import { useFormik } from "formik";
+import authentication from "../../api/authenticationInterceptor";
+import { verifyEmailValues } from "../../data/authentication";
+import { verifyEmailSchema } from "../../schema/verifyEmailSchema";
+import Error from "../../components/app/global/Error";
 
 const ForgotPassword = () => {
-  const { navigate } = useContext(AppContext);
+  const { navigate, error, setError } = useContext(AppContext);
+  const [loading, setLoading] = useState(false);
+  const { values, handleBlur, handleChange, handleSubmit, errors, touched } =
+    useFormik({
+      initialValues: verifyEmailValues,
+      validationSchema: verifyEmailSchema,
+      validateOnChange: true,
+      validateOnBlur: false,
+
+      onSubmit: async (values, action) => {
+        setLoading(true);
+        try {
+          // API call to login using Axios interceptor
+          const response = await authentication.post("/auth/sendPassOTP", {
+            email: values.email,
+          });
+
+          // Handle the response (e.g., save token, redirect)
+          console.log("Login successful:", response.data);
+        } catch (error) {
+          // Handle errors (e.g., show error message)
+          setError("There is an error");
+          // console.error("Login failed:", error.response?.data);
+        } finally {
+          setLoading(false);
+        }
+      },
+    });
   return (
     <section class="bg-white ">
       <div class="flex justify-center min-h-screen">
@@ -19,6 +51,8 @@ const ForgotPassword = () => {
           </div>
         </div>
 
+        <Error error={error} setError={setError} />
+
         <div class="flex items-center w-full max-w-3xl p-8 mx-auto lg:px-12 lg:w-1/2">
           <div class="w-full">
             <h1 class="text-2xl font-semibold tracking-wider text-gray-800 capitalize ">
@@ -29,22 +63,45 @@ const ForgotPassword = () => {
               Enter your registered email to recieve an otp on your email.
             </p>
 
-            <form class="flex flex-col gap-6 mt-8 ">
+            <form onSubmit={handleSubmit} class="flex flex-col gap-6 mt-8 ">
               <div className="w-full">
                 <label class="block mb-2 text-sm text-gray-600 ">
                   Email address
                 </label>
                 <input
-                  type="email"
+                  type="text"
+                  id="email"
+                  name="email"
+                  value={values.email}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
                   placeholder="johnsnow@example.com"
-                  class="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40"
+                  class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40 transition-colors duration-300 ${
+                    errors.email && touched.email
+                      ? "border-red-600 shake"
+                      : null
+                  }`}
                 />
+                {errors.email && touched.email ? (
+                  <p className="text-red-700 text-sm font-medium">
+                    {errors.email}
+                  </p>
+                ) : null}
               </div>
 
               <button
-                onClick={() => navigate("Verify OTP", "/verify-otp")}
+                type="submit"
                 class="flex items-center justify-center gap-4 w-full  px-6 py-3 text-sm tracking-wide text-white capitalize transition-colors duration-300 transform bg-[#c00000] rounded-full hover:bg-[#c00000] focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50"
               >
+                {loading && (
+                  <div
+                    class="animate-spin inline-block size-4 border-[3px] border-current border-t-transparent text-white rounded-full"
+                    role="status"
+                    aria-label="loading"
+                  >
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                )}
                 <span>Send OTP</span>
 
                 <svg

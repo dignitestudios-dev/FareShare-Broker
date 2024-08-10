@@ -1,11 +1,120 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { FaApple, FaFacebook, FaFacebookF } from "react-icons/fa";
 import { FiUser } from "react-icons/fi";
 import { TiUserAddOutline } from "react-icons/ti";
 import { AppContext } from "../../context/AppContext";
+import { verifyOtpSchema } from "../../schema/verifyOtpSchema";
+import { verifyOtpValues } from "../../data/authentication";
+import { useFormik } from "formik";
+import authentication from "../../api/authenticationInterceptor";
+import Cookies from "js-cookie";
 
 const VerifyOtp = () => {
-  const { navigate } = useContext(AppContext);
+  const { navigate, error, setError } = useContext(AppContext);
+  const [loading, setLoading] = useState(false);
+  const { values, handleBlur, handleChange, handleSubmit, errors, touched } =
+    useFormik({
+      initialValues: verifyOtpValues,
+      validationSchema: verifyOtpSchema,
+      validateOnChange: true,
+      validateOnBlur: false,
+
+      onSubmit: async (values, action) => {
+        const email = Cookies.get("email");
+        setLoading(true);
+        try {
+          const otp = values.otp1 + values.otp2 + values.otp3 + values.otp4;
+          // API call to login using Axios interceptor
+          const response = await authentication.post("/auth/validatePassOTP", {
+            email: email,
+            otp: otp,
+          });
+
+          // Handle the response (e.g., save token, redirect)
+          console.log("Login successful:", response.data);
+        } catch (error) {
+          // Handle errors (e.g., show error message)
+          setError("There is an error");
+          // console.error("Login failed:", error.response?.data);
+        } finally {
+          setLoading(false);
+        }
+      },
+    });
+
+  //   OTP Code:
+  const [otp1, setOtp1] = useState("");
+  const [otp2, setOtp2] = useState("");
+  const [otp3, setOtp3] = useState("");
+  const [otp4, setOtp4] = useState("");
+
+  const otpRef1 = useRef();
+  const otpRef2 = useRef();
+  const otpRef3 = useRef();
+  const otpRef4 = useRef();
+
+  useEffect(() => {
+    otpRef1.current.focus();
+  }, []);
+
+  const focusNextInput = (currentRef) => {
+    if (currentRef && currentRef.current) {
+      currentRef.current.focus();
+    }
+  };
+
+  const focusPrevInput = (currentRef) => {
+    if (currentRef && currentRef.current) {
+      currentRef.current.focus();
+    }
+  };
+
+  const handleInputChange = (e, inputNumber) => {
+    const value = e.target.value;
+
+    if (value.length > 0 && inputNumber < 4) {
+      const nextInputRef = eval("otpRef" + (inputNumber + 1));
+      if (nextInputRef && nextInputRef.current) {
+        nextInputRef.current.focus();
+      }
+    }
+
+    switch (inputNumber) {
+      case 1:
+        setOtp1(value);
+        break;
+      case 2:
+        setOtp2(value);
+        break;
+      case 3:
+        setOtp3(value);
+        break;
+      case 4:
+        setOtp4(value);
+        break;
+      default:
+        break;
+    }
+  };
+
+  const handleBackspace = (e, inputNumber) => {
+    if (e.key === "Backspace" && !e.target.value) {
+      if (inputNumber > 1) {
+        const prevInputRef = eval("otpRef" + (inputNumber - 1));
+        focusPrevInput(prevInputRef);
+      }
+    }
+  };
+
+  // Add any custom logic here, e.g., validation or formatting
+  // For example, trimming whitespace:
+  // const trimmedValue = value.trim();
+
+  // formik.setFieldValue(name, trimmedValue);
+
+  // If you want to manually handle `touched`, you can set the field as touched
+  // formik.setFieldTouched(name, true, false);
+
   return (
     <section className="bg-white">
       <div className="flex justify-center min-h-screen">
@@ -21,7 +130,7 @@ const VerifyOtp = () => {
 
         <div className="flex items-center w-full max-w-3xl p-8 mx-auto lg:px-12 lg:w-1/2">
           <div className="w-full">
-            <form className="flex flex-col gap-6 mt-8">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-6 mt-8">
               <div className="w-full h-auto ">
                 <div class="w-full h-auto ">
                   <div class="w-full flex flex-col gap-4 justify-around items-center">
@@ -46,9 +155,23 @@ const VerifyOtp = () => {
                         <div class="w-16 h-16 ">
                           <input
                             maxlength="1"
-                            class="w-full h-full flex flex-col items-center justify-center text-center px-5 outline-none  border-b border-gray-500 text-lg bg-white focus:bg-gray-50 focus:border-gray-800"
+                            class={`w-full h-full flex flex-col items-center justify-center text-center px-5 outline-none  border-b border-gray-500 text-lg bg-white focus:bg-gray-50 focus:border-gray-800  transition-colors duration-300 ${
+                              errors.otp1 && touched.otp1
+                                ? "focus:bg-red-50 border-red-600 shake"
+                                : null
+                            }`}
                             type="text"
-                            name=""
+                            name="otp1"
+                            placeholder="-"
+                            maxLength="1"
+                            value={values.otp1}
+                            onChange={(e) => {
+                              handleInputChange(e, 1);
+                              handleChange(e);
+                            }}
+                            onBlur={handleBlur}
+                            onKeyDown={(e) => handleBackspace(e, 1)}
+                            ref={otpRef1}
                             id=""
                             autocomplete="off"
                           />
@@ -56,9 +179,23 @@ const VerifyOtp = () => {
                         <div class="w-16 h-16 ">
                           <input
                             maxlength="1"
-                            class="w-full h-full flex flex-col items-center justify-center text-center px-5 outline-none  border-b border-gray-500 text-lg bg-white focus:bg-gray-50 focus:border-gray-800"
+                            class={`w-full h-full flex flex-col items-center justify-center text-center px-5 outline-none  border-b border-gray-500 text-lg bg-white focus:bg-gray-50 focus:border-gray-800  transition-colors duration-300 ${
+                              errors.otp2 && touched.otp2
+                                ? "focus:bg-red-50 border-red-600 shake"
+                                : null
+                            }`}
                             type="text"
-                            name=""
+                            name="otp2"
+                            placeholder="-"
+                            maxLength="1"
+                            value={values.otp2}
+                            onChange={(e) => {
+                              handleInputChange(e, 2);
+                              handleChange(e);
+                            }}
+                            onBlur={handleBlur}
+                            onKeyDown={(e) => handleBackspace(e, 2)}
+                            ref={otpRef2}
                             id=""
                             autocomplete="off"
                           />
@@ -66,9 +203,23 @@ const VerifyOtp = () => {
                         <div class="w-16 h-16 ">
                           <input
                             maxlength="1"
-                            class="w-full h-full flex flex-col items-center justify-center text-center px-5 outline-none  border-b border-gray-500 text-lg bg-white focus:bg-gray-50 focus:border-gray-800"
+                            class={`w-full h-full flex flex-col items-center justify-center text-center px-5 outline-none  border-b border-gray-500 text-lg bg-white focus:bg-gray-50 focus:border-gray-800  transition-colors duration-300 ${
+                              errors.otp3 && touched.otp3
+                                ? "focus:bg-red-50 border-red-600 shake"
+                                : null
+                            }`}
                             type="text"
-                            name=""
+                            name="otp3"
+                            placeholder="-"
+                            maxLength="1"
+                            value={values.otp3}
+                            onChange={(e) => {
+                              handleInputChange(e, 3);
+                              handleChange(e);
+                            }}
+                            onBlur={handleBlur}
+                            onKeyDown={(e) => handleBackspace(e, 3)}
+                            ref={otpRef3}
                             id=""
                             autocomplete="off"
                           />
@@ -76,23 +227,56 @@ const VerifyOtp = () => {
                         <div class="w-16 h-16 ">
                           <input
                             maxlength="1"
-                            class="w-full h-full flex flex-col items-center justify-center text-center px-5 outline-none  border-b border-gray-500 text-lg bg-white focus:bg-gray-50 focus:border-gray-800"
+                            class={`w-full h-full flex flex-col items-center justify-center text-center px-5 outline-none  border-b border-gray-500 text-lg bg-white focus:bg-gray-50 focus:border-gray-800  transition-colors duration-300 ${
+                              errors.otp4 && touched.otp4
+                                ? "focus:bg-red-50 border-red-600 shake"
+                                : null
+                            }`}
                             type="text"
-                            name=""
+                            name="otp4"
+                            placeholder="-"
+                            maxLength="1"
+                            value={values.otp4}
+                            onChange={(e) => {
+                              handleInputChange(e, 4);
+                              handleChange(e);
+                            }}
+                            onBlur={handleBlur}
+                            onKeyDown={(e) => handleBackspace(e, 4)}
+                            ref={otpRef4}
                             id=""
                             autocomplete="off"
                           />
                         </div>
                       </div>
+                      {(errors.otp1 && touched.otp1) ||
+                      (errors.otp2 && touched.otp2) ||
+                      (errors.otp3 && touched.otp3) ||
+                      (errors.otp4 && touched.otp4) ? (
+                        <p className="text-red-700 text-sm font-medium">
+                          OTP is required
+                        </p>
+                      ) : null}
                       <button
-                        onClick={() =>
-                          navigate("Change Password", "/change-password")
-                        }
-                        class="h-14 text-lg font-semibold w-[24rem] bg-[#c00000] text-white rounded-full "
+                        type="submit"
+                        disabled={loading}
+                        class="h-14 text-lg font-semibold w-[24rem] bg-[#c00000] flex justify-center items-center gap-2 text-white rounded-full "
                       >
+                        {loading && (
+                          <div
+                            class="animate-spin inline-block size-4 border-[3px] border-current border-t-transparent text-white rounded-full"
+                            role="status"
+                            aria-label="loading"
+                          >
+                            <span class="sr-only">Loading...</span>
+                          </div>
+                        )}
                         Submit
                       </button>
-                      <button class="h-14 text-lg font-semibold w-[24rem] border-2 border-[#c00000] text-[#c00000] rounded-full transition-all duration-200 hover:bg-[#c00000] hover:text-white">
+                      <button
+                        type="button"
+                        class="h-14 text-lg font-semibold w-[24rem] border-2 border-[#c00000] text-[#c00000] rounded-full transition-all duration-200 hover:bg-[#c00000] hover:text-white"
+                      >
                         Resend Code
                       </button>
                     </div>
