@@ -26,7 +26,6 @@ export const verifyOtpValues = {
 };
 
 export const updatePassValues = {
-  email: "",
   password: "",
   confirmPassword: "",
 };

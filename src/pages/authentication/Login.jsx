@@ -135,7 +135,7 @@ const Login = () => {
                   onBlur={handleBlur}
                   placeholder="Your Password"
                   class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40  transition-colors duration-300 ${
-                    errors.email && touched.email
+                    errors.password && touched.password
                       ? "border-red-600 shake"
                       : null
                   }`}
@@ -150,7 +150,7 @@ const Login = () => {
               <button
                 type="submit"
                 disabled={loading}
-                class="flex items-center justify-center gap-4 w-full  px-6 py-3 text-sm tracking-wide text-white capitalize transition-colors duration-300 transform bg-[#c00000] rounded-full hover:bg-[#c00000] focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50"
+                class="flex items-center justify-center gap-4 w-full  px-6 py-3 text-sm tracking-wide text-white capitalize transition-colors duration-300 transform bg-[#c00000] rounded-full hover:bg-[#c00000] focus:outline-none focus:ring focus:ring-red-300 focus:ring-opacity-50"
               >
                 {loading && (
                   <div

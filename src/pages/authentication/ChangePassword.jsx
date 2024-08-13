@@ -1,11 +1,46 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
+import axios from "axios";
 import { FaApple, FaFacebook, FaFacebookF } from "react-icons/fa";
 import { FiUser } from "react-icons/fi";
 import { TiUserAddOutline } from "react-icons/ti";
 import { AppContext } from "../../context/AppContext";
+import { useFormik } from "formik";
+import { updatePassValues } from "../../data/authentication";
+import { updatePassSchema } from "../../schema/UpdatePassSchema";
+import authentication from "../../api/authenticationInterceptor";
 
 const ChangePassword = () => {
-  const { navigate } = useContext(AppContext);
+  const { navigate, error, setError } = useContext(AppContext);
+  const [loading, setLoading] = useState(false);
+  const { values, handleBlur, handleChange, handleSubmit, errors, touched } =
+    useFormik({
+      initialValues: updatePassValues,
+      validationSchema: updatePassSchema,
+      validateOnChange: true,
+      validateOnBlur: false,
+
+      onSubmit: async (values, action) => {
+        setLoading(true);
+        try {
+          // API call to login using Axios interceptor
+          const response = await authentication.post("/auth/updatePassOTP", {
+            email: "from Cookies",
+            password: values?.password,
+            confirmPassword: values?.confirmPassword,
+            resetToken: "from Cookies",
+          });
+
+          // Handle the response (e.g., save token, redirect)
+          console.log("Login successful:", response.data);
+        } catch (error) {
+          // Handle errors (e.g., show error message)
+          setError("There is an error");
+          // console.error("Login failed:", error.response?.data);
+        } finally {
+          setLoading(false);
+        }
+      },
+    });
   return (
     <section class="bg-white ">
       <div class="flex justify-center min-h-screen">
@@ -39,30 +74,63 @@ const ChangePassword = () => {
                   type="password"
                   name="password"
                   id="password"
-                  placeholder=" Password"
-                  class="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40"
+                  value={values.password}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  placeholder="Your Password"
+                  class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40  transition-colors duration-300 ${
+                    errors.email && touched.email
+                      ? "border-red-600 shake"
+                      : null
+                  }`}
                 />
+                {errors.password && touched.password ? (
+                  <p className="text-red-700 text-sm font-medium">
+                    {errors.password}
+                  </p>
+                ) : null}
               </div>
               <div class="w-full">
                 <div class="flex justify-between mb-2">
                   <label for="password" class="text-sm text-gray-600 ">
-                    Re-enter Password
+                    Confirm Password
                   </label>
                 </div>
 
                 <input
                   type="password"
-                  name="password"
-                  id="password"
-                  placeholder="Re-enter Password"
-                  class="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40"
+                  name="confirmPassword"
+                  id="confirmPassword"
+                  value={values.confirmPassword}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  placeholder="Confirm Password"
+                  class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40  transition-colors duration-300 ${
+                    errors.confirmPassword && touched.confirmPassword
+                      ? "border-red-600 shake"
+                      : null
+                  }`}
                 />
+                {errors.confirmPassword && touched.confirmPassword ? (
+                  <p className="text-red-700 text-sm font-medium">
+                    {errors.confirmPassword}
+                  </p>
+                ) : null}
               </div>
 
               <button
                 onClick={() => navigate("Sign in", "/login")}
-                class="flex items-center justify-center gap-4 w-full  px-6 py-3 text-sm tracking-wide text-white capitalize transition-colors duration-300 transform bg-[#c00000] rounded-full hover:bg-[#c00000] focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50"
+                class="flex items-center justify-center gap-4 w-full  px-6 py-3 text-sm tracking-wide text-white capitalize transition-colors duration-300 transform bg-[#c00000] rounded-full hover:bg-[#c00000] focus:outline-none focus:ring focus:ring-red-300 focus:ring-opacity-50"
               >
+                {loading && (
+                  <div
+                    class="animate-spin inline-block size-4 border-[3px] border-current border-t-transparent text-white rounded-full"
+                    role="status"
+                    aria-label="loading"
+                  >
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                )}
                 <span>Submit </span>
 
                 <svg

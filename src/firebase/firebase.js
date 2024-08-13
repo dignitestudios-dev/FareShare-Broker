@@ -4,11 +4,12 @@ import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_APP_FIREBASE_KEY,
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID",
+  authDomain: "fareshare-app.firebaseapp.com",
+  projectId: "fareshare-app",
+  storageBucket: "fareshare-app.appspot.com",
+  messagingSenderId: "887141039550",
+  appId: "1:887141039550:web:3db8e577e65ff39e900def",
+  measurementId: "G-14FJ7831MD",
 };
 
 const app = initializeApp(firebaseConfig);

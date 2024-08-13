@@ -9,8 +9,13 @@ import { useFormik } from "formik";
 import authentication from "../../api/authenticationInterceptor";
 // firebase:
 import { auth } from "../../firebase/firebase"; // Adjust the import based on your file structure
-import { createUserWithEmailAndPassword, getIdToken } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  getIdToken,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 import Error from "../../components/app/global/Error";
+import { useEffect } from "react";
 
 const Signup = () => {
   const { navigate, error, setError } = useContext(AppContext);
@@ -26,52 +31,83 @@ const Signup = () => {
       onSubmit: async (values, action) => {
         setLoading(true);
         try {
-          // Sign up the user
-          const userCredential = await createUserWithEmailAndPassword(
+          // Try to sign in the user
+          const userCredential = await signInWithEmailAndPassword(
             auth,
-            values.email,
-            values.password
+            values?.email,
+            values?.password
           );
           const user = userCredential.user;
-
           // Get the ID token
           const token = await getIdToken(user);
-          setIdToken(token);
-
           if (token) {
-            try {
-              // API call to login using Axios interceptor
-              const response = await authentication.post("/auth/brokerSignUp", {
-                companyName: values.companyName,
-                accountHandlerName: values.accountHandlerName,
-                email: values.email,
-                companyTaxIdenfication: values.companyTaxIdenfication,
-                password: values.password,
-                confirmPassword: values.confirmPassword,
-                department: values.department,
-                idToken: token,
-              });
-
-              // Handle the response (e.g., save token, redirect)
-              console.log("Login successful:", response.data);
-            } catch (error) {
-              // Handle errors (e.g., show error message)
-              setError("There is an error");
-              // console.error("Login failed:", error.response?.data);
-            } finally {
-              setLoading(false);
-            }
+            setIdToken(token);
           } else {
-            setError("Error creating the Id Token for this email and password");
+            setError("Token Not Found");
             setLoading(false);
           }
         } catch (error) {
-          setError(error.message);
+          if (error.code === "auth/user-not-found") {
+            try {
+              const newUser = await createUserWithEmailAndPassword(
+                auth,
+                values?.email,
+                values?.password
+              );
+              const user = newUser.user;
+              // Get the ID token
+              const token = await getIdToken(user);
+              if (token) {
+                setIdToken(token);
+              } else {
+                setError("Token Not Found");
+                setLoading(false);
+              }
+            } catch (createError) {
+              // setError("Error creating new user:", createError);
+            }
+          } else {
+            // setError("Login error:", error);
+            setLoading(false);
+          }
         } finally {
           setLoading(false);
         }
       },
     });
+
+  const sendDataToBackend = async () => {
+    if (idToken) {
+      try {
+        // API call to login using Axios interceptor
+        const response = await authentication.post("/auth/brokerSignUp", {
+          companyName: values.companyName,
+          accountHandlerName: values.accountHandlerName,
+          email: values.email,
+          companyTaxIdenfication: values.companyTaxIdentification,
+          password: values.password,
+          confirmPassword: values.confirmPassword,
+          department: values.department,
+          idToken: idToken,
+        });
+
+        // Handle the response (e.g., save token, redirect)
+        console.log("Login successful:", response.data);
+      } catch (error) {
+        console.log(error);
+        // Handle errors (e.g., show error message)
+        setError("There is an error");
+        // console.error("Login failed:", error.response?.data);
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+  useEffect(() => {
+    sendDataToBackend();
+  }, [idToken]);
+
   return (
     <section class="bg-white ">
       <div class="flex justify-center min-h-screen">
@@ -322,7 +358,7 @@ const Signup = () => {
 
               <button
                 type="submit"
-                class="flex items-center justify-center gap-4 w-full col-span-2 px-6 py-3 text-sm tracking-wide text-white capitalize transition-colors duration-300 transform bg-[#c00000] rounded-full hover:bg-[#c00000] focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50"
+                class="flex items-center justify-center gap-4 w-full col-span-2 px-6 py-3 text-sm tracking-wide text-white capitalize transition-colors duration-300 transform bg-[#c00000] rounded-full hover:bg-[#c00000] focus:outline-none focus:ring focus:ring-red-300 focus:ring-opacity-50"
               >
                 {loading && (
                   <div

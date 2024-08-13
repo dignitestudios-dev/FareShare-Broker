@@ -8,16 +8,6 @@ const PersonalInfo = () => {
     <div className="w-full h-auto overflow-y-auto flex flex-col gap-3 justify-center items-center">
       <div class="w-full h-12 flex justify-start items-center gap-2 px-4">
         <button
-          onClick={() => setTab("medical")}
-          class={`w-36 h-9 rounded-full ${
-            tab == "medical"
-              ? "bg-[#c00000] text-white"
-              : "bg-[#c00000]/[0.10] text-[#c00000]"
-          } transition-all duration-150 text-sm font-medium flex justify-center items-center hover:bg-[#c00000] hover:text-white`}
-        >
-          Medical Ride
-        </button>
-        <button
           onClick={() => setTab("corporate")}
           class={`w-36 h-9 rounded-full ${
             tab == "corporate"
@@ -26,6 +16,16 @@ const PersonalInfo = () => {
           } transition-all duration-150 text-sm font-medium flex justify-center items-center hover:bg-[#c00000] hover:text-white`}
         >
           Corporate Ride
+        </button>
+        <button
+          onClick={() => setTab("medical")}
+          class={`w-36 h-9 rounded-full ${
+            tab == "medical"
+              ? "bg-[#c00000] text-white"
+              : "bg-[#c00000]/[0.10] text-[#c00000]"
+          } transition-all duration-150 text-sm font-medium flex justify-center items-center hover:bg-[#c00000] hover:text-white`}
+        >
+          Medical Ride
         </button>
       </div>
       <div class="container w-full border-b">
