@@ -2,10 +2,24 @@ import React, { useContext, useState } from "react";
 import { AppContext } from "../../context/AppContext";
 import { CiFilter } from "react-icons/ci";
 import DateFilterModal from "../../components/app/DateFilterModal";
+import { useEffect } from "react";
+import api from "../../api/apiInterceptor";
 
 const Bookings = () => {
   const { navigate } = useContext(AppContext);
   const [openFilter, setOpenFilter] = useState(false);
+
+  // Invoices:
+  const [bookings, setBookings] = useState(null);
+
+  const getBookings = async () => {
+    const bookings = await api.get("/broker/bookings");
+    console.log(bookings);
+  };
+
+  useEffect(() => {
+    getBookings();
+  }, []);
   return (
     <div className="w-full h-auto flex flex-col gap-4  justify-start items-start">
       <div className="w-full h-12 gap-2 flex justify-end items-center">

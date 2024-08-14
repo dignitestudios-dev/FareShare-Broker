@@ -64,10 +64,10 @@ const Signup = () => {
                 setLoading(false);
               }
             } catch (createError) {
-              // setError("Error creating new user:", createError);
+              setError("Error creating new user");
             }
           } else {
-            // setError("Login error:", error);
+            setError("Login error");
             setLoading(false);
           }
         } finally {
@@ -96,7 +96,7 @@ const Signup = () => {
       } catch (error) {
         console.log(error);
         // Handle errors (e.g., show error message)
-        setError("There is an error");
+        setError(error?.response?.data?.message);
         // console.error("Login failed:", error.response?.data);
       } finally {
         setLoading(false);

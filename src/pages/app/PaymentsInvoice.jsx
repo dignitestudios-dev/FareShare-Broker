@@ -1,8 +1,22 @@
 import React, { useState } from "react";
 import InvoiceModal from "../../components/app/paymentsandinvoice/InvoiceModal";
+import api from "../../api/apiInterceptor";
+import { useEffect } from "react";
 
 const PaymentsInvoice = () => {
   const [isOpen, setIsOpen] = useState(false);
+
+  // Invoices:
+  const [invoices, setInvoices] = useState(null);
+
+  const getInvoices = async () => {
+    const invoices = await api.get("/broker/invoice");
+    console.log(invoices);
+  };
+
+  useEffect(() => {
+    getInvoices();
+  }, []);
   return (
     <div className="w-full h-auto flex flex-col justify-start items-start gap-2">
       <div className="w-full overflow-x-auto rounded-2xl border  border-gray-300 bg-white   ">

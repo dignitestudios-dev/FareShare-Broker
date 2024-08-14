@@ -1,14 +1,51 @@
-import React from "react";
+import React, { useState, useContext } from "react";
 import { ContactUsVector } from "../../assets/export";
+import { useFormik } from "formik";
+import { AppContext } from "../../context/AppContext";
+import { contactUsSchema } from "../../schema/contactUsSchema";
+import { contactUsValues } from "../../data/contactUs";
+import api from "../../api/apiInterceptor";
 
 const ContactUs = () => {
+  const { navigate, error, setError } = useContext(AppContext);
+  const [loading, setLoading] = useState(false);
+  const { values, handleBlur, handleChange, handleSubmit, errors, touched } =
+    useFormik({
+      initialValues: contactUsValues,
+      validationSchema: contactUsSchema,
+      validateOnChange: true,
+      validateOnBlur: false,
+
+      onSubmit: async (values, action) => {
+        setLoading(true);
+        try {
+          // API call to login using Axios interceptor
+          const response = await api.post("/broker/contact-us", {
+            name: values.name,
+            email: values.email,
+            subject: values.subject,
+            message: values.message,
+          });
+
+          // Handle the response (e.g., save token, redirect)
+          console.log("Login successful:", response.data);
+        } catch (error) {
+          // Handle errors (e.g., show error message)
+          setError(error?.response?.data?.message);
+
+          // console.error("Login failed:", error.response?.data);
+        } finally {
+          setLoading(false);
+        }
+      },
+    });
   return (
     <div className="w-full h-full flex flex-col justify-center border p-4 rounded-3xl items-center">
       <div class="w-full grid lg:grid-cols-2  items-start gap-16 p-4  bg-white font-[sans-serif]">
         <div className="w-full border-r flex">
           <img src={ContactUsVector} alt="" className="w-[95%]" />
         </div>
-        <form class="ml-auto space-y-4">
+        <form class="ml-auto w-full space-y-4">
           <div>
             <h1 class="text-gray-800 text-3xl font-extrabold">
               We would love to help
@@ -17,26 +54,89 @@ const ContactUs = () => {
               Reachout and we will get in touch within 24 hours
             </p>
           </div>
-          <input
-            type="text"
-            placeholder="Name"
-            class="w-full rounded-md py-3 px-4 bg-gray-50 text-gray-800 text-sm outline-[#c00000] focus:bg-transparent"
-          />
-          <input
-            type="email"
-            placeholder="Email"
-            class="w-full rounded-md py-3 px-4 bg-gray-50 text-gray-800 text-sm outline-[#c00000] focus:bg-transparent"
-          />
-          <input
-            type="text"
-            placeholder="Subject"
-            class="w-full rounded-md py-3 px-4 bg-gray-50 text-gray-800 text-sm outline-[#c00000] focus:bg-transparent"
-          />
-          <textarea
-            placeholder="Message"
-            rows="6"
-            class="w-full rounded-md px-4 bg-gray-50 text-gray-800 text-sm pt-3 resize-none outline-[#c00000] focus:bg-transparent"
-          ></textarea>
+          <div className="w-full flex flex-col justify-start items-start">
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={values.name}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              placeholder="Name"
+              class={`w-full rounded-md py-3 px-4 bg-gray-50 text-gray-800 text-sm outline-[#c00000] focus:bg-transparent transition-colors duration-300 ${
+                errors.name && touched.name
+                  ? "border border-red-600 shake"
+                  : null
+              }`}
+            />
+
+            {errors.name && touched.name ? (
+              <p className="text-red-700 text-sm font-medium">{errors.name}</p>
+            ) : null}
+          </div>
+          <div className="w-full flex flex-col justify-start items-start">
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={values.email}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              placeholder="Email"
+              class={`w-full rounded-md py-3 px-4 bg-gray-50 text-gray-800 text-sm outline-[#c00000] focus:bg-transparent transition-colors duration-300 ${
+                errors.email && touched.email
+                  ? "border border-red-600 shake"
+                  : null
+              }`}
+            />
+            {errors.email && touched.email ? (
+              <p className="text-red-700 text-sm font-medium">{errors.email}</p>
+            ) : null}
+          </div>
+          <div className="w-full flex flex-col justify-start items-start">
+            <input
+              type="text"
+              placeholder="Subject"
+              id="subject"
+              name="subject"
+              value={values.subject}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              class={`w-full rounded-md py-3 px-4 bg-gray-50 text-gray-800 text-sm outline-[#c00000] focus:bg-transparent transition-colors duration-300 ${
+                errors.subject && touched.subject
+                  ? "border border-red-600 shake"
+                  : null
+              }`}
+            />
+
+            {errors.subject && touched.subject ? (
+              <p className="text-red-700 text-sm font-medium">
+                {errors.subject}
+              </p>
+            ) : null}
+          </div>
+          <div className="w-full flex flex-col justify-start items-start">
+            <textarea
+              placeholder="Message"
+              id="message"
+              name="message"
+              value={values.message}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              rows="6"
+              class={`w-full resize-none rounded-md py-3 px-4 bg-gray-50 text-gray-800 text-sm outline-[#c00000] focus:bg-transparent transition-colors duration-300 ${
+                errors.message && touched.message
+                  ? "border border-red-600 shake"
+                  : null
+              }`}
+            ></textarea>
+
+            {errors.message && touched.message ? (
+              <p className="text-red-700 text-sm font-medium">
+                {errors.message}
+              </p>
+            ) : null}
+          </div>
           <button
             type="button"
             class="text-white bg-[#c00000] hover:bg-[#c00000]/[0.9] tracking-wide rounded-full text-sm px-4 py-3 w-full !mt-6"

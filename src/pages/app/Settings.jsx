@@ -1,6 +1,20 @@
 import React from "react";
+import { useEffect } from "react";
+import { useState } from "react";
+import api from "../../api/apiInterceptor";
 
 const Settings = () => {
+  // Broker:
+  const [settings, setSettings] = useState(null);
+
+  const getSettings = async () => {
+    const settings = await api.get("/notification/settings");
+    console.log(settings);
+  };
+
+  useEffect(() => {
+    getSettings();
+  }, []);
   return (
     <div className="w-full h-full overflow-y-auto flex flex-col gap-2 justify-start items-start">
       <div className="bg-gray-100 w-full rounded-xl  px-4 h-12 flex gap-6 justify-between items-center">

@@ -23,7 +23,7 @@ const CancelRideModal = ({ isOpen, setIsOpen, setFind }) => {
         ref={cancelRef}
         className="w-auto h-auto bg-white p-6 rounded-3xl flex gap-6 flex-col items-start justify-center "
       >
-        <div>
+        <div className="w-auto flex flex-col justify-start items-start gap-2">
           <h1 className="text-[26px] font-bold text-black">Cancel Ride</h1>
           <span className="text-[#4b4a4a] font-normal text-[16px]">
             Are you sure you want to cancel ride?

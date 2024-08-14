@@ -34,7 +34,8 @@ const AddBank = () => {
           console.log("Login successful:", response.data);
         } catch (error) {
           // Handle errors (e.g., show error message)
-          setError("There is an error");
+          setError(error?.response?.data?.message);
+
           // console.error("Login failed:", error.response?.data);
         } finally {
           setLoading(false);
@@ -66,35 +67,7 @@ const AddBank = () => {
               onSubmit={handleSubmit}
               class="grid grid-cols-1 gap-6 mt-8 md:grid-cols-2"
             >
-              <div>
-                <label
-                  htmlFor="bankName"
-                  class="block mb-2 text-sm text-gray-600 "
-                >
-                  Bank Name
-                </label>
-                <input
-                  type="text"
-                  placeholder="John"
-                  name="bankName"
-                  id="bankName"
-                  value={values.bankName}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40 transition-colors duration-300 ${
-                    errors.bankName && touched.bankName
-                      ? "border-red-600 shake"
-                      : null
-                  }`}
-                />
-                {errors.bankName && touched.bankName ? (
-                  <p className="text-red-700 text-sm font-medium">
-                    {errors.bankName}
-                  </p>
-                ) : null}
-              </div>
-
-              <div>
+              <div className="col-span-2">
                 <label
                   htmlFor="accountHolderName"
                   class="block mb-2 text-sm text-gray-600 "
@@ -108,7 +81,7 @@ const AddBank = () => {
                   value={values.accountHolderName}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  placeholder="Snow"
+                  placeholder="Jack White"
                   class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40 transition-colors duration-300 ${
                     errors.accountHolderName && touched.accountHolderName
                       ? "border-red-600 shake"

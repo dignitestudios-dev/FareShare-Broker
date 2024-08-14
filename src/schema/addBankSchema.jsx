@@ -8,5 +8,4 @@ export const addBankSchema = Yup.object({
   accountHolderName: Yup.string().required(
     "Please enter your account handler name."
   ),
-  bankName: Yup.string().required("Please enter your bank name."),
 });

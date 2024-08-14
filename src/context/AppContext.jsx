@@ -1,5 +1,7 @@
 import React, { createContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../api/apiInterceptor";
+import { useEffect } from "react";
 
 export const AppContext = createContext();
 
@@ -17,6 +19,18 @@ export const AppContextProvider = ({ children }) => {
 
   // Global Error State
   const [error, setError] = useState(false);
+
+  // Broker:
+  const [broker, setBroker] = useState(null);
+
+  const getBroker = async () => {
+    const broker = await api.get("/broker");
+    console.log(broker);
+  };
+
+  useEffect(() => {
+    getBroker();
+  }, []);
   return (
     <AppContext.Provider
       value={{

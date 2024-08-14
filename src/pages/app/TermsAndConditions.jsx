@@ -1,6 +1,18 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import api from "../../api/apiInterceptor";
 
 const TermsAndConditions = () => {
+  // Terms:
+  const [terms, setTerms] = useState(null);
+
+  const getTerms = async () => {
+    const terms = await api.get("/policy/termsOfService");
+    console.log(terms);
+  };
+
+  useEffect(() => {
+    getTerms();
+  }, []);
   return (
     <div class=" flex flex-col w-full h-full overflow-y-auto justify-start items-start gap-2">
       <h1 class="text-[36px] font-bold leading-[48.6px] text-black">

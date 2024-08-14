@@ -1,6 +1,18 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import api from "../../api/apiInterceptor";
 
 const PrivacyPolicyPage = () => {
+  // Privacy:
+  const [privacy, setPrivacy] = useState(null);
+
+  const getPrivacy = async () => {
+    const privacy = await api.get("/policy/privacy");
+    console.log(privacy);
+  };
+
+  useEffect(() => {
+    getPrivacy();
+  }, []);
   return (
     <div class="w-full h-full overflow-y-auto flex flex-col justify-start items-start gap-2">
       <h1 class="text-[36px] font-bold leading-[48.6px] text-black">
