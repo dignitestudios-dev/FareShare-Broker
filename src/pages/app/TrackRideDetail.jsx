@@ -4,6 +4,7 @@ import { VscOpenPreview } from "react-icons/vsc";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import { RiProgress2Line } from "react-icons/ri";
 import { IoCheckmarkDoneCircleOutline } from "react-icons/io5";
+import GoogleMaps from "../../components/app/ride/GoogleMaps";
 
 const TrackRideDetail = () => {
   return (
@@ -233,12 +234,8 @@ const TrackRideDetail = () => {
         </div>
       </div>
 
-      <div class="w-full  h-[40vh] rounded-3xl p-4 ">
-        <img
-          src="https://fareshare.vercel.app/assets/drivermap-KQWfTDtJ.svg"
-          alt="live_location"
-          class="w-full h-full object-cover rounded-3xl"
-        />
+      <div class="w-full   rounded-3xl p-4 ">
+        <GoogleMaps />
       </div>
     </div>
   );

@@ -1,12 +1,44 @@
 import React, { useContext, useState } from "react";
 import { AppContext } from "../../../context/AppContext";
+import { useFormik } from "formik";
+import { loginValues } from "../../../data/authentication";
+import { personalInfoSchema } from "../../../schema/personalInformation";
 
 const PersonalInfo = () => {
-  const { navigate, tab, setTab } = useContext(AppContext);
+  const { navigate, tab, setTab, error, setError } = useContext(AppContext);
 
+  const [loading, setLoading] = useState(false);
+  const { values, handleBlur, handleChange, handleSubmit, errors, touched } =
+    useFormik({
+      initialValues: loginValues,
+      validationSchema: personalInfoSchema,
+      validateOnChange: true,
+      validateOnBlur: false,
+
+      onSubmit: async (values, action) => {
+        setLoading(true);
+        try {
+          // API call to login using Axios interceptor
+          const response = await authentication.post("/auth/brokerSignIn", {
+            email: values.email,
+            password: values.password,
+          });
+
+          // Handle the response (e.g., save token, redirect)
+          console.log("Login successful:", response.data);
+        } catch (error) {
+          // Handle errors (e.g., show error message)
+          setError(error?.response?.data?.message);
+
+          // console.error("Login failed:", error.response?.data);
+        } finally {
+          setLoading(false);
+        }
+      },
+    });
   return (
     <div className="w-full h-auto overflow-y-auto flex flex-col gap-3 justify-center items-center">
-      <div class="w-full h-12 flex justify-start items-center gap-2 px-4">
+      <div class="w-full border-b pb-2 h-12 flex justify-start items-center gap-2 px-4">
         <button
           onClick={() => setTab("corporate")}
           class={`w-36 h-9 rounded-full ${
@@ -40,24 +72,46 @@ const PersonalInfo = () => {
               <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-5">
                 <div className="md:col-span-5 grid grid-cols-2 gap-3">
                   <div class="">
-                    <label for="full_name">First Name</label>
+                    <label for="requesterFirstName">First Name</label>
                     <input
                       type="text"
-                      name="full_name"
-                      id="full_name"
-                      class="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
-                      value=""
+                      id="requesterFirstName"
+                      name="requesterFirstName"
+                      value={values.requesterFirstName}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      class={`h-10 border mt-1 rounded px-4 w-full bg-gray-50 transition-colors duration-300 ${
+                        errors.requesterFirstName && touched.requesterFirstName
+                          ? "border-red-600 shake"
+                          : null
+                      }`}
                     />
+                    {errors.requesterFirstName && touched.requesterFirstName ? (
+                      <p className="text-red-700 text-sm font-medium">
+                        {errors.requesterFirstName}
+                      </p>
+                    ) : null}
                   </div>
                   <div class="">
                     <label for="full_name">Last Name</label>
                     <input
                       type="text"
-                      name="full_name"
-                      id="full_name"
-                      class="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
-                      value=""
+                      name="requesterLastName"
+                      id="requesterLastName"
+                      value={values.requesterLastName}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      class={`h-10 border mt-1 rounded px-4 w-full bg-gray-50 transition-colors duration-300 ${
+                        errors.requesterLastName && touched.requesterLastName
+                          ? "border-red-600 shake"
+                          : null
+                      }`}
                     />
+                    {errors.requesterLastName && touched.requesterLastName ? (
+                      <p className="text-red-700 text-sm font-medium">
+                        {errors.requesterLastName}
+                      </p>
+                    ) : null}
                   </div>
                 </div>
                 <div className="md:col-span-5 grid grid-cols-2 gap-3">
@@ -65,23 +119,45 @@ const PersonalInfo = () => {
                     <label for="email">Email Address</label>
                     <input
                       type="text"
-                      name="email"
-                      id="email"
-                      class="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
-                      value=""
+                      name="requesterEmail"
+                      id="requesterEmail"
+                      value={values.requesterEmail}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      class={`h-10 border mt-1 rounded px-4 w-full bg-gray-50 transition-colors duration-300 ${
+                        errors.requesterEmail && touched.requesterEmail
+                          ? "border-red-600 shake"
+                          : null
+                      }`}
                       placeholder="email@domain.com"
                     />
+                    {errors.requesterEmail && touched.requesterEmail ? (
+                      <p className="text-red-700 text-sm font-medium">
+                        {errors.requesterEmail}
+                      </p>
+                    ) : null}
                   </div>
                   <div class="">
-                    <label for="email">Contact Number</label>
+                    <label for="requesterContact">Contact Number</label>
                     <input
                       type="text"
-                      name="phone"
-                      id="phone"
-                      class="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
-                      value=""
+                      name="requesterContact"
+                      id="requesterContact"
+                      value={values.requesterContact}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      class={`h-10 border mt-1 rounded px-4 w-full bg-gray-50 transition-colors duration-300 ${
+                        errors.requesterContact && touched.requesterContact
+                          ? "border-red-600 shake"
+                          : null
+                      }`}
                       placeholder="(886)-8191-920"
                     />
+                    {errors.requesterContact && touched.requesterContact ? (
+                      <p className="text-red-700 text-sm font-medium">
+                        {errors.requesterContact}
+                      </p>
+                    ) : null}
                   </div>
                 </div>
 
@@ -248,21 +324,43 @@ const PersonalInfo = () => {
                     <label for="full_name">Client's First Name</label>
                     <input
                       type="text"
-                      name="full_name"
-                      id="full_name"
-                      class="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
-                      value=""
+                      name="patientFirstName"
+                      id="patientFirstName"
+                      value={values.patientFirstName}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      class={`h-10 border mt-1 rounded px-4 w-full bg-gray-50 transition-colors duration-300 ${
+                        errors.patientFirstName && touched.patientFirstName
+                          ? "border-red-600 shake"
+                          : null
+                      }`}
                     />
+                    {errors.patientFirstName && touched.patientFirstName ? (
+                      <p className="text-red-700 text-sm font-medium">
+                        {errors.patientFirstName}
+                      </p>
+                    ) : null}
                   </div>
                   <div class="">
                     <label for="full_name">Client's Last Name</label>
                     <input
                       type="text"
-                      name="full_name"
-                      id="full_name"
-                      class="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
-                      value=""
+                      name="patientLastName"
+                      id="patientLastName"
+                      value={values.patientLastName}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      class={`h-10 border mt-1 rounded px-4 w-full bg-gray-50 transition-colors duration-300 ${
+                        errors.patientLastName && touched.patientLastName
+                          ? "border-red-600 shake"
+                          : null
+                      }`}
                     />
+                    {errors.patientLastName && touched.patientLastName ? (
+                      <p className="text-red-700 text-sm font-medium">
+                        {errors.patientLastName}
+                      </p>
+                    ) : null}
                   </div>
                 </div>
                 <div className="md:col-span-5 grid grid-cols-2 gap-3">
@@ -270,23 +368,43 @@ const PersonalInfo = () => {
                     <label for="email">Client's MI</label>
                     <input
                       type="text"
-                      name="email"
-                      id="email"
-                      class="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
-                      value=""
-                      placeholder="XXXXXXXX"
+                      name="patientMI"
+                      id="patientMI"
+                      value={values.patientMI}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      class={`h-10 border mt-1 rounded px-4 w-full bg-gray-50 transition-colors duration-300 ${
+                        errors.patientMI && touched.patientMI
+                          ? "border-red-600 shake"
+                          : null
+                      }`}
                     />
+                    {errors.patientMI && touched.patientMI ? (
+                      <p className="text-red-700 text-sm font-medium">
+                        {errors.patientMI}
+                      </p>
+                    ) : null}
                   </div>
                   <div class="">
                     <label for="email">Fareshare ID</label>
                     <input
                       type="text"
-                      name="phone"
-                      id="phone"
-                      class="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
-                      value=""
-                      placeholder="XXXXXX"
+                      name="fareshareUserId"
+                      id="fareshareUserId"
+                      value={values.fareshareUserId}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      class={`h-10 border mt-1 rounded px-4 w-full bg-gray-50 transition-colors duration-300 ${
+                        errors.fareshareUserId && touched.fareshareUserId
+                          ? "border-red-600 shake"
+                          : null
+                      }`}
                     />
+                    {errors.fareshareUserId && touched.fareshareUserId ? (
+                      <p className="text-red-700 text-sm font-medium">
+                        {errors.fareshareUserId}
+                      </p>
+                    ) : null}
                   </div>
                 </div>
               </div>
@@ -304,14 +422,25 @@ const PersonalInfo = () => {
             <div class="lg:col-span-2">
               <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-5">
                 <div className="md:col-span-5 ">
-                  <label for="full_name">Additional Info</label>
+                  <label for="additionalRequests">Additional Info</label>
                   <textarea
                     type="text"
-                    name="full_name"
-                    id="full_name"
-                    class="h-44  resize-none border mt-1 rounded px-4 w-full bg-gray-50"
-                    value=""
+                    name="additionalRequests"
+                    id="additionalRequests"
+                    value={values.additionalRequests}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    class={`h-44  resize-none border mt-1 rounded p-3 w-full bg-gray-50 transition-colors duration-300 ${
+                      errors.additionalRequests && touched.additionalRequests
+                        ? "border-red-600 shake"
+                        : null
+                    }`}
                   ></textarea>
+                  {errors.additionalRequests && touched.additionalRequests ? (
+                    <p className="text-red-700 text-sm font-medium">
+                      {errors.additionalRequests}
+                    </p>
+                  ) : null}
                 </div>
               </div>
             </div>

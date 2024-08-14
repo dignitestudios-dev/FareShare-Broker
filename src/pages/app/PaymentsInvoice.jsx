@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import InvoiceModal from "../../components/app/paymentsandinvoice/InvoiceModal";
 import api from "../../api/apiInterceptor";
 import { useEffect } from "react";
+import { NoData } from "../../assets/export";
 
 const PaymentsInvoice = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -33,261 +34,79 @@ const PaymentsInvoice = () => {
             </button>
           </div>
         </div>
-        <table className="w-full border-collapse  text-left text-sm text-gray-500">
-          <thead className="bg-[#c00000]">
-            <tr className="">
-              <th
-                scope="col"
-                className="px-6 lg:px-4  py-4 font-medium text-white"
-              >
-                Invoice Date
-              </th>
-              <th
-                scope="col"
-                className="px-6 lg:px-4  py-4 font-medium text-white"
-              >
-                Due Date
-              </th>
-
-              <th
-                scope="col"
-                className="px-6 lg:px-4  py-4 font-medium text-white"
-              >
-                Billing Month
-              </th>
-
-              <th
-                scope="col"
-                className="px-6 lg:px-4  py-4 font-medium text-white"
-              >
-                Invoice Amount
-              </th>
-
-              <th
-                scope="col"
-                className="px-6 lg:px-4  py-4 font-medium text-white"
-              ></th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-300 border-t border-[#c00000]">
-            <tr className="">
-              <td className="px-6 lg:px-4  py-4 text-gray-600 font-normal ">
-                25/06/2024
-              </td>
-              <td className="px-6 lg:px-4  py-4 text-gray-600 font-normal ">
-                25/06/2024
-              </td>
-
-              <td className="px-6 lg:px-4 text-gray-600  py-4 capitalize">
-                March
-              </td>
-              <td className="px-6 lg:px-4 text-gray-600 py-4 capitalize">
-                $800
-              </td>
-
-              <td className="px-6 lg:px-4  py-4 capitalize">
-                <button
-                  onClick={() => setIsOpen(true)}
-                  className="text-[#c00000] text-xs font-semibold"
+        {invoices?.length > 0 ? (
+          <table className="w-full border-collapse  text-left text-sm text-gray-500">
+            <thead className="bg-[#c00000]">
+              <tr className="">
+                <th
+                  scope="col"
+                  className="px-6 lg:px-4  py-4 font-medium text-white"
                 >
-                  View More
-                </button>
-              </td>
-            </tr>
-            <tr className="">
-              <td className="px-6 lg:px-4  py-4 text-gray-600 font-normal ">
-                25/06/2024
-              </td>
-              <td className="px-6 lg:px-4  py-4 text-gray-600 font-normal ">
-                25/06/2024
-              </td>
-
-              <td className="px-6 lg:px-4 text-gray-600  py-4 capitalize">
-                March
-              </td>
-              <td className="px-6 lg:px-4 text-gray-600 py-4 capitalize">
-                $800
-              </td>
-
-              <td className="px-6 lg:px-4  py-4 capitalize">
-                <button
-                  onClick={() => setIsOpen(true)}
-                  className="text-[#c00000] text-xs font-semibold"
+                  Invoice Date
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 lg:px-4  py-4 font-medium text-white"
                 >
-                  View More
-                </button>
-              </td>
-            </tr>
-            <tr className="">
-              <td className="px-6 lg:px-4  py-4 text-gray-600 font-normal ">
-                25/06/2024
-              </td>
-              <td className="px-6 lg:px-4  py-4 text-gray-600 font-normal ">
-                25/06/2024
-              </td>
+                  Due Date
+                </th>
 
-              <td className="px-6 lg:px-4 text-gray-600  py-4 capitalize">
-                March
-              </td>
-              <td className="px-6 lg:px-4 text-gray-600 py-4 capitalize">
-                $800
-              </td>
-
-              <td className="px-6 lg:px-4  py-4 capitalize">
-                <button
-                  onClick={() => setIsOpen(true)}
-                  className="text-[#c00000] text-xs font-semibold"
+                <th
+                  scope="col"
+                  className="px-6 lg:px-4  py-4 font-medium text-white"
                 >
-                  View More
-                </button>
-              </td>
-            </tr>
-            <tr className="">
-              <td className="px-6 lg:px-4  py-4 text-gray-600 font-normal ">
-                25/06/2024
-              </td>
-              <td className="px-6 lg:px-4  py-4 text-gray-600 font-normal ">
-                25/06/2024
-              </td>
+                  Billing Month
+                </th>
 
-              <td className="px-6 lg:px-4 text-gray-600  py-4 capitalize">
-                March
-              </td>
-              <td className="px-6 lg:px-4 text-gray-600 py-4 capitalize">
-                $800
-              </td>
-
-              <td className="px-6 lg:px-4  py-4 capitalize">
-                <button
-                  onClick={() => setIsOpen(true)}
-                  className="text-[#c00000] text-xs font-semibold"
+                <th
+                  scope="col"
+                  className="px-6 lg:px-4  py-4 font-medium text-white"
                 >
-                  View More
-                </button>
-              </td>
-            </tr>
-            <tr className="">
-              <td className="px-6 lg:px-4  py-4 text-gray-600 font-normal ">
-                25/06/2024
-              </td>
-              <td className="px-6 lg:px-4  py-4 text-gray-600 font-normal ">
-                25/06/2024
-              </td>
+                  Invoice Amount
+                </th>
 
-              <td className="px-6 lg:px-4 text-gray-600  py-4 capitalize">
-                March
-              </td>
-              <td className="px-6 lg:px-4 text-gray-600 py-4 capitalize">
-                $800
-              </td>
+                <th
+                  scope="col"
+                  className="px-6 lg:px-4  py-4 font-medium text-white"
+                ></th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-300 border-t border-[#c00000]">
+              {invoices?.map((invoice, key) => {
+                return (
+                  <tr key={key} className="">
+                    <td className="px-6 lg:px-4  py-4 text-gray-600 font-normal ">
+                      25/06/2024
+                    </td>
+                    <td className="px-6 lg:px-4  py-4 text-gray-600 font-normal ">
+                      25/06/2024
+                    </td>
 
-              <td className="px-6 lg:px-4  py-4 capitalize">
-                <button
-                  onClick={() => setIsOpen(true)}
-                  className="text-[#c00000] text-xs font-semibold"
-                >
-                  View More
-                </button>
-              </td>
-            </tr>
-            <tr className="">
-              <td className="px-6 lg:px-4  py-4 text-gray-600 font-normal ">
-                25/06/2024
-              </td>
-              <td className="px-6 lg:px-4  py-4 text-gray-600 font-normal ">
-                25/06/2024
-              </td>
+                    <td className="px-6 lg:px-4 text-gray-600  py-4 capitalize">
+                      March
+                    </td>
+                    <td className="px-6 lg:px-4 text-gray-600 py-4 capitalize">
+                      $800
+                    </td>
 
-              <td className="px-6 lg:px-4 text-gray-600  py-4 capitalize">
-                March
-              </td>
-              <td className="px-6 lg:px-4 text-gray-600 py-4 capitalize">
-                $800
-              </td>
-
-              <td className="px-6 lg:px-4  py-4 capitalize">
-                <button
-                  onClick={() => setIsOpen(true)}
-                  className="text-[#c00000] text-xs font-semibold"
-                >
-                  View More
-                </button>
-              </td>
-            </tr>
-            <tr className="">
-              <td className="px-6 lg:px-4  py-4 text-gray-600 font-normal ">
-                25/06/2024
-              </td>
-              <td className="px-6 lg:px-4  py-4 text-gray-600 font-normal ">
-                25/06/2024
-              </td>
-
-              <td className="px-6 lg:px-4 text-gray-600  py-4 capitalize">
-                March
-              </td>
-              <td className="px-6 lg:px-4 text-gray-600 py-4 capitalize">
-                $800
-              </td>
-
-              <td className="px-6 lg:px-4  py-4 capitalize">
-                <button
-                  onClick={() => setIsOpen(true)}
-                  className="text-[#c00000] text-xs font-semibold"
-                >
-                  View More
-                </button>
-              </td>
-            </tr>
-            <tr className="">
-              <td className="px-6 lg:px-4  py-4 text-gray-600 font-normal ">
-                25/06/2024
-              </td>
-              <td className="px-6 lg:px-4  py-4 text-gray-600 font-normal ">
-                25/06/2024
-              </td>
-
-              <td className="px-6 lg:px-4 text-gray-600  py-4 capitalize">
-                March
-              </td>
-              <td className="px-6 lg:px-4 text-gray-600 py-4 capitalize">
-                $800
-              </td>
-
-              <td className="px-6 lg:px-4  py-4 capitalize">
-                <button
-                  onClick={() => setIsOpen(true)}
-                  className="text-[#c00000] text-xs font-semibold"
-                >
-                  View More
-                </button>
-              </td>
-            </tr>
-            <tr className="">
-              <td className="px-6 lg:px-4  py-4 text-gray-600 font-normal ">
-                25/06/2024
-              </td>
-              <td className="px-6 lg:px-4  py-4 text-gray-600 font-normal ">
-                25/06/2024
-              </td>
-
-              <td className="px-6 lg:px-4 text-gray-600  py-4 capitalize">
-                March
-              </td>
-              <td className="px-6 lg:px-4 text-gray-600 py-4 capitalize">
-                $800
-              </td>
-
-              <td className="px-6 lg:px-4  py-4 capitalize">
-                <button
-                  onClick={() => setIsOpen(true)}
-                  className="text-[#c00000] text-xs font-semibold"
-                >
-                  View More
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                    <td className="px-6 lg:px-4  py-4 capitalize">
+                      <button
+                        onClick={() => setIsOpen(true)}
+                        className="text-[#c00000] text-xs font-semibold"
+                      >
+                        View More
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        ) : (
+          <div className="w-full h-auto flex border-t items-center border-collapse justify-center">
+            <img src={NoData} alt="no-data" className="w-96" />
+          </div>
+        )}
 
         <InvoiceModal setIsOpen={setIsOpen} isOpen={isOpen} />
       </div>

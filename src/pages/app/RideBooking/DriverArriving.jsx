@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CancelRideModal from "../../../components/app/ride/CancelRideModal";
+import GoogleMaps from "../../../components/app/ride/GoogleMaps";
 
 const DriverArriving = () => {
   const navigate = useNavigate();
@@ -102,11 +103,7 @@ const DriverArriving = () => {
       </div>
 
       <div class="w-full h-[40vh] rounded-3xl bg-gray-400">
-        <img
-          src="https://fareshare.vercel.app/assets/drivermap-KQWfTDtJ.svg"
-          alt="live_location"
-          class="w-full h-full object-cover rounded-3xl"
-        />
+        <GoogleMaps />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 justify-start items-start w-full gap-2  h-auto">
