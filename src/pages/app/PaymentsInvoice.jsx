@@ -103,7 +103,7 @@ const PaymentsInvoice = () => {
             </tbody>
           </table>
         ) : (
-          <div className="w-full h-auto flex border-t items-center border-collapse justify-center">
+          <div className="w-full h-[75vh] flex border-t items-center border-collapse justify-center">
             <img src={NoData} alt="no-data" className="w-96" />
           </div>
         )}

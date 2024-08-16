@@ -4,7 +4,7 @@ import axios from "axios";
 // axios instance
 const authentication = axios.create({
   baseURL: "https://backend.faresharellc.com",
-  timeout: 2000,
+  // timeout: 2000,
 });
 
 // Request interceptor to handle API calls without tokens
@@ -40,6 +40,7 @@ authentication.interceptors.request.use(
 // Response interceptor (optional)
 authentication.interceptors.response.use(
   (response) => {
+    // console.log(response);
     return response;
   },
   (error) => {

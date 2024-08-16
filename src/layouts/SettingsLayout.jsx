@@ -9,8 +9,8 @@ const SettingsLayout = ({ page }) => {
   const { activeLink, setActiveLink, navigate } = useContext(AppContext);
   const [currentLink, setCurrentLink] = useState("profile");
   return (
-    <div className="w-full h-[calc(100%)] flex  border rounded-3xl ">
-      <div className="w-[30%] p-4 h-full flex flex-col gap-2 justify-start items-start border-r">
+    <div className="w-full lg:h-[calc(100%)] flex flex-col lg:flex-row  border rounded-3xl ">
+      <div className="w-full lg:w-[30%] p-4 h-full flex flex-col gap-2 justify-start items-start border-b lg:border-r">
         <button
           onClick={() => {
             navigate("Settings", "/settings/profile");
@@ -92,7 +92,7 @@ const SettingsLayout = ({ page }) => {
           <span className="text-sm ">Privacy Policy</span>
         </button>
       </div>
-      <div className="w-[70%] h-full p-4">{page}</div>
+      <div className="w-full lg:w-[70%] h-full p-4">{page}</div>
     </div>
   );
 };

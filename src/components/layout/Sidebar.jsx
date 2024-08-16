@@ -23,9 +23,15 @@ import { BsPatchCheck } from "react-icons/bs";
 import { MdOutlinePrivacyTip } from "react-icons/md";
 
 const Sidebar = () => {
-  const { navigate, activeLink, setActiveLink, tab, setTab } =
-    useContext(AppContext);
-  const [requestOpen, setRequestOpen] = useState(false);
+  const {
+    navigate,
+    activeLink,
+    setActiveLink,
+    tab,
+    setTab,
+    requestOpen,
+    setRequestOpen,
+  } = useContext(AppContext);
 
   return (
     <div className="w-[70%] h-full md:w-[40%] fixed top-0 left-0 -translate-x-full lg:translate-x-0 lg:static  border-r lg:w-[20%] xl:w-[20%] flex flex-col justify-start items-start gap-1 overflow-y-auto">

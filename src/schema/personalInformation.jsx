@@ -10,7 +10,4 @@ export const personalInfoSchema = Yup.object({
   patientMI: Yup.string().required("Please enter client's MI."),
   fareshareUserId: Yup.string().required("Please enter client's Fareshare Id."),
   additionalRequests: Yup.string().max(1000),
-  originCoords: Yup.array().required("You must select a pickup point."),
-  destCoords: Yup.array().required("You must select a destination point."),
-  vehicleType: Yup.string().required("Please select a vehicle type."),
 });

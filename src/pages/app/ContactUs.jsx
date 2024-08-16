@@ -20,11 +20,11 @@ const ContactUs = () => {
         setLoading(true);
         try {
           // API call to login using Axios interceptor
-          const response = await api.post("/broker/contact-us", {
+          const response = await api.post("/broker/contactUsBroker", {
             name: values.name,
             email: values.email,
             subject: values.subject,
-            message: values.message,
+            description: values.message,
           });
 
           // Handle the response (e.g., save token, redirect)
@@ -40,12 +40,15 @@ const ContactUs = () => {
       },
     });
   return (
-    <div className="w-full h-full flex flex-col justify-center border p-4 rounded-3xl items-center">
-      <div class="w-full grid lg:grid-cols-2  items-start gap-16 p-4  bg-white font-[sans-serif]">
-        <div className="w-full border-r flex">
+    <div className="w-full h-auto lg:h-full flex flex-col justify-center border p-4 rounded-3xl items-center">
+      <div class="w-full grid grid-cols-1 lg:grid-cols-2  items-start gap-16 p-4  bg-white font-[sans-serif]">
+        <div className="w-full hidden  border-r lg:flex">
           <img src={ContactUsVector} alt="" className="w-[95%]" />
         </div>
-        <form class="ml-auto w-full space-y-4">
+        <form
+          onSubmit={handleSubmit}
+          class="lg:ml-auto col-span-2 lg:col-span-1 w-full space-y-4"
+        >
           <div>
             <h1 class="text-gray-800 text-3xl font-extrabold">
               We would love to help
@@ -138,10 +141,19 @@ const ContactUs = () => {
             ) : null}
           </div>
           <button
-            type="button"
-            class="text-white bg-[#c00000] hover:bg-[#c00000]/[0.9] tracking-wide rounded-full text-sm px-4 py-3 w-full !mt-6"
+            type="submit"
+            class="text-white bg-[#c00000] hover:bg-[#c00000]/[0.9] flex justify-center items-center gap-2 tracking-wide rounded-full text-sm px-4 py-3 w-full !mt-6"
           >
-            Send
+            {loading && (
+              <div
+                class="animate-spin inline-block size-4 border-[3px] border-current border-t-transparent text-white rounded-full"
+                role="status"
+                aria-label="loading"
+              >
+                <span class="sr-only">Loading...</span>
+              </div>
+            )}
+            <span>Send </span>
           </button>
         </form>
       </div>

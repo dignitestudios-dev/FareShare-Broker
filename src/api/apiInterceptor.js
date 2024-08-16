@@ -1,12 +1,12 @@
-import Cookies from "js-cookie";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 // axios instance
 const api = axios.create({
   baseURL: "https://backend.faresharellc.com",
-  timeout: 2000,
+  // timeout: 15000,
   headers: {
-    Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YjYwNDQxYmRlZDExMjc3YWU3NTU5YiIsImVtYWlsIjoiaHV6YWlmYS5hbGlAbGF1bmNoYm94LnBrIiwiaWF0IjoxNzIzMjA0OTY2LCJleHAiOjE3MzA5ODA5NjZ9.RfAmF9uDS-h_iVTXj75glrD0XFmEmp_6-ebVgi8kn6I`,
+    Authorization: `Bearer ${Cookies.get("token")}`,
   },
 });
 
@@ -24,6 +24,7 @@ api.interceptors.request.use(
 // Response interceptor (optional)
 api.interceptors.response.use(
   (response) => {
+    // console.log(response);
     return response;
   },
   (error) => {

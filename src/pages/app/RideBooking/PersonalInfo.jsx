@@ -3,43 +3,48 @@ import { AppContext } from "../../../context/AppContext";
 import { useFormik } from "formik";
 import { loginValues } from "../../../data/authentication";
 import { personalInfoSchema } from "../../../schema/personalInformation";
+import { personalInfoValues } from "../../../data/personalInfo";
+import { RideBookingContext } from "../../../context/RideBookingContext";
 
 const PersonalInfo = () => {
   const { navigate, tab, setTab, error, setError } = useContext(AppContext);
+  const { setPersonalInfo } = useContext(RideBookingContext);
 
   const [loading, setLoading] = useState(false);
   const { values, handleBlur, handleChange, handleSubmit, errors, touched } =
     useFormik({
-      initialValues: loginValues,
+      initialValues: personalInfoValues,
       validationSchema: personalInfoSchema,
       validateOnChange: true,
       validateOnBlur: false,
 
       onSubmit: async (values, action) => {
+        setPersonalInfo({
+          requesterFirstName: values.requesterFirstName,
+          requesterLastName: values.requesterLastName,
+          requesterEmail: values.requesterEmail,
+          requesterContact: values.requesterContact,
+          fareshareUserId: values.fareshareUserId,
+          patientFirstName: values.patientFirstName,
+          patientLastName: values.patientLastName,
+          patientMI: values.patientMI,
+          additionalRequests: values.additionalRequests,
+        });
         setLoading(true);
-        try {
-          // API call to login using Axios interceptor
-          const response = await authentication.post("/auth/brokerSignIn", {
-            email: values.email,
-            password: values.password,
-          });
-
-          // Handle the response (e.g., save token, redirect)
-          console.log("Login successful:", response.data);
-        } catch (error) {
-          // Handle errors (e.g., show error message)
-          setError(error?.response?.data?.message);
-
-          // console.error("Login failed:", error.response?.data);
-        } finally {
+        setTimeout(() => {
           setLoading(false);
-        }
+          navigate("Request a ride", "/ride/new-request/where-to");
+        }, 2000);
       },
     });
   return (
-    <div className="w-full h-auto overflow-y-auto flex flex-col gap-3 justify-center items-center">
+    <form
+      onSubmit={handleSubmit}
+      className="w-full h-auto overflow-y-auto flex flex-col gap-3 justify-center items-center"
+    >
       <div class="w-full border-b pb-2 h-12 flex justify-start items-center gap-2 px-4">
         <button
+          type="button"
           onClick={() => setTab("corporate")}
           class={`w-36 h-9 rounded-full ${
             tab == "corporate"
@@ -50,6 +55,7 @@ const PersonalInfo = () => {
           Corporate Ride
         </button>
         <button
+          type="button"
           onClick={() => setTab("medical")}
           class={`w-36 h-9 rounded-full ${
             tab == "medical"
@@ -447,17 +453,37 @@ const PersonalInfo = () => {
           </div>
           <div class="w-full mt-6 inline-flex items-end">
             <button
-              onClick={() =>
-                navigate("Request a ride", "/ride/new-request/where-to")
-              }
-              class="bg-[#c00000] w-full hover:bg-[#c00000d8] text-white font-bold h-12 px-4 rounded-full"
+              type="submit"
+              disabled={loading}
+              class="bg-[#c00000] w-full hover:bg-[#c00000d8] text-white flex items-center justify-center gap-2 font-bold h-12 px-4 rounded-full"
             >
-              Proceed
+              {loading && (
+                <div
+                  class="animate-spin inline-block size-4 border-[3px] border-current border-t-transparent text-white rounded-full"
+                  role="status"
+                  aria-label="loading"
+                >
+                  <span class="sr-only">Loading...</span>
+                </div>
+              )}
+              <span>Proceed</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-5 h-5 rtl:-scale-x-100"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                  clip-rule="evenodd"
+                />
+              </svg>
             </button>
           </div>
         </div>
       </div>
-    </div>
+    </form>
   );
 };
 

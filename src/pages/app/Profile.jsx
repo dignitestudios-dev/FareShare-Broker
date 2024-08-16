@@ -2,9 +2,11 @@ import React, { useState } from "react";
 
 const Profile = () => {
   const [isEdit, setIsEdit] = useState(false);
+
+  const broker = JSON.parse(localStorage.getItem("broker"));
   return (
-    <div class="flex flex-col overflow-y-auto px-4 justify-start items-start w-full h-full">
-      <div class="w-full flex flex-col gap-6 px-5 pb-5 md:px-0">
+    <div class="flex flex-col overflow-y-auto lg:px-4 justify-start items-start w-full lg:h-full">
+      <div class="w-full flex flex-col gap-6 lg:px-5 pb-5 md:px-0">
         <div class="w-full flex flex-col  gap-8 justify-between items-start">
           <div class="w-full flex justify-between items-start">
             <div class="flex flex-col gap-2">
@@ -33,13 +35,13 @@ const Profile = () => {
             )}
           </div>
           <div class="w-full flex flex-col justify-start items-start gap-4">
-            <div class="w-[120px] h-[120px] rounded-full bg-gray-50 flex justify-center items-center relative">
+            {/* <div class="w-[120px] h-[120px] rounded-full bg-gray-50 flex justify-center items-center relative">
               <img
                 src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
                 alt="user_image"
                 class="w-full h-full rounded-full"
               />
-            </div>
+            </div> */}
             <div class="w-full h-auto flex justify-start items-start gap-4">
               <div class="w-full h-auto flex flex-col gap-1 justify-start items-start">
                 <label class="text-[16px] font-medium leading-[21.6px]">
@@ -78,7 +80,7 @@ const Profile = () => {
               </div>
               <div class="w-full h-auto flex flex-col gap-1 justify-start items-start">
                 <label class="text-[16px] font-medium leading-[21.6px]">
-                  Company Tax Identification No.
+                  Tax Identification No.
                 </label>
                 <input
                   type="text"

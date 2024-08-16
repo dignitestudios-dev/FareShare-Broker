@@ -11,26 +11,20 @@ export const AppContextProvider = ({ children }) => {
 
   const [activeLink, setActiveLink] = useState("Home");
   const [tab, setTab] = useState("");
+  const [requestOpen, setRequestOpen] = useState(false);
+
   const push = useNavigate();
   const navigate = (name, url) => {
     push(url);
     setActiveLink(name);
+    if (url !== "/ride/new-request/info") {
+      setRequestOpen(false);
+    }
   };
 
   // Global Error State
   const [error, setError] = useState(false);
 
-  // Broker:
-  const [broker, setBroker] = useState(null);
-
-  const getBroker = async () => {
-    const broker = await api.get("/broker");
-    console.log(broker);
-  };
-
-  useEffect(() => {
-    getBroker();
-  }, []);
   return (
     <AppContext.Provider
       value={{
@@ -43,6 +37,8 @@ export const AppContextProvider = ({ children }) => {
         setTab,
         error,
         setError,
+        requestOpen,
+        setRequestOpen,
       }}
     >
       {children}

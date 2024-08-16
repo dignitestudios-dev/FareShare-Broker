@@ -1,8 +1,82 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../../context/AppContext";
+import io from "socket.io-client";
 
+const SOCKET_SERVER_URL = "https://backend.faresharellc.com";
 const CompletedRideTable = () => {
   const { navigate } = useContext(AppContext);
+  const [rides, setRides] = useState([]);
+
+  const loadingArr = [1, 2, 3];
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setLoading(true);
+    const socket = io(SOCKET_SERVER_URL);
+    socket.on("connect", () => {
+      console.log("Socket connected:", socket.id);
+    });
+
+    socket.on("connect_error", (err) => {
+      console.error("Connection error:", err);
+    });
+
+    socket.on("disconnect", (reason) => {
+      console.warn("Socket disconnected:", reason);
+    });
+
+    socket.emit(
+      "getRidesBroker",
+      JSON.stringify({
+        brokerId: JSON.parse(localStorage.getItem("broker"))?._id,
+        page: 1,
+        limit: 50,
+      })
+    );
+
+    // Listen for the response from the server
+    socket.on("getRidesBrokerResponse", (response) => {
+      // Store the response in state
+      setLoading(false);
+      setRides(response?.data);
+    });
+
+    // Cleanup: Disconnect socket when component unmounts
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
+  const formatDate = (isoDateString) => {
+    const date = new Date(isoDateString);
+
+    const day = String(date.getUTCDate()).padStart(2, "0");
+    const month = String(date.getUTCMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+    const year = date.getUTCFullYear();
+
+    return `${day}/${month}/${year}`;
+  };
+
+  const getStatusStyles = (status) => {
+    switch (status) {
+      case "active":
+      case "driverAssigned":
+        return "bg-blue-500/10 border border-blue-500 text-blue-500";
+      case "scheduled":
+        return "bg-yellow-500/10 border border-yellow-500 text-yellow-500";
+      case "completed":
+      case "reachedDestination":
+        return "bg-green-500/10 border border-green-500 text-green-500";
+      case "cancelled":
+        return "bg-red-500/10 border border-red-500 text-red-500";
+      default:
+        return "bg-gray-500/10 border border-gray-500 text-gray-500"; // Default style
+    }
+  };
+  const formatStatus = (status) => {
+    return status.replace(/([a-z])([A-Z])/g, "$1 $2").toLowerCase();
+  };
+
   return (
     <div className="w-full overflow-x-auto rounded-2xl border  border-gray-300 bg-white   ">
       <div class="w-full h-14 px-4 flex justify-between items-center">
@@ -59,162 +133,89 @@ const CompletedRideTable = () => {
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-300 border-t border-[#c00000]">
-          <tr className="">
-            <td className="px-6 lg:px-4  py-4 text-gray-600 font-normal ">
-              25/06/2024
-            </td>
-            <th className="px-6 lg:px-4  flex gap-3  py-4 font-normal text-gray-900">
-              <div className="relative h-10 w-10">
-                <img
-                  className="h-full w-full rounded-full object-cover object-center"
-                  src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                  alt=""
-                />
-              </div>
-              <div className="text-sm">
-                <div className="font-medium text-gray-800">Jack Anderson</div>
-                <div className="text-gray-600">jackanderson@gmail.com</div>
-              </div>
-            </th>
+          {loading
+            ? loadingArr?.map((item) => {
+                return (
+                  <tr key={item} className="animate-pulse">
+                    <td className="px-6 lg:px-4 py-4">
+                      <div className="h-4 bg-gray-300 rounded w-24"></div>
+                    </td>
+                    <th className="px-6 lg:px-4 py-4">
+                      <div className="flex gap-3">
+                        <div className="text-sm">
+                          <div className="h-4 bg-gray-300 rounded w-32 mb-2"></div>
+                          <div className="h-4 bg-gray-300 rounded w-16"></div>
+                        </div>
+                      </div>
+                    </th>
+                    <td className="px-6 lg:px-4 py-4">
+                      <div className="h-4 bg-gray-300 rounded w-40"></div>
+                    </td>
+                    <td className="px-6 lg:px-4 py-4">
+                      <div className="h-4 bg-gray-300 rounded w-40"></div>
+                    </td>
+                    <td className="px-6 lg:px-4 py-4">
+                      <div className="h-6 bg-gray-300 rounded-full w-20"></div>
+                    </td>
+                    <td className="px-6 lg:px-4 py-4">
+                      <div className="h-4 bg-gray-300 rounded w-16"></div>
+                    </td>
+                  </tr>
+                );
+              })
+            : !loading &&
+              rides?.length > 0 &&
+              rides?.slice(0, 3)?.map((ride, key) => {
+                return (
+                  <tr key={key} className="">
+                    <td className="px-6 lg:px-4  py-4 text-gray-600 font-normal ">
+                      {formatDate(ride?.createdAt)}
+                    </td>
+                    <th className="px-6 lg:px-4  flex gap-3  py-4 font-normal text-gray-900">
+                      <div className="text-sm">
+                        <div className="font-medium text-gray-800">
+                          {ride?.patientFirstName} {ride?.patientLastName}
+                        </div>
+                        <div className="text-gray-600">
+                          {ride?.fareshareUserId
+                            ? ride?.fareshareUserId
+                            : "N/A"}
+                        </div>
+                      </div>
+                    </th>
 
-            <td className="px-6 lg:px-4 text-gray-600  py-4 capitalize">
-              Lorem ipsum dolor, sit amet
-            </td>
-            <td className="px-6 lg:px-4 text-gray-600 py-4 capitalize">
-              Lorem ipsum dolor, sit amet
-            </td>
+                    <td className="px-6 lg:px-4 text-gray-600  py-4 capitalize">
+                      {ride?.rideId?.originAddress}
+                    </td>
+                    <td className="px-6 lg:px-4 text-gray-600 py-4 capitalize">
+                      {ride?.rideId?.destinationAddress}
+                    </td>
 
-            <td className="px-6 lg:px-4  py-4">
-              <button className="w-auto px-2 h-6 bg-green-500/10 border border-green-500 hover:opacity-80 text-green-500 rounded-full text-xs">
-                Completed
-              </button>
-            </td>
-            <td className="px-6 lg:px-4  py-4 capitalize">
-              <button
-                onClick={() => navigate("Home", "/ride/ride-detail/123")}
-                className="text-[#c00000] text-xs font-semibold"
-              >
-                View More
-              </button>
-            </td>
-          </tr>
-          <tr className="">
-            <td className="px-6 lg:px-4  py-4 text-gray-600 font-normal ">
-              25/06/2024
-            </td>
-            <th className="px-6 lg:px-4  flex gap-3  py-4 font-normal text-gray-900">
-              <div className="relative h-10 w-10">
-                <img
-                  className="h-full w-full rounded-full object-cover object-center"
-                  src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                  alt=""
-                />
-              </div>
-              <div className="text-sm">
-                <div className="font-medium text-gray-800">Jack Anderson</div>
-                <div className="text-gray-600">jackanderson@gmail.com</div>
-              </div>
-            </th>
-
-            <td className="px-6 lg:px-4 text-gray-600  py-4 capitalize">
-              Lorem ipsum dolor, sit amet
-            </td>
-            <td className="px-6 lg:px-4 text-gray-600 py-4 capitalize">
-              Lorem ipsum dolor, sit amet
-            </td>
-
-            <td className="px-6 lg:px-4  py-4">
-              <button className="w-auto px-2 h-6 bg-green-500/10 border border-green-500 hover:opacity-80 text-green-500 rounded-full text-xs">
-                Completed
-              </button>
-            </td>
-            <td className="px-6 lg:px-4  py-4 capitalize">
-              <button
-                onClick={() => navigate("Home", "/ride/ride-detail/123")}
-                className="text-[#c00000] text-xs font-semibold"
-              >
-                View More
-              </button>
-            </td>
-          </tr>
-          <tr className="">
-            <td className="px-6 lg:px-4  py-4 text-gray-600 font-normal ">
-              25/06/2024
-            </td>
-            <th className="px-6 lg:px-4  flex gap-3  py-4 font-normal text-gray-900">
-              <div className="relative h-10 w-10">
-                <img
-                  className="h-full w-full rounded-full object-cover object-center"
-                  src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                  alt=""
-                />
-              </div>
-              <div className="text-sm">
-                <div className="font-medium text-gray-800">Jack Anderson</div>
-                <div className="text-gray-600">jackanderson@gmail.com</div>
-              </div>
-            </th>
-
-            <td className="px-6 lg:px-4 text-gray-600  py-4 capitalize">
-              Lorem ipsum dolor, sit amet
-            </td>
-            <td className="px-6 lg:px-4 text-gray-600 py-4 capitalize">
-              Lorem ipsum dolor, sit amet
-            </td>
-
-            <td className="px-6 lg:px-4  py-4">
-              <button className="w-auto px-2 h-6 bg-green-500/10 border border-green-500 hover:opacity-80 text-green-500 rounded-full text-xs">
-                Completed
-              </button>
-            </td>
-            <td className="px-6 lg:px-4  py-4 capitalize">
-              <button
-                onClick={() => navigate("Home", "/ride/ride-detail/123")}
-                className="text-[#c00000] text-xs font-semibold"
-              >
-                View More
-              </button>
-            </td>
-          </tr>
-          <tr className="">
-            <td className="px-6 lg:px-4  py-4 text-gray-600 font-normal ">
-              25/06/2024
-            </td>
-            <th className="px-6 lg:px-4  flex gap-3  py-4 font-normal text-gray-900">
-              <div className="relative h-10 w-10">
-                <img
-                  className="h-full w-full rounded-full object-cover object-center"
-                  src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                  alt=""
-                />
-              </div>
-              <div className="text-sm">
-                <div className="font-medium text-gray-800">Jack Anderson</div>
-                <div className="text-gray-600">jackanderson@gmail.com</div>
-              </div>
-            </th>
-
-            <td className="px-6 lg:px-4 text-gray-600  py-4 capitalize">
-              Lorem ipsum dolor, sit amet
-            </td>
-            <td className="px-6 lg:px-4 text-gray-600 py-4 capitalize">
-              Lorem ipsum dolor, sit amet
-            </td>
-
-            <td className="px-6 lg:px-4  py-4">
-              <button className="w-auto px-2 h-6 bg-green-500/10 border border-green-500 hover:opacity-80 text-green-500 rounded-full text-xs">
-                Completed
-              </button>
-            </td>
-            <td className="px-6 lg:px-4  py-4 capitalize">
-              <button
-                onClick={() => navigate("Home", "/ride/ride-detail/123")}
-                className="text-[#c00000] text-xs font-semibold"
-              >
-                View More
-              </button>
-            </td>
-          </tr>
+                    <td className="px-6 lg:px-4  py-4">
+                      <span
+                        className={`w-auto px-2 h-6 capitalize ${getStatusStyles(
+                          ride?.rideId?.status
+                        )}  hover:opacity-80  rounded-full text-xs`}
+                      >
+                        {formatStatus(ride?.rideId?.status)}
+                      </span>
+                    </td>
+                    <td className="px-6 lg:px-4  py-4 capitalize">
+                      <button
+                        onClick={() =>
+                          navigate(
+                            "Home",
+                            `/ride/ride-detail/${ride?.rideId?.id}`
+                          )
+                        }
+                        className="text-[#c00000] text-xs font-semibold"
+                      >
+                        View More
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
         </tbody>
       </table>
     </div>

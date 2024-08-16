@@ -1,10 +1,13 @@
-import React, { useContext, useState, useRef } from "react";
+import React, { useContext, useState, useRef, useEffect } from "react";
 import { IoArrowBackOutline } from "react-icons/io5";
 import { WhereToIcon } from "../../../assets/export";
 import OptionsCard from "../../../components/app/ride/OptionsCard";
 import { AppContext } from "../../../context/AppContext";
 import FindRide from "./FindRide";
 import { Autocomplete, useLoadScript } from "@react-google-maps/api";
+import { personalInfoValues } from "../../../data/personalInfo";
+import { RideBookingContext } from "../../../context/RideBookingContext";
+import io from "socket.io-client";
 
 const WhereTo = () => {
   const corporate = [
@@ -49,12 +52,20 @@ const WhereTo = () => {
   ];
 
   const { navigate, tab } = useContext(AppContext);
+  const { personalInfo } = useContext(RideBookingContext);
 
   const [find, setFind] = useState(false);
   const [startAddress, setStartAddress] = useState("");
+  const [startError, setStartError] = useState(false);
   const [endAddress, setEndAddress] = useState("");
+  const [endError, setEndError] = useState(false);
   const [originCoords, setOriginCoords] = useState(null);
   const [destCoords, setDestCoords] = useState(null);
+  const [isWheelChairAccessible, setIsWheelChairAccessible] = useState(false);
+
+  const [vehicleType, setVehicleType] = useState(
+    tab == "medical" ? "Ambulatory Services" : "Standard"
+  );
 
   const startLocationRef = useRef();
   const endLocationRef = useRef();
@@ -84,10 +95,119 @@ const WhereTo = () => {
     }
   };
 
-  if (!isLoaded) return <div>Loading...</div>;
+  useEffect(() => {
+    if (originCoords == null && startAddress !== "") {
+      setStartError("You must select a valid pickup location to continue");
+    }
+  }, [startAddress]);
+
+  useEffect(() => {
+    if (destCoords == null && endAddress !== "") {
+      setEndError("You must select a valid destination location to continue");
+    }
+  }, [endAddress]);
+
+  const SOCKET_SERVER_URL = "https://backend.faresharellc.com";
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (originCoords == null && startAddress !== "") {
+      setStartError("You must select a valid pickup location to continue");
+    } else if (destCoords == null && endAddress !== "") {
+      setEndError("You must select a valid destination location to continue");
+    } else {
+      const socket = io(SOCKET_SERVER_URL);
+      socket.on("connect", () => {
+        console.log("Socket connected:", socket.id);
+      });
+
+      socket.on("connect_error", (err) => {
+        console.error("Connection error:", err);
+      });
+
+      socket.on("disconnect", (reason) => {
+        console.warn("Socket disconnected:", reason);
+      });
+      console.log(personalInfo);
+
+      socket.emit(
+        "preRideRequest",
+        JSON.stringify({
+          brokerId: JSON.parse(localStorage.getItem("broker"))?._id,
+          fareshareUserId: personalInfo?.fareshareUserId,
+          requesterFirstName: personalInfo?.requesterFirstName,
+          requesterLastName: personalInfo?.requesterLastName,
+          requesterEmail: personalInfo?.requesterEmail,
+          requesterContact: personalInfo?.requesterContact,
+          patientFirstName: personalInfo?.patientFirstName,
+          patientLastName: personalInfo?.patientLastName,
+          patientMI: personalInfo?.patientMI,
+          additionalRequests: personalInfo?.additionalRequests,
+          originCoords: originCoords,
+          destCoords: destCoords,
+          vehicleType: vehicleType,
+          category: tab,
+          isWheelChairAccessible: isWheelChairAccessible,
+          isScheduled: false,
+          scheduledDate: "2024-07-20T09:00:00.000Z",
+          rideDate: new Date().toISOString(),
+        })
+      );
+
+      // Listen for the response from the server
+      socket.on("preRideRequestResponse", (response) => {
+        // Store the response in state
+        console.log(response);
+      });
+
+      // Cleanup: Disconnect socket when component unmounts
+      return () => {
+        socket.disconnect();
+      };
+    }
+  };
+
+  if (!isLoaded)
+    return (
+      <div className="w-full h-auto flex p-4 flex-col gap-4 animate-pulse">
+        <div className="w-full h-12 flex items-end gap-4 justify-start">
+          <div className="w-10 h-10 rounded-full bg-gray-300"></div>
+          <div className="h-8 w-1/3 bg-gray-300 rounded"></div>
+        </div>
+        <div className="w-full h-auto flex justify-start items-end mt-6">
+          <div className="w-full h-full bg-white flex flex-col lg:flex-row items-end justify-center gap-2 lg:gap-3">
+            <div className="w-full lg:w-[48%] h-12 bg-gray-300 rounded"></div>
+            <div className="w-10 lg:w-12 h-12 bg-gray-300 rounded-full"></div>
+            <div className="w-full lg:w-[48%] h-12 bg-gray-300 rounded"></div>
+          </div>
+        </div>
+
+        <div className="flex flex-col justify-start items-start w-full gap-4 h-auto">
+          <div className="h-10 w-1/3 bg-gray-300 rounded"></div>
+          <div className="w-full flex flex-wrap h-auto justify-start gap-4">
+            {Array(5)
+              .fill()
+              .map((_, index) => (
+                <div
+                  key={index}
+                  className="w-[calc(50%-0.5rem)] h-[120px] bg-gray-300 rounded-xl"
+                ></div>
+              ))}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 justify-start items-start w-full gap-2 mt-10 h-auto">
+          <div className="w-full h-12 bg-gray-300 rounded-full"></div>
+          <div className="w-full h-12 bg-gray-300 rounded-full"></div>
+        </div>
+      </div>
+    );
 
   return (
-    <div className="w-full h-auto flex p-4 flex-col gap-4">
+    <form
+      onSubmit={handleSubmit}
+      className="w-full h-auto flex p-4 flex-col gap-4"
+    >
       <div className="w-full h-12 flex items-end gap-4 justify-start">
         <button
           onClick={() => navigate("Request a ride", -1)}
@@ -112,11 +232,16 @@ const WhereTo = () => {
                 type="text"
                 name="from"
                 id="from"
-                className="h-12 border mt-1 rounded px-4 w-full bg-gray-50"
+                className={`h-12 border mt-1 rounded px-4 w-full bg-gray-50 transition-colors duration-300 ${
+                  startError ? "border-red-600 shake" : null
+                }`}
                 value={startAddress}
                 onChange={(e) => setStartAddress(e.target.value)}
-                placeholder="Enter starting location"
+                placeholder="Select pickup location"
               />
+              {startError ? (
+                <p className="text-red-700 text-sm font-medium">{startError}</p>
+              ) : null}
             </div>
           </Autocomplete>
           <div className="w-full lg:w-auto flex justify-center items-center">
@@ -137,11 +262,16 @@ const WhereTo = () => {
                 type="text"
                 name="to"
                 id="to"
-                className="h-12 border mt-1 rounded px-4 w-full bg-gray-50"
+                className={`h-12 border mt-1 rounded px-4 w-full bg-gray-50 transition-colors duration-300 ${
+                  endError ? "border-red-600 shake" : null
+                }`}
                 value={endAddress}
                 onChange={(e) => setEndAddress(e.target.value)}
-                placeholder="Enter destination"
+                placeholder="Select destination location"
               />
+              {endError ? (
+                <p className="text-red-700 text-sm font-medium">{endError}</p>
+              ) : null}
             </div>
           </Autocomplete>
         </div>
@@ -155,6 +285,9 @@ const WhereTo = () => {
           {tab === "corporate"
             ? corporate.map((item, key) => (
                 <OptionsCard
+                  setIsWheelChairAccessible={setIsWheelChairAccessible}
+                  setVehicleType={setVehicleType}
+                  vehicleType={vehicleType}
                   title={item.title}
                   label={item.label}
                   price={item.price}
@@ -163,6 +296,9 @@ const WhereTo = () => {
               ))
             : medical.map((item, key) => (
                 <OptionsCard
+                  setIsWheelChairAccessible={setIsWheelChairAccessible}
+                  setVehicleType={setVehicleType}
+                  vehicleType={vehicleType}
                   title={item.title}
                   label={item.label}
                   price={item.price}
@@ -174,12 +310,13 @@ const WhereTo = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 justify-start items-start w-full gap-2 mt-10 h-auto">
         <button
-          onClick={() => setFind(true)}
+          type="submit"
           className="w-full flex justify-center items-center text-white text-md px-8 font-semibold h-12 rounded-full bg-[#c00000]"
         >
           Find Ride Now
         </button>
         <button
+          type="button"
           onClick={() =>
             navigate("Request a ride", "/ride/new-request/schedule-for-later")
           }
@@ -190,7 +327,7 @@ const WhereTo = () => {
       </div>
 
       {find && <FindRide find={find} setFind={setFind} />}
-    </div>
+    </form>
   );
 };
 

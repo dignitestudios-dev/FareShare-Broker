@@ -31,9 +31,15 @@ const Login = () => {
             email: values.email,
             password: values.password,
           });
-
-          // Handle the response (e.g., save token, redirect)
-          console.log("Login successful:", response.data);
+          console.log(response?.data?.token);
+          if (response?.status == 200 && response?.data?.token !== null) {
+            Cookies.set("token", response?.data?.token);
+            localStorage.setItem(
+              "broker",
+              JSON.stringify(response?.data?.data)
+            );
+            navigate("Home", "/home");
+          }
         } catch (error) {
           // Handle errors (e.g., show error message)
           setError(error?.response?.data?.message);

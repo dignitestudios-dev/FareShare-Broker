@@ -1,11 +1,34 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import api from "../../api/apiInterceptor";
 
 const BankInfo = () => {
   const [isEdit, setIsEdit] = useState(false);
+  const [bank, setBank] = useState(null);
+
+  const getBank = async () => {
+    const response = await api.get("/broker/bank");
+    setBank(response?.data?.data);
+  };
+
+  const [bankName, setBankName] = useState("");
+  const [accountHandler, setAccountHandler] = useState("");
+  const [accountNumber, setAccountNumber] = useState("");
+  const [routingNumber, setRoutingNumber] = useState("");
+
+  useEffect(() => {
+    getBank();
+  }, []);
+
+  useEffect(() => {
+    setBankName(bank?.bank_name);
+    setAccountHandler(bank?.account_holder_name);
+    setAccountNumber(bank?.last4);
+    setRoutingNumber(bank?.routing_number);
+  }, [bank]);
 
   return (
-    <div class="flex flex-col overflow-y-auto px-4 justify-start items-start w-full h-full">
-      <div class="w-full flex flex-col gap-6 px-5 pb-5 md:px-0">
+    <div class="flex flex-col overflow-y-auto lg:px-4 justify-start items-start w-full h-full">
+      <div class="w-full flex flex-col gap-6 lg:px-5 pb-5 md:px-0">
         <div class="w-full flex flex-col  gap-8 justify-between items-start">
           <div class="w-full flex justify-between items-start">
             <div class="flex flex-col gap-2">
@@ -26,6 +49,7 @@ const BankInfo = () => {
               </button>
             ) : (
               <button
+                type="button"
                 onClick={() => setIsEdit((prev) => !prev)}
                 class="bg w-[77px] h-[28px] rounded-lg text-white flex items-center justify-center text-sm font-medium leading-5"
               >
@@ -42,7 +66,9 @@ const BankInfo = () => {
                 <input
                   type="text"
                   disabled={isEdit}
-                  class="w-full h-[52px] bg-gray-50 disabled:text-white/50 outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
+                  value={bankName}
+                  onChange={(e) => setBankName(e.target.value)}
+                  class="w-full h-[52px] bg-gray-50 disabled:text-black/50 text-black outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
                   placeholder="Bank Of America"
                 />
               </div>
@@ -53,7 +79,9 @@ const BankInfo = () => {
                 <input
                   type="text"
                   disabled={isEdit}
-                  class="w-full h-[52px] bg-gray-50 disabled:text-white/50 outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
+                  value={accountHandler}
+                  onChange={(e) => setAccountHandler(e.target.value)}
+                  class="w-full h-[52px] bg-gray-50 disabled:text-black/50 text-black outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
                   placeholder="Mike Smith"
                 />
               </div>
@@ -66,7 +94,9 @@ const BankInfo = () => {
                 <input
                   type="text"
                   disabled={isEdit}
-                  class="w-full h-[52px] bg-gray-50 disabled:text-white/50 outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
+                  value={accountNumber}
+                  onChange={(e) => setAccountNumber(e.target.value)}
+                  class="w-full h-[52px] bg-gray-50 disabled:text-black/50 text-black outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
                   placeholder="000 000 0000"
                 />
               </div>
@@ -77,7 +107,9 @@ const BankInfo = () => {
                 <input
                   type="text"
                   disabled={isEdit}
-                  class="w-full h-[52px] bg-gray-50 disabled:text-white/50 outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
+                  value={routingNumber}
+                  onChange={(e) => setRoutingNumber(e.target.value)}
+                  class="w-full h-[52px] bg-gray-50 disabled:text-black/50 text-black outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
                   placeholder="000 000 0000"
                 />
               </div>
