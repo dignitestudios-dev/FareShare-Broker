@@ -4,7 +4,6 @@ import { FiUser } from "react-icons/fi";
 import { TiUserAddOutline } from "react-icons/ti";
 import { AppContext } from "../../context/AppContext";
 import { useFormik } from "formik";
-import axios from "axios";
 import Cookies from "js-cookie";
 import { loginValues } from "../../data/authentication";
 import { loginSchema } from "../../schema/loginSchema";
@@ -12,6 +11,7 @@ import authentication from "../../api/authenticationInterceptor";
 import { useState } from "react";
 import Error from "../../components/app/global/Error";
 import SocialLogin from "../../components/authentication/SocialLogin";
+import axios from "axios";
 
 const Login = () => {
   const { navigate, error, setError } = useContext(AppContext);
@@ -31,9 +31,9 @@ const Login = () => {
             email: values.email,
             password: values.password,
           });
-          console.log(response?.data?.token);
+
           if (response?.status == 200 && response?.data?.token !== null) {
-            Cookies.set("token", response?.data?.token);
+            localStorage.setItem("token", response?.data?.token);
             localStorage.setItem(
               "broker",
               JSON.stringify(response?.data?.data)
@@ -41,11 +41,11 @@ const Login = () => {
             navigate("Home", "/home");
           }
         } catch (error) {
+          console.log(error);
           // Handle errors (e.g., show error message)
           setError(error?.response?.data?.message);
-
-          // console.error("Login failed:", error.response?.data);
         } finally {
+          // console.error("Login failed:", error.response?.data);
           setLoading(false);
         }
       },
@@ -190,9 +190,8 @@ const Login = () => {
                 <span className="text-sm font-semibold text-gray-500">OR</span>
                 <span className="w-[35%] h-[1px] bg-gray-300"></span>
               </div>
-
-              <SocialLogin />
             </form>
+            <SocialLogin />
           </div>
         </div>
       </div>

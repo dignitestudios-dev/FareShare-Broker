@@ -12,6 +12,13 @@ export const signupValues = {
   confirmPassword: "",
   department: "",
 };
+export const socialSignupValues = {
+  companyName: "",
+  accountHandlerName: "",
+  email: "",
+  companyTaxIdentification: "",
+  department: "",
+};
 
 export const verifyEmailValues = {
   email: "",

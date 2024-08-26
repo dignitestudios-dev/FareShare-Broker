@@ -40,7 +40,7 @@ const Navbar = () => {
             <li>
               <button
                 onClick={() => {
-                  Cookies.remove("token");
+                  localStorage.removeItem("token");
                   navigate("Home", "/login");
                 }}
                 class="w-full px-4 py-1 hover:bg-gray-100 "

@@ -10,7 +10,7 @@ import authentication from "../../api/authenticationInterceptor";
 import { useFormik } from "formik";
 
 const AddBank = () => {
-  const { navigate, error, setError } = useContext(AppContext);
+  const { navigate, error, setError, prodUrl } = useContext(AppContext);
   const [loading, setLoading] = useState(false);
   const { values, handleBlur, handleChange, handleSubmit, errors, touched } =
     useFormik({
@@ -22,20 +22,38 @@ const AddBank = () => {
       onSubmit: async (values, action) => {
         setLoading(true);
         try {
+          const headers = {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          };
           // API call to login using Axios interceptor
-          const response = await authentication.post("/broker/bank", {
-            routingNumber: values?.routingNumber,
-            accountNumber: values?.accountNumber,
-            accountHolderName: values?.accountHolderName,
-            bankName: values?.bankName,
-          });
-
-          // Handle the response (e.g., save token, redirect)
-          console.log("Login successful:", response.data);
+          axios
+            .post(
+              `${prodUrl}/broker/bank`,
+              {
+                routingNumber: values?.routingNumber,
+                accountNumber: values?.accountNumber,
+                accountHolderName: values?.accountHolderName,
+                bankName: values?.bankName,
+              },
+              { headers }
+            )
+            .then((response) => {
+              // Handle the response (e.g., save token, redirect)
+              if (response?.data?.success) {
+                navigate("Home", "/home");
+                localStorage.setItem(
+                  "broker",
+                  JSON.stringify(response?.data?.data)
+                );
+              }
+            })
+            .catch((error) => {
+              setError(error?.response?.data?.message);
+              setLoading(false);
+            });
         } catch (error) {
           // Handle errors (e.g., show error message)
           setError(error?.response?.data?.message);
-
           // console.error("Login failed:", error.response?.data);
         } finally {
           setLoading(false);

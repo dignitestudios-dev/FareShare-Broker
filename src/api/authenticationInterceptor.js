@@ -40,10 +40,15 @@ authentication.interceptors.request.use(
 // Response interceptor (optional)
 authentication.interceptors.response.use(
   (response) => {
-    // console.log(response);
-    return response;
+    if (response) {
+      return response;
+    }
   },
-  (error) => {
+  function (error) {
+    // *For unAuthorized
+    // if (error.response.status === 401) {
+    //   localStorage.clear()
+    // }
     return Promise.reject(error);
   }
 );

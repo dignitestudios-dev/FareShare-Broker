@@ -28,7 +28,10 @@ const ForgotPassword = () => {
           });
 
           // Handle the response (e.g., save token, redirect)
-          console.log("Login successful:", response.data);
+          if (response?.data?.success) {
+            localStorage.setItem("email", values.email);
+            navigate("Verify Forgot Otp", "/verify-forgot-otp");
+          }
         } catch (error) {
           // Handle errors (e.g., show error message)
           setError(error?.response?.data?.message);

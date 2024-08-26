@@ -2,9 +2,8 @@ import AuthLayout from "../layouts/AuthLayout";
 import ForgotPassword from "../pages/authentication/ForgotPassword";
 import Login from "../pages/authentication/Login";
 import Signup from "../pages/onboarding/Signup";
-import VerifyOtp from "../pages/authentication/VerifyOtp";
+import VerifyForgotOtp from "../pages/authentication/VerifyForgotOtp";
 import ChangePassword from "../pages/authentication/ChangePassword";
-import AddBank from "../pages/onboarding/AddBank";
 
 export const AuthRoutes = [
   {
@@ -19,9 +18,9 @@ export const AuthRoutes = [
     page: <ForgotPassword />,
   },
   {
-    title: "Verify OTP",
-    url: "/verify-otp",
-    page: <VerifyOtp />,
+    title: "Verify Otp OTP",
+    url: "/verify-forgot-otp",
+    page: <VerifyForgotOtp />,
   },
   {
     title: "Change Password",

@@ -20,18 +20,27 @@ const VerifyOtp = () => {
       validateOnBlur: false,
 
       onSubmit: async (values, action) => {
-        const email = Cookies.get("email");
+        const email = localStorage.getItem("email");
         setLoading(true);
         try {
           const otp = values.otp1 + values.otp2 + values.otp3 + values.otp4;
           // API call to login using Axios interceptor
-          const response = await authentication.post("/auth/validatePassOTP", {
-            email: email,
-            otp: otp,
-          });
-
-          // Handle the response (e.g., save token, redirect)
-          console.log("Login successful:", response.data);
+          authentication
+            .post("/auth/validateOTP", {
+              email: email,
+              code: otp,
+            })
+            .then((response) => {
+              if (response?.data?.success) {
+                localStorage.setItem("token", response?.data?.token);
+                navigate("Add Bank", "/add-bank");
+                setLoading(false);
+              }
+            })
+            .catch((error) => {
+              setError(error?.response?.data?.message);
+              setLoading(false);
+            });
         } catch (error) {
           // Handle errors (e.g., show error message)
           setError(error?.response?.data?.message);

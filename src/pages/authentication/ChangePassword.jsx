@@ -24,15 +24,20 @@ const ChangePassword = () => {
         try {
           // API call to login using Axios interceptor
           const response = await authentication.post("/auth/updatePassOTP", {
-            email: "from Cookies",
+            email: localStorage.getItem("email"),
             password: values?.password,
             confirmPassword: values?.confirmPassword,
-            resetToken: "from Cookies",
+            resetToken: localStorage.getItem("forgot_token"),
           });
 
           // Handle the response (e.g., save token, redirect)
-          console.log("Login successful:", response.data);
+          if (response?.data?.success) {
+            localStorage.removeItem("email");
+            localStorage.removeItem("forgot_token");
+            navigate("Login", "/login");
+          }
         } catch (error) {
+          console.log(error);
           // Handle errors (e.g., show error message)
           setError(error?.response?.data?.message);
 
@@ -44,7 +49,7 @@ const ChangePassword = () => {
     });
   return (
     <section class="bg-white ">
-      <div class="flex justify-center min-h-screen">
+      <form onSubmit={handleSubmit} class="flex justify-center min-h-screen">
         <div class="hidden bg-gray-50 lg:flex justify-center items-center bg-cover  lg:w-2/5">
           <div class="w-full h-full  flex items-center justify-center animate one text-4xl font-bold text-[#c00000]">
             <img
@@ -63,7 +68,7 @@ const ChangePassword = () => {
 
             <p class="mt-4 text-gray-500 ">Setup your new credentials.</p>
 
-            <form class="flex flex-col gap-6 mt-8 ">
+            <div class="flex flex-col gap-6 mt-8 ">
               <div class="w-full">
                 <div class="flex justify-between mb-2">
                   <label for="password" class="text-sm text-gray-600 ">
@@ -120,7 +125,7 @@ const ChangePassword = () => {
               </div>
 
               <button
-                onClick={() => navigate("Sign in", "/login")}
+                type="submit"
                 class="flex items-center justify-center gap-4 w-full  px-6 py-3 text-sm tracking-wide text-white capitalize transition-colors duration-300 transform bg-[#c00000] rounded-full hover:bg-[#c00000] focus:outline-none focus:ring focus:ring-red-300 focus:ring-opacity-50"
               >
                 {loading && (
@@ -147,10 +152,10 @@ const ChangePassword = () => {
                   />
                 </svg>
               </button>
-            </form>
+            </div>
           </div>
         </div>
-      </div>
+      </form>
     </section>
   );
 };

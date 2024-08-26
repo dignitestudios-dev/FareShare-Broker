@@ -6,7 +6,7 @@ const api = axios.create({
   baseURL: "https://backend.faresharellc.com",
   // timeout: 15000,
   headers: {
-    Authorization: `Bearer ${Cookies.get("token")}`,
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
   },
 });
 
@@ -17,6 +17,26 @@ api.interceptors.request.use(
     return config;
   },
   (error) => {
+    const originalRequest = error.config;
+
+    if (typeof error.response === "undefined") {
+      alert(
+        "A server/network error occurred. " +
+          "Looks like CORS might be the problem. " +
+          "Sorry about this - we will get it fixed shortly."
+      );
+      return Promise.reject(error);
+    }
+
+    if (
+      error.response.status === 401 &&
+      originalRequest.url === baseUrl + "token/refresh/"
+    ) {
+      window.location.href = "/login/";
+      return Promise.reject(error);
+    }
+
+    // specific error handling done elsewhere
     return Promise.reject(error);
   }
 );
@@ -24,10 +44,15 @@ api.interceptors.request.use(
 // Response interceptor (optional)
 api.interceptors.response.use(
   (response) => {
-    // console.log(response);
-    return response;
+    if (response) {
+      return response;
+    }
   },
-  (error) => {
+  function (error) {
+    // *For unAuthorized
+    // if (error.response.status === 401) {
+    //   localStorage.clear()
+    // }
     return Promise.reject(error);
   }
 );

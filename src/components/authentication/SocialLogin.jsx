@@ -7,9 +7,11 @@ import app, {
   googleProvider,
   appleProvider,
 } from "../../firebase/firebase";
+import { FacebookAuthProvider } from "firebase/auth";
 import Cookies from "js-cookie";
 import { FaApple, FaFacebookF } from "react-icons/fa";
 import { signInWithPopup } from "firebase/auth";
+import SocialSignupModal from "../app/global/SocialSignupModal";
 
 const SocialLogin = () => {
   const { navigate, error, setError } = useContext(AppContext);
@@ -17,6 +19,8 @@ const SocialLogin = () => {
   const [googleLoading, setGoogleLoading] = useState(false);
   const [appleLoading, setAppleLoading] = useState(false);
   const [facebookLoading, setFacebookLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [idToken, setIdToken] = useState(null);
 
   const handleAppleLogin = async () => {
     try {
@@ -42,52 +46,14 @@ const SocialLogin = () => {
                 }
               },
               (error) => {
-                setError(error?.response?.data?.message);
-
-                // if (error?.response?.data?.error == "No user found") {
-                //   axios
-                //     .post(`https://backend.faresharellc.com/auth/brokerSocialSignIn`, {
-                //       id_token: token,
-                //     })
-                //     .then(
-                //       (response) => {
-                //         console.log(response);
-                //         if (response?.status == 201) {
-                //           axios
-                //             .post(`${baseUrl}/login-social`, {
-                //               id_token: token,
-                //             })
-                //             .then(
-                //               (response) => {
-                //                 // just for now
-                //                 Cookies.set(
-                //                   "token",
-                //                   response?.data?.data?.token,
-                //                   { expires: 7 }
-                //                 );
-                //                 if (response?.data?.data?.token) {
-                //                   navigate("/home/");
-                //                 }
-                //               },
-                //               (error) => {
-                //                 setAppleLoading(false);
-                //                 setFormError(error?.response?.data?.error);
-                //                 console.log(error);
-                //               }
-                //             );
-                //           if (response?.data?.data?.token) {
-                //             navigate("/home/");
-                //           }
-                //         }
-                //       },
-                //       (error) => {
-                //         setAppleLoading(false);
-                //         setFormError(error?.response?.data?.error);
-                //         console.log(error);
-                //       }
-                //     );
-                // }
-                // console.log(error);
+                console.log(error);
+                if (
+                  error?.response?.status == 401 &&
+                  error?.response?.data?.message == "No such user found"
+                ) {
+                  setIdToken(token);
+                  setShowModal(true);
+                }
                 setAppleLoading(false);
               }
             );
@@ -99,10 +65,11 @@ const SocialLogin = () => {
     }
   };
 
-  const handleGoogleLogin = async () => {
+  const handleFacebookLogin = async () => {
     try {
-      setGoogleLoading(true);
-      const result = await signInWithPopup(auth, googleProvider);
+      setFacebookLoading(true);
+      const provider = new FacebookAuthProvider();
+      const result = await signInWithPopup(auth, provider);
       if (result) {
         console.log(result);
         const token = await result?.user?.getIdToken();
@@ -123,49 +90,56 @@ const SocialLogin = () => {
                 }
               },
               (error) => {
-                setError(error?.response?.data?.message);
-                // if (error?.response?.data?.error == "No user found") {
-                //   axios
-                //     .post(`${baseUrl}/register-social`, {
-                //       id_token: token,
-                //     })
-                //     .then(
-                //       (response) => {
-                //         console.log(response);
-                //         if (response?.status == 201) {
-                //           axios
-                //             .post(`${baseUrl}/login-social`, {
-                //               id_token: token,
-                //             })
-                //             .then(
-                //               (response) => {
-                //                 Cookies.set(
-                //                   "token",
-                //                   response?.data?.data?.token,
-                //                   { expires: 7 }
-                //                 );
-                //                 if (response?.data?.data?.token) {
-                //                   navigate("/home/");
-                //                 }
-                //               },
-                //               (error) => {
-                //                 setGoogleLoading(false);
-                //                 setFormError(error?.response?.data?.error);
-                //                 console.log(error);
-                //               }
-                //             );
-                //           if (response?.data?.data?.token) {
-                //             navigate("/home/");
-                //           }
-                //         }
-                //       },
-                //       (error) => {
-                //         setGoogleLoading(false);
-                //         setFormError(error?.response?.data?.error);
-                //         console.log(error);
-                //       }
-                //     );
-                // }
+                console.log(error);
+                if (
+                  error?.response?.status == 401 &&
+                  error?.response?.data?.message == "No such user found"
+                ) {
+                  setIdToken(token);
+                  setShowModal(true);
+                }
+                setFacebookLoading(false);
+              }
+            );
+        }
+      }
+    } catch (err) {
+      setFacebookLoading(false);
+      setError("Cannot open apple signin modal.");
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      setGoogleLoading(true);
+      const result = await signInWithPopup(auth, googleProvider);
+      if (result) {
+        const token = await result?.user?.getIdToken();
+        if (token) {
+          axios
+            .post(`https://backend.faresharellc.com/auth/brokerSocialSignIn`, {
+              email: result?.user?.email,
+              idToken: token,
+            })
+            .then(
+              (response) => {
+                // just for now
+                Cookies.set("token", response?.data?.data?.token, {
+                  expires: 7,
+                });
+                if (response?.data?.data?.token) {
+                  navigate("/home/");
+                }
+              },
+              (error) => {
+                console.log(error);
+                if (
+                  error?.response?.status == 401 &&
+                  error?.response?.data?.message == "No such user found"
+                ) {
+                  setIdToken(token);
+                  setShowModal(true);
+                }
                 setGoogleLoading(false);
               }
             );
@@ -178,12 +152,17 @@ const SocialLogin = () => {
   };
 
   return (
-    <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-3">
+    <div className="w-full grid mt-6 grid-cols-1 lg:grid-cols-3 gap-3">
+      <SocialSignupModal
+        isOpen={showModal}
+        setIsOpen={setShowModal}
+        idToken={idToken}
+      />
       <button
         type="button"
         onClick={handleGoogleLogin}
         aria-label="Sign in with Google"
-        class="flex items-center justify-center w-full bg-white border border-button-border-light rounded-lg p-1 pr-3"
+        class="flex items-center  justify-center w-full bg-white border border-button-border-light rounded-lg p-1 pr-3"
       >
         <div class="flex items-center justify-center bg-white w-9 h-9 rounded-l">
           <svg
@@ -217,6 +196,7 @@ const SocialLogin = () => {
       </button>
       <button
         type="button"
+        onClick={handleAppleLogin}
         aria-label="Sign in with Google"
         class="flex items-center w-full justify-center bg-white border border-button-border-light rounded-lg p-1 pr-3"
       >
@@ -227,10 +207,11 @@ const SocialLogin = () => {
           Sign in with Apple
         </span>
       </button>
-      {/* <button
+      <button
         type="button"
+        onClick={handleFacebookLogin}
         aria-label="Sign in with Facebook"
-        class="flex items-center bg-white border border-button-border-light rounded-lg p-1 pr-3"
+        class="flex items-center justify-center bg-white border border-button-border-light rounded-lg p-1 pr-3"
       >
         <div class="flex items-center justify-center bg-white w-9 h-9 rounded-l">
           <FaFacebookF className="text-xl text-[#1877F2]" />
@@ -238,7 +219,7 @@ const SocialLogin = () => {
         <span class="text-sm text-google-text-gray tracking-wider">
           Sign in with Facebook
         </span>
-      </button> */}
+      </button>
     </div>
   );
 };

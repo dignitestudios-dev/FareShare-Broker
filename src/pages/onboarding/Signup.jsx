@@ -7,6 +7,7 @@ import { signupValues } from "../../data/authentication";
 import { signupSchema } from "../../schema/signupSchema";
 import { useFormik } from "formik";
 import authentication from "../../api/authenticationInterceptor";
+import Cookies from "js-cookie";
 // firebase:
 import { auth } from "../../firebase/firebase"; // Adjust the import based on your file structure
 import {
@@ -31,31 +32,32 @@ const Signup = () => {
       onSubmit: async (values, action) => {
         setLoading(true);
         try {
-          // Try to sign in the user
-          const userCredential = await signInWithEmailAndPassword(
-            auth,
-            values?.email,
-            values?.password
-          );
-          const user = userCredential.user;
-          // Get the ID token
-          const token = await getIdToken(user);
-          if (token) {
-            setIdToken(token);
-          } else {
-            setError("Token Not Found");
-            setLoading(false);
-          }
-        } catch (error) {
-          if (error.code === "auth/user-not-found") {
-            try {
-              const newUser = await createUserWithEmailAndPassword(
+          try {
+            const newUser = await createUserWithEmailAndPassword(
+              auth,
+              values?.email,
+              values?.password
+            );
+            const user = newUser.user;
+            // Get the ID token
+            const token = await getIdToken(user);
+            if (token) {
+              setIdToken(token);
+            } else {
+              setError("Token Not Found");
+              setLoading(false);
+            }
+          } catch (error) {
+            console.log(error);
+            if (error.code === "auth/email-already-in-use") {
+              // Try to sign in the user
+              const userCredential = await signInWithEmailAndPassword(
                 auth,
                 values?.email,
                 values?.password
               );
-              const user = newUser.user;
-              // Get the ID token
+              const user = userCredential.user;
+              //   // Get the ID token
               const token = await getIdToken(user);
               if (token) {
                 setIdToken(token);
@@ -63,12 +65,10 @@ const Signup = () => {
                 setError("Token Not Found");
                 setLoading(false);
               }
-            } catch (createError) {
-              setError("Error creating new user");
+            } else {
+              setError("Login error");
+              setLoading(false);
             }
-          } else {
-            setError("Login error");
-            setLoading(false);
           }
         } finally {
           setLoading(false);
@@ -78,25 +78,41 @@ const Signup = () => {
 
   const sendDataToBackend = async () => {
     if (idToken) {
+      setLoading(true);
       try {
-        // API call to login using Axios interceptor
-        const response = await authentication.post("/auth/brokerSignUp", {
-          companyName: values.companyName,
-          accountHandlerName: values.accountHandlerName,
-          email: values.email,
-          companyTaxIdenfication: values.companyTaxIdentification,
-          password: values.password,
-          confirmPassword: values.confirmPassword,
-          department: values.department,
-          idToken: idToken,
-        });
-
-        // Handle the response (e.g., save token, redirect)
-        console.log("Login successful:", response.data);
+        const ip = await authentication.get(
+          "https://api.ipify.org?format=json"
+        );
+        if (ip) {
+          // API call to login using Axios interceptor
+          authentication
+            .post("/auth/brokerSignUp", {
+              companyName: values.companyName,
+              accountHandlerName: values.accountHandlerName,
+              email: values.email,
+              companyTaxIdenfication: values.companyTaxIdentification,
+              password: values.password,
+              confirmPassword: values.confirmPassword,
+              department: values.department,
+              idToken: idToken,
+              ip: ip.data.ip,
+            })
+            .then((response) => {
+              // Handle the response (e.g., save token, redirect)
+              if (response?.data?.success) {
+                localStorage.setItem("email", values?.email);
+                navigate("Verify Otp", "/verify-otp");
+                setLoading(false);
+              }
+            })
+            .catch((error) => {
+              setError(error?.response?.data?.message);
+              setLoading(false);
+            });
+        }
       } catch (error) {
-        console.log(error);
-        // Handle errors (e.g., show error message)
         setError(error?.response?.data?.message);
+        // Handle errors (e.g., show error message)
         // console.error("Login failed:", error.response?.data);
       } finally {
         setLoading(false);
