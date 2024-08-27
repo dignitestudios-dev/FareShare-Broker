@@ -38,7 +38,6 @@ const RideRequests = () => {
     // Listen for the response from the server
     socket.on("getRidesBrokerResponse", (response) => {
       // Store the response in state
-      console.log(response?.data);
       setLoading(false);
       setRides(response?.data);
     });
@@ -48,40 +47,40 @@ const RideRequests = () => {
       socket.disconnect();
     };
   }, []);
-  useEffect(() => {
-    const socket = io(SOCKET_SERVER_URL);
-    socket.on("connect", () => {
-      console.log("Socket connected:", socket.id);
-    });
+  // useEffect(() => {
+  //   const socket = io(SOCKET_SERVER_URL);
+  //   socket.on("connect", () => {
+  //     console.log("Socket connected:", socket.id);
+  //   });
 
-    socket.on("connect_error", (err) => {
-      console.error("Connection error:", err);
-    });
+  //   socket.on("connect_error", (err) => {
+  //     console.error("Connection error:", err);
+  //   });
 
-    socket.on("disconnect", (reason) => {
-      console.warn("Socket disconnected:", reason);
-    });
+  //   socket.on("disconnect", (reason) => {
+  //     console.warn("Socket disconnected:", reason);
+  //   });
 
-    socket.emit(
-      "getRidesBroker",
-      JSON.stringify({
-        brokerId: JSON.parse(localStorage.getItem("broker"))?._id,
-        page: 1,
-        limit: 50,
-      })
-    );
+  //   socket.emit(
+  //     "getRidesBroker",
+  //     JSON.stringify({
+  //       brokerId: JSON.parse(localStorage.getItem("broker"))?._id,
+  //       page: 1,
+  //       limit: 50,
+  //     })
+  //   );
 
-    // Listen for the response from the server
-    socket.on("getRidesBrokerResponse", (response) => {
-      // Store the response in state
-      setRides(response?.data);
-    });
+  //   // Listen for the response from the server
+  //   socket.on("getRidesBrokerResponse", (response) => {
+  //     // Store the response in state
+  //     setRides(response?.data);
+  //   });
 
-    // Cleanup: Disconnect socket when component unmounts
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
+  // Cleanup: Disconnect socket when component unmounts
+  //   return () => {
+  //     socket.disconnect();
+  //   };
+  // }, []);
 
   const formatDate = (isoDateString) => {
     const date = new Date(isoDateString);
@@ -117,6 +116,14 @@ const RideRequests = () => {
       <div class="w-full h-14 px-4 flex justify-between items-center">
         <span class="text-lg  text-[#c00000] font-semibold">Ride Requests</span>
       </div>
+      {!loading && rides?.length == 0 && (
+        <div className="w-full border-t border-collapse h-32 flex items-center justify-center">
+          {/* <img src="" alt="" /> */}
+          <span className="text-lg font-bold text-gray-800">
+            No Data Available
+          </span>
+        </div>
+      )}
       <table className="w-full border-collapse  text-left text-sm text-gray-500">
         <thead className="bg-[#c00000]">
           <tr className="">
@@ -210,8 +217,8 @@ const RideRequests = () => {
                           {ride?.patientFirstName} {ride?.patientLastName}
                         </div>
                         <div className="text-gray-600">
-                          {ride?.fareshareUserId
-                            ? ride?.fareshareUserId
+                          {ride?.fareshareUserId?.id
+                            ? ride?.fareshareUserId?.id
                             : "N/A"}
                         </div>
                       </div>

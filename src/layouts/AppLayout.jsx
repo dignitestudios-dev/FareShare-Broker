@@ -1,15 +1,28 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Sidebar from "../components/layout/Sidebar";
 import Navbar from "../components/layout/Navbar";
 import api from "../api/apiInterceptor";
+import axios from "axios";
+import { AppContext } from "../context/AppContext";
 
 const AppLayout = ({ page }) => {
+  const { setError, error, prodUrl } = useContext(AppContext);
   // Broker:
   const [broker, setBroker] = useState(null);
 
   const getBroker = async () => {
-    const broker = await api.get("/broker");
-    localStorage.setItem("broker", JSON.stringify(broker?.data?.data));
+    const headers = {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    };
+    axios
+      .get(`${prodUrl}/broker`, { headers })
+      .then((response) => {
+        console.log(response);
+        localStorage.setItem("broker", JSON.stringify(response?.data?.data));
+      })
+      .catch((error) => {
+        setError(error?.response?.data?.message);
+      });
   };
 
   useEffect(() => {

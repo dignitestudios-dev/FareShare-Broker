@@ -11,6 +11,7 @@ const Bookings = () => {
   const { navigate } = useContext(AppContext);
   const [isCancelOpen, setIsCancelOpen] = useState(false);
   const [bookings, setBookings] = useState([]);
+  const [search, setSearch] = useState("");
 
   const loadingArr = [1, 2, 3, 4, 5];
   const [loading, setLoading] = useState(false);
@@ -51,7 +52,7 @@ const Bookings = () => {
     return () => {
       socket.disconnect();
     };
-  }, []);
+  }, [search]);
 
   function formatDateToDayMonth(dateString) {
     const date = new Date(dateString);
@@ -82,6 +83,13 @@ const Bookings = () => {
   const formatStatus = (status) => {
     return status.replace(/([a-z])([A-Z])/g, "$1 $2").toLowerCase();
   };
+
+  const filteredData = bookings.filter((booking) => {
+    return (
+      booking?.patientLastName?.toLowerCase()?.includes(search.toLowerCase()) ||
+      booking?.patientFirstName?.toLowerCase()?.includes(search.toLowerCase())
+    );
+  });
   return (
     <div className="w-full h-auto flex flex-col gap-4  justify-start items-start">
       <div className="w-full h-12 gap-2 flex justify-end items-center">
@@ -89,6 +97,8 @@ const Bookings = () => {
           <input
             type="text"
             id="name"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
             placeholder="e.g. John Smith"
             className="mt-2 block w-full rounded-full border border-gray-200 bg-gray-50 px-3 h-12 shadow-sm outline-none focus:border-gradient focus:ring focus:ring-purple-200 focus:ring-opacity-50"
           />
@@ -148,7 +158,7 @@ const Bookings = () => {
       )}
       <div className="w-full h-auto grid grid-cols-2 gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {!loading &&
-          bookings?.map((booking, key) => {
+          filteredData?.map((booking, key) => {
             return (
               <div
                 key={key}
@@ -188,8 +198,9 @@ const Bookings = () => {
                     <span class="text-[#c00000] text-md md:text-xl font-semibold">
                       {booking?.rideId?.driverId == null
                         ? "N/A"
-                        : `${booking?.rideId?.driverId?.preferrability * 100}` +
-                          "%"}
+                        : `${parseInt(
+                            booking?.rideId?.driverId?.preferrability * 100
+                          )}` + "%"}
                     </span>
                   </div>
                   <div class="w-full bg-gray-300 h-[2px] rounded-full">

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import api from "../../api/apiInterceptor";
 
 const BankInfo = () => {
-  const [isEdit, setIsEdit] = useState(false);
+  const [isEdit, setIsEdit] = useState(true);
   const [bank, setBank] = useState(null);
 
   const getBank = async () => {
@@ -40,7 +40,7 @@ const BankInfo = () => {
                 changes or updates.
               </p>
             </div>
-            {isEdit ? (
+            {!isEdit ? (
               <button
                 onClick={() => setIsEdit((prev) => !prev)}
                 class="bg w-[77px] h-[28px] rounded-lg text-white flex items-center justify-center text-sm font-medium leading-5"
@@ -68,7 +68,7 @@ const BankInfo = () => {
                   disabled={isEdit}
                   value={bankName}
                   onChange={(e) => setBankName(e.target.value)}
-                  class="w-full h-[52px] bg-gray-50 disabled:text-black/50 text-black outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
+                  class="w-full h-[52px] bg-gray-50 disabled:text-gray-500 text-black outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
                   placeholder="Bank Of America"
                 />
               </div>
@@ -81,7 +81,7 @@ const BankInfo = () => {
                   disabled={isEdit}
                   value={accountHandler}
                   onChange={(e) => setAccountHandler(e.target.value)}
-                  class="w-full h-[52px] bg-gray-50 disabled:text-black/50 text-black outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
+                  class="w-full h-[52px] bg-gray-50 disabled:text-gray-500 text-black outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
                   placeholder="Mike Smith"
                 />
               </div>
@@ -96,7 +96,7 @@ const BankInfo = () => {
                   disabled={isEdit}
                   value={accountNumber}
                   onChange={(e) => setAccountNumber(e.target.value)}
-                  class="w-full h-[52px] bg-gray-50 disabled:text-black/50 text-black outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
+                  class="w-full h-[52px] bg-gray-50 disabled:text-gray-500 text-black outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
                   placeholder="000 000 0000"
                 />
               </div>
@@ -109,7 +109,7 @@ const BankInfo = () => {
                   disabled={isEdit}
                   value={routingNumber}
                   onChange={(e) => setRoutingNumber(e.target.value)}
-                  class="w-full h-[52px] bg-gray-50 disabled:text-black/50 text-black outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
+                  class="w-full h-[52px] bg-gray-50 disabled:text-gray-500 text-black outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
                   placeholder="000 000 0000"
                 />
               </div>

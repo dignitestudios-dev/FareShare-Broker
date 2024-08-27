@@ -187,3 +187,26 @@ body {
     transform: translateX(0);
   }
 }
+
+.color-drip-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.anim {
+  position: absolute;
+  left: 0rem;
+  top: 0rem;
+  width: 100%;
+  background-color: #c00000;
+  animation: dripAnimation 2s linear infinite;
+}
+
+@keyframes dripAnimation {
+  0% {
+    height: 0%;
+  }
+  100% {
+    height: 100%;
+  }
+}

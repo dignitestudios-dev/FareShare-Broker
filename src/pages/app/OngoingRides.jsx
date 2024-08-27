@@ -84,6 +84,14 @@ const OngoingRides = () => {
       <div class="w-full h-14 px-4 flex justify-between items-center">
         <span class="text-lg  text-[#c00000] font-semibold">Ongoing Rides</span>
       </div>
+      {!loading && rides?.length == 0 && (
+        <div className="w-full border-t border-collapse h-32 flex items-center justify-center">
+          {/* <img src="" alt="" /> */}
+          <span className="text-lg font-bold text-gray-800">
+            No Data Available
+          </span>
+        </div>
+      )}
       <table className="w-full border-collapse  text-left text-sm text-gray-500">
         <thead className="bg-[#c00000]">
           <tr className="">
@@ -172,8 +180,8 @@ const OngoingRides = () => {
                         </div>
                         <div className="text-gray-600">
                           {" "}
-                          {ride?.fareshareUserId
-                            ? ride?.fareshareUserId
+                          {ride?.fareshareUserId?.id
+                            ? ride?.fareshareUserId?.id
                             : "N/A"}
                         </div>
                       </div>

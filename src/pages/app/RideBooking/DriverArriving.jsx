@@ -5,9 +5,9 @@ import GoogleMaps from "../../../components/app/ride/GoogleMaps";
 
 const DriverArriving = () => {
   const navigate = useNavigate();
-  useEffect(() => {
-    setTimeout(() => navigate("/ride/driver-arrived/"), 3000);
-  }, []);
+  // useEffect(() => {
+  //   setTimeout(() => navigate("/ride/driver-arrived/"), 3000);
+  // }, []);
 
   const [isCancelOpen, setIsCancelOpen] = useState(false);
   return (

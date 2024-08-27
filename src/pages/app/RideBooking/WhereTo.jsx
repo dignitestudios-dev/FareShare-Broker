@@ -98,16 +98,22 @@ const WhereTo = () => {
   useEffect(() => {
     if (originCoords == null && startAddress !== "") {
       setStartError("You must select a valid pickup location to continue");
+    } else {
+      setStartError(false);
     }
   }, [startAddress]);
 
   useEffect(() => {
     if (destCoords == null && endAddress !== "") {
       setEndError("You must select a valid destination location to continue");
+    } else {
+      setEndError(false);
     }
   }, [endAddress]);
 
   const SOCKET_SERVER_URL = "https://backend.faresharellc.com";
+  const [data, setData] = useState(null);
+  const [message, setMessage] = useState(null);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -158,6 +164,11 @@ const WhereTo = () => {
       socket.on("preRideRequestResponse", (response) => {
         // Store the response in state
         console.log(response);
+        if (response?.success) {
+          setFind(true);
+          setData(response?.data);
+          setMessage(response?.message);
+        }
       });
 
       // Cleanup: Disconnect socket when component unmounts
@@ -326,7 +337,7 @@ const WhereTo = () => {
         </button>
       </div>
 
-      {find && <FindRide find={find} setFind={setFind} />}
+      <FindRide find={find} setFind={setFind} data={data} message={message} />
     </form>
   );
 };

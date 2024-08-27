@@ -1,73 +1,106 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   GoogleMap,
   useJsApiLoader,
   Polyline,
-  Marker,
+  MarkerF,
 } from "@react-google-maps/api";
-import { useEffect } from "react";
+import { decode } from "@mapbox/polyline";
 
-const GoogleMaps = () => {
-  const [path, setPath] = useState([
-    { lat: 37.772, lng: -122.214 },
-    { lat: 21.291, lng: -157.821 },
-  ]);
+const GoogleMaps = ({ origin, destination }) => {
+  console.log(origin);
+  const [path, setPath] = useState([]);
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_KEY,
+    libraries: ["places"],
   });
 
-  // useEffect(() => {
-  //   const localData = localStorage.getItem("googleMapPolyline");
-  //   if (localData) {
-  //     const parsedData = JSON.parse(localData);
-  //     setPath(parsedData);
-  //   }
-  // }, []);
-
-  const removeItem = (index) => {
-    const arr = [...path];
-    arr.splice(index, 1);
-    setPath(arr);
-    localStorage.setItem("googleMapPolyline", JSON.stringify(arr));
-  };
+  useEffect(() => {
+    if (origin && destination && isLoaded) {
+      const directionsService = new window.google.maps.DirectionsService();
+      directionsService.route(
+        {
+          origin: origin,
+          destination: destination,
+          travelMode: window.google.maps.TravelMode.DRIVING,
+        },
+        (response, status) => {
+          if (status === "OK") {
+            if (response.routes && response.routes.length > 0) {
+              const route = response.routes[0];
+              const encodedPolyline = route.overview_polyline;
+              if (encodedPolyline) {
+                try {
+                  const decodedPath = decode(encodedPolyline);
+                  setPath(
+                    decodedPath.map((point) => ({
+                      lat: point[0],
+                      lng: point[1],
+                    }))
+                  );
+                } catch (error) {
+                  console.error("Error decoding polyline:", error);
+                }
+              } else {
+                console.error("Encoded polyline is missing in the response.");
+              }
+            } else {
+              console.error("No routes found in the response.");
+            }
+          } else {
+            console.error("Directions request failed due to status: " + status);
+          }
+        }
+      );
+    }
+  }, [origin, destination, isLoaded]);
 
   return isLoaded ? (
-    <>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          width: 1200,
+    <div style={{ width: "100%", height: "400px", borderRadius: "20px" }}>
+      <GoogleMap
+        mapContainerStyle={{
+          width: "100%",
+          height: "100%",
+          borderRadius: "20px",
+        }}
+        center={origin}
+        zoom={18}
+        options={{
+          styles: [
+            {
+              featureType: "landscape",
+              elementType: "geometry",
+              stylers: [{ hue: "#c00000" }, { saturation: 50 }],
+            },
+          ],
         }}
       >
-        <div style={{ width: "100%" }}>
-          <GoogleMap
-            mapContainerStyle={{
-              width: "100%",
-              height: "400px",
-              borderRadius: "20px",
+        {path.length > 0 && (
+          <Polyline
+            path={path}
+            options={{
+              strokeColor: "#c00000", // Red color
+              strokeOpacity: 0.8,
+              strokeWeight: 3,
             }}
-            center={{ lat: 37.772, lng: -122.214 }}
-            zoom={10}
-          >
-            {/* =====Polyline===== */}
-            <Polyline
-              path={path}
-              options={{
-                strokeColor: "#c00000",
-                strokeOpacity: 1,
-                strokeWeight: 3,
-              }}
-            />
-
-            {/* =====Marker===== */}
-            {path.map((item, i) => (
-              <Marker key={i} position={item} onClick={() => removeItem(i)} />
-            ))}
-          </GoogleMap>
-        </div>
-      </div>
-    </>
+          />
+        )}
+        <MarkerF
+          icon={{
+            url: "/driver.png",
+            scaledSize: new window.google.maps.Size(40, 40), // Adjust width and height here
+          }}
+          position={origin}
+        />
+        <MarkerF
+          position={destination}
+          icon={{
+            url: "/destination.png",
+            scaledSize: new window.google.maps.Size(40, 40), // Adjust width and height here
+          }}
+        />
+      </GoogleMap>
+    </div>
   ) : null;
 };
 

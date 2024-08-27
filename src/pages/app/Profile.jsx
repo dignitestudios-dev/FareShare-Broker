@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useEffect } from "react";
 
 const Profile = () => {
-  const [isEdit, setIsEdit] = useState(false);
+  const [isEdit, setIsEdit] = useState(true);
 
   const broker = JSON.parse(localStorage.getItem("broker"));
 
@@ -34,7 +34,7 @@ const Profile = () => {
                 changes or updates.
               </p>
             </div>
-            {isEdit ? (
+            {!isEdit ? (
               <button
                 onClick={() => setIsEdit((prev) => !prev)}
                 class="bg w-[77px] h-[28px] rounded-lg text-white flex items-center justify-center text-sm font-medium leading-5"
@@ -68,7 +68,7 @@ const Profile = () => {
                   disabled={isEdit}
                   value={companyName}
                   onChange={(e) => setCompanyName(e.target.value)}
-                  class="w-full h-[52px] bg-gray-50 disabled:text-white/50 outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
+                  class="w-full h-[52px] bg-gray-50 disabled:text-gray-500 outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
                   placeholder="Mike"
                 />
               </div>
@@ -81,7 +81,7 @@ const Profile = () => {
                   disabled={isEdit}
                   value={accountHandlerName}
                   onChange={(e) => setAccountHandlerName(e.target.value)}
-                  class="w-full h-[52px] bg-gray-50 disabled:text-white/50 outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
+                  class="w-full h-[52px] bg-gray-50 disabled:text-gray-500 outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
                   placeholder="Smith"
                 />
               </div>
@@ -96,7 +96,7 @@ const Profile = () => {
                   disabled={isEdit}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  class="w-full h-[52px] bg-gray-50 disabled:text-white/50 outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
+                  class="w-full h-[52px] bg-gray-50 disabled:text-gray-500 outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
                   placeholder="mikesmith@gmail.com"
                 />
               </div>
@@ -109,7 +109,7 @@ const Profile = () => {
                   disabled={isEdit}
                   value={companyTaxIdentification}
                   onChange={(e) => setCompanyTaxIdentification(e.target.value)}
-                  class="w-full h-[52px] bg-gray-50 disabled:text-white/50 outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
+                  class="w-full h-[52px] bg-gray-50 disabled:text-gray-500 outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
                   placeholder="000 000 0000"
                 />
               </div>
@@ -122,7 +122,7 @@ const Profile = () => {
                 <input
                   type="text"
                   disabled={isEdit}
-                  class="w-full h-[52px] bg-gray-50 disabled:text-white/50 outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
+                  class="w-full h-[52px] bg-gray-50 disabled:text-gray-500 outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
                   placeholder="3505 Lake Lynda Dr. Orlando, FL"
                 />
               </div>

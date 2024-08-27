@@ -5,8 +5,79 @@ import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import { RiProgress2Line } from "react-icons/ri";
 import { IoCheckmarkDoneCircleOutline } from "react-icons/io5";
 import GoogleMaps from "../../components/app/ride/GoogleMaps";
+import { useContext, useEffect, useState } from "react";
+import { AppContext } from "../../context/AppContext";
+import io from "socket.io-client";
+import { useParams } from "react-router-dom";
+
+const SOCKET_SERVER_URL = "https://backend.faresharellc.com";
 
 const TrackRideDetail = () => {
+  const { id } = useParams();
+  const { navigate } = useContext(AppContext);
+  const [isCancelOpen, setIsCancelOpen] = useState(false);
+  const [ride, setRide] = useState([]);
+
+  const loadingArr = [1, 2, 3];
+  const [loading, setLoading] = useState(false);
+  const [origin, setOrigin] = useState({ lat: 0, lng: 0 });
+  const [dest, setDest] = useState({ lat: 0, lng: 0 });
+
+  useEffect(() => {
+    setLoading(true);
+    const socket = io(SOCKET_SERVER_URL);
+    socket.on("connect", () => {
+      console.log("Socket connected:", socket.id);
+    });
+
+    socket.on("connect_error", (err) => {
+      console.error("Connection error:", err);
+    });
+
+    socket.on("disconnect", (reason) => {
+      console.warn("Socket disconnected:", reason);
+    });
+
+    socket.emit(
+      "getRideBroker",
+      JSON.stringify({
+        brokerId: JSON.parse(localStorage.getItem("broker"))?._id,
+        rideId: id,
+      })
+    );
+
+    // Listen for the response from the server
+    socket.on("getRideBrokerResponse", (response) => {
+      // Store the response in state
+      setLoading(false);
+      if (response) {
+        console.log(response);
+        setRide(response?.data);
+        setOrigin({
+          lat: response?.data?.driverId?.currentLocation?.coordinates[1]
+            ? response?.data?.driverId?.currentLocation?.coordinates[1]
+            : 0,
+          lng: response?.data?.driverId?.currentLocation?.coordinates[0]
+            ? response?.data?.driverId?.currentLocation?.coordinates[0]
+            : 0,
+        });
+
+        setDest({
+          lat: response?.data?.origin?.coordinates[1]
+            ? response?.data?.origin?.coordinates[1]
+            : 0,
+          lng: response?.data?.origin?.coordinates[0]
+            ? response?.data?.origin?.coordinates[0]
+            : 0,
+        });
+      }
+    });
+
+    // Cleanup: Disconnect socket when component unmounts
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
   return (
     <div className="w-[calc(100%+2rem)] h-full -m-4  flex flex-col justify-start items-start">
       <div className="w-full p-4 h-auto flex gap-6 justify-between items-start">
@@ -19,11 +90,7 @@ const TrackRideDetail = () => {
         <div className="w-auto flex flex-col justify-start items-start">
           <span className="flex text-lg text-gray-900 font-semibold justify-start items-center gap-2">
             <span className="">Estimated Fare:</span>
-            <span className="text-[#c00000]">$100</span>
-          </span>
-          <span className="flex text-lg text-gray-900 font-semibold justify-start items-center gap-2">
-            <span className="">Total:</span>
-            <span className="text-2xl text-[#c00000]">$120</span>
+            <span className="text-[#c00000]">${ride?.estimatedFare}</span>
           </span>
         </div>
       </div>
@@ -36,14 +103,16 @@ const TrackRideDetail = () => {
             class="w-auto flex flex-col items-start justify-center"
           >
             <li>
-              <div class="relative pb-8">
+              <div class="relative pb-8 color-drip-container">
                 <span
-                  class="absolute left-4 top-4 -ml-px h-full w-0.5 bg-gray-200"
+                  class=" bg-gray-200 absolute top-4 left-4 -ml-px h-full w-0.5 "
                   aria-hidden="true"
-                ></span>
+                >
+                  <span className="anim"></span>
+                </span>
                 <div class="relative flex space-x-3">
                   <div>
-                    <span class="h-8 w-8 rounded-full bg-green-500 text-white flex items-center justify-center ring-8 ring-white">
+                    <span class="h-8 w-8 rounded-full bg-[#c00000] text-white text-lg flex items-center justify-center">
                       <MdOutlinePending />
                     </span>
                   </div>
@@ -66,7 +135,7 @@ const TrackRideDetail = () => {
                 ></span>
                 <div class="relative flex space-x-3">
                   <div>
-                    <span class="h-8 w-8 rounded-full bg-green-500 text-white flex items-center justify-center ring-8 ring-white">
+                    <span class="h-8 w-8 rounded-full bg-gray-200 text-gray-600 text-lg  flex items-center justify-center ">
                       <VscOpenPreview />
                     </span>
                   </div>
@@ -89,7 +158,7 @@ const TrackRideDetail = () => {
                 ></span>
                 <div class="relative flex space-x-3">
                   <div>
-                    <span class="h-8 w-8 rounded-full bg-green-500 text-white flex items-center justify-center ring-8 ring-white">
+                    <span class="h-8 w-8 rounded-full bg-gray-200 text-gray-600 text-lg  flex items-center justify-center ">
                       <IoMdCheckmarkCircleOutline />
                     </span>
                   </div>
@@ -112,7 +181,7 @@ const TrackRideDetail = () => {
                 ></span>
                 <div class="relative flex space-x-3">
                   <div>
-                    <span class="h-8 w-8 rounded-full bg-yellow-500 text-gray-900 flex items-center justify-center ring-8 ring-white">
+                    <span class="h-8 w-8 rounded-full bg-gray-200 text-gray-600 text-lg  flex items-center justify-center ">
                       <RiProgress2Line />
                     </span>
                   </div>
@@ -131,7 +200,7 @@ const TrackRideDetail = () => {
               <div class="relative pb-8">
                 <div class="relative flex space-x-3">
                   <div>
-                    <span class="h-8 w-8 rounded-full bg-red-500 text-white flex items-center justify-center ring-8 ring-white">
+                    <span class="h-8 w-8 rounded-full bg-gray-200 text-gray-600 text-lg  flex items-center justify-center ">
                       <IoCheckmarkDoneCircleOutline />
                     </span>
                   </div>
@@ -156,31 +225,32 @@ const TrackRideDetail = () => {
             </span>
 
             <div className="w-full  h-auto flex flex-col justify-start items-start gap-1">
-              <div className="w-full flex justify-between items-center">
+              <div className="w-full flex justify-between items-start">
                 <span className="w-1/2 text-[#c00000] text-sm font-semibold">
                   Name:
                 </span>
                 <span className="w-1/2 text-gray-700 text-sm font-medium">
-                  Michael
+                  {ride?.userId?.firstName && ride?.userId?.firstName}{" "}
+                  {ride?.userId?.lastName && ride?.userId?.lastName}
                 </span>
               </div>
-              <div className="w-full flex justify-between items-center">
+              <div className="w-full flex justify-between items-start">
                 <span className="w-1/2 text-[#c00000] text-sm font-semibold">
                   Pickup Location:
                 </span>
                 <span className="w-1/2 text-gray-700 text-sm font-medium">
-                  lorem ipsum dolor summit
+                  {ride?.originAddress ? ride?.originAddress : "N/A"}
                 </span>
               </div>
-              <div className="w-full flex justify-between items-center">
+              <div className="w-full flex justify-between items-start">
                 <span className="w-1/2 text-[#c00000] text-sm font-semibold">
                   Dropoff Location:
                 </span>
                 <span className="w-1/2 text-gray-700 text-sm font-medium">
-                  lorem ipsum dolor summit
+                  {ride?.destinationAddress ? ride?.destinationAddress : "N/A"}
                 </span>
               </div>
-              <div className="w-full flex justify-between items-center">
+              <div className="w-full flex justify-between items-start">
                 <span className="w-1/2 text-[#c00000] text-sm font-semibold">
                   Additional Request:
                 </span>
@@ -197,36 +267,46 @@ const TrackRideDetail = () => {
             </span>
 
             <div className="w-full  h-auto flex flex-col justify-start items-start gap-1">
-              <div className="w-full flex justify-between items-center">
+              <div className="w-full flex justify-between items-start">
                 <span className="w-1/2 text-[#c00000] text-sm font-semibold">
                   Name:
                 </span>
                 <span className="w-1/2 text-gray-700 text-sm font-medium">
-                  Jason Smith
+                  {ride?.driverId?.firstName
+                    ? ride?.driverId?.firstName
+                    : "N/A"}{" "}
+                  {ride?.driverId?.lastName ? ride?.driverId?.lastName : "N/A"}
                 </span>
               </div>
-              <div className="w-full flex justify-between items-center">
+              <div className="w-full flex justify-between items-start">
                 <span className="w-1/2 text-[#c00000] text-sm font-semibold">
                   Contact:
                 </span>
                 <span className="w-1/2 text-gray-700 text-sm font-medium">
-                  1234567890
+                  {ride?.driverId?.phoneNo ? ride?.driverId?.phoneNo : "N/A"}
                 </span>
               </div>
-              <div className="w-full flex justify-between items-center">
+              <div className="w-full flex justify-between items-start">
                 <span className="w-1/2 text-[#c00000] text-sm font-semibold">
                   Car Model:
                 </span>
                 <span className="w-1/2 text-gray-700 text-sm font-medium">
-                  Toyotta Prius
+                  {ride?.vehicleId?.vehicleMake
+                    ? ride?.vehicleId?.vehicleMake
+                    : "N/A"}{" "}
+                  {ride?.vehicleId?.vehicleName
+                    ? ride?.vehicleId?.vehicleName
+                    : "N/A"}{" "}
                 </span>
               </div>
-              <div className="w-full flex justify-between items-center">
+              <div className="w-full flex justify-between items-start">
                 <span className="w-1/2 text-[#c00000] text-sm font-semibold">
                   Car License Plate No.:
                 </span>
                 <span className="w-1/2 text-gray-700 text-sm font-medium">
-                  ABC-1234
+                  {ride?.vehicleId?.plateNumber
+                    ? ride?.vehicleId?.plateNumber
+                    : "N/A"}
                 </span>
               </div>
             </div>
@@ -235,7 +315,14 @@ const TrackRideDetail = () => {
       </div>
 
       <div class="w-full   rounded-3xl p-4 ">
-        <GoogleMaps />
+        <GoogleMaps
+          // origin={{
+          //   lat: ride?.driverId?.currentLocation?.coordinates[1],
+          //   lng: ride?.driverId?.currentLocation?.coordinates[0],
+          // }}
+          destination={dest}
+          origin={origin}
+        />
       </div>
     </div>
   );

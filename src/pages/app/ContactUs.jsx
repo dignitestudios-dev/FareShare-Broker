@@ -5,10 +5,12 @@ import { AppContext } from "../../context/AppContext";
 import { contactUsSchema } from "../../schema/contactUsSchema";
 import { contactUsValues } from "../../data/contactUs";
 import api from "../../api/apiInterceptor";
+import SuccessToast from "../../components/app/global/SuccessToast";
 
 const ContactUs = () => {
   const { navigate, error, setError } = useContext(AppContext);
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
   const { values, handleBlur, handleChange, handleSubmit, errors, touched } =
     useFormik({
       initialValues: contactUsValues,
@@ -27,8 +29,14 @@ const ContactUs = () => {
             description: values.message,
           });
 
-          // Handle the response (e.g., save token, redirect)
-          console.log("Login successful:", response.data);
+          if (response?.data?.success) {
+            // Handle the response (e.g., save token, redirect)
+            setSuccess("Form Submitted Successfully.");
+            values.name = "";
+            values.email = "";
+            values.subject = "";
+            values.message = "";
+          }
         } catch (error) {
           // Handle errors (e.g., show error message)
           setError(error?.response?.data?.message);
@@ -45,6 +53,7 @@ const ContactUs = () => {
         <div className="w-full hidden  border-r lg:flex">
           <img src={ContactUsVector} alt="" className="w-[95%]" />
         </div>
+        {<SuccessToast success={success} setSuccess={setSuccess} />}
         <form
           onSubmit={handleSubmit}
           class="lg:ml-auto col-span-2 lg:col-span-1 w-full space-y-4"
