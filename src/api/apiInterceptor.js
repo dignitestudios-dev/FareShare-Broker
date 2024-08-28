@@ -41,7 +41,7 @@ api.interceptors.request.use(
   }
 );
 
-// Response interceptor (optional)
+// Response interceptor (optiona l)
 api.interceptors.response.use(
   (response) => {
     if (response) {
