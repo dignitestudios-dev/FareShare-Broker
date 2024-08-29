@@ -1,14 +1,19 @@
 import React, { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { RideBookingContext } from "../../../context/RideBookingContext";
+import GoogleMaps from "../../../components/app/ride/GoogleMaps";
 
 const DriverArrived = () => {
   const navigate = useNavigate();
-  const { originCoords, destCoords, created } = useContext(RideBookingContext);
-
+  const { originCoords, destCoords, created, data } =
+    useContext(RideBookingContext);
   useEffect(() => {
+    console.log("origin", originCoords);
+    console.log("dest", destCoords);
+    console.log(data);
     created == null && navigate("/ride/new-request/info");
   }, []);
+
   return (
     <div className="w-full h-auto flex flex-col justify-start items-start gap-4">
       <div className="w-full h-auto flex justify-between items-end">
@@ -52,16 +57,18 @@ const DriverArrived = () => {
           <div class="flex gap-3 justify-start items-center w-auto h-auto">
             <div class="w-14 h-14 rounded-full bg-gray-100">
               <img
-                src="https://randomuser.me/api/portraits/men/34.jpg"
+                src={data?.driverId?.profilePicture}
                 alt="driver's_profile_picture"
                 class="w-full h-full rounded-full"
               />
             </div>
             <div class="w-auto h-auto flex flex-col ">
               <span class="text-lg font-bold leading-5 text-[#000]/[0.8]">
-                Jack Anderson
+                {data?.driverId?.firstName} {data?.driverId?.lastName}
               </span>
-              <span class="text-md font-medium text-gray-500">BMW-Black</span>
+              <span class="text-md capitalize font-medium text-gray-500">
+                {data?.vehicleId?.vehicleMake}-{data?.vehicleId?.vehicleName}
+              </span>
             </div>
           </div>
           <div class=" bg-[#c00000] py-2 px-4 rounded-lg flex gap-2 justify-start items-center">
@@ -85,28 +92,26 @@ const DriverArrived = () => {
         <div className="w-full h-auto flex justify-start gap-16 items-center">
           <div class="w-auto flex flex-col  justify-start items-start">
             <span class="text-lg font-semibold text-[#000]/[0.8]">
-              License/Plate Number
+              License Number
             </span>
             <span class="text-md font-medium text-gray-500 ">
-              000001209301203
+              {data?.driverId?.driverLicenseNumber}
             </span>
           </div>
 
           <div class="w-auto flex flex-col  justify-start items-start">
             <span class="text-lg font-semibold text-[#000]/[0.8]">
-              Arriving In
+              Plate Number
             </span>
-            <span class="text-md font-medium text-gray-500 ">08 Mins</span>
+            <span class="text-md font-medium text-gray-500 ">
+              {data?.vehicleId?.plateNumber}
+            </span>
           </div>
         </div>
       </div>
 
-      <div class="w-full h-[40vh] rounded-3xl bg-gray-400">
-        <img
-          src="https://fareshare.vercel.app/assets/drivermap-KQWfTDtJ.svg"
-          alt="live_location"
-          class="w-full h-full object-cover rounded-3xl"
-        />
+      <div class="w-full h-auto rounded-3xl bg-gray-400">
+        <GoogleMaps destination={destCoords} origin={originCoords} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 justify-start items-start w-full gap-2  h-auto">

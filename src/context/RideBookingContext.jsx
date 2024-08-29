@@ -86,25 +86,38 @@ export const RideBookingContextProvider = ({ children }) => {
 
         if (response?.status == "findingDriver") {
           setFind(true);
-          setOriginCoords({
-            lat: response?.data?.driverId?.currentLocation?.coordinates[1],
-            lng: response?.data?.driverId?.currentLocation?.coordinates[0],
-          });
+
           setDestCoords({
             lat: response?.data?.origin.coordinates[1],
             lng: response?.data?.origin.coordinates[0],
           });
         }
 
-        socket.on("cancelRideResponse", (response) => {
-          console.log("cancel", response);
-          setData(response?.data);
-        });
+        if (response?.status == "driverAssigned") {
+          console.log({
+            lat: response?.data?.driverId?.currentLocation?.coordinates[1],
+            lng: response?.data?.driverId?.currentLocation?.coordinates[0],
+          });
+          setDestCoords({
+            lat: response?.data?.origin?.coordinates[1],
+            lng: response?.data?.origin?.coordinates[0],
+          });
+          setOriginCoords({
+            lat: response?.data?.driverId?.currentLocation?.coordinates[1],
+            lng: response?.data?.driverId?.currentLocation?.coordinates[0],
+          });
+        }
+
+        // socket.on("cancelRideResponse", (response) => {
+        //   console.log("cancel", response);
+        //   setData(response?.data);
+        // });
 
         if (response?.status == "ReachedLocation") {
+          console.log(response);
           setDestCoords({
-            lat: response?.data?.rideId?.destination?.coordinates[1],
-            lng: response?.data?.rideId?.destination?.coordinates[0],
+            lat: response?.data?.destination?.coordinates[1],
+            lng: response?.data?.destination?.coordinates[0],
           });
           navigate("Request a ride", "/ride/driver-arrived");
         }
@@ -120,7 +133,7 @@ export const RideBookingContextProvider = ({ children }) => {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
-    if (status == "driverAssigned") {
+    if (status == "driverAssigned" || status == "ReachedLocation") {
       const socket = io(SOCKET_SERVER_URL);
       socket.on("connect", () => {
         console.log("Socket connected:", socket.id);

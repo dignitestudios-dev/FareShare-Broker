@@ -9,7 +9,8 @@ const DriverArriving = () => {
   const { originCoords, destCoords, created, data } =
     useContext(RideBookingContext);
   useEffect(() => {
-    console.log(originCoords, destCoords);
+    console.log("origin", originCoords);
+    console.log("dest", destCoords);
     console.log(data);
     created == null && navigate("/ride/new-request/info");
   }, []);

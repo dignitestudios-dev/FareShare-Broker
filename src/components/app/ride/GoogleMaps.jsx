@@ -16,6 +16,21 @@ const GoogleMaps = ({ origin, destination }) => {
     libraries: ["places"],
   });
 
+  const generateIntermediatePoints = (origin, destination, numPoints) => {
+    const points = [origin];
+    const latStep = (destination.lat - origin.lat) / (numPoints + 1);
+    const lngStep = (destination.lng - origin.lng) / (numPoints + 1);
+
+    for (let i = 1; i <= numPoints; i++) {
+      const lat = origin.lat + i * latStep;
+      const lng = origin.lng + i * lngStep;
+      points.push({ lat, lng });
+    }
+
+    points.push(destination);
+    return points;
+  };
+
   useEffect(() => {
     if (origin && destination && isLoaded) {
       const directionsService = new window.google.maps.DirectionsService();
@@ -53,6 +68,7 @@ const GoogleMaps = ({ origin, destination }) => {
           }
         }
       );
+      // setPath(generateIntermediatePoints(origin, destination, 1000000));
     }
   }, [origin, destination, isLoaded]);
 
@@ -82,7 +98,7 @@ const GoogleMaps = ({ origin, destination }) => {
             options={{
               strokeColor: "#c00000", // Red color
               strokeOpacity: 0.8,
-              strokeWeight: 3,
+              strokeWeight: 5,
             }}
           />
         )}
