@@ -116,7 +116,7 @@ const GoogleMaps = ({ origin, destination }) => {
             position={destination}
             icon={{
               url: "/pickup.png",
-              scaledSize: new window.google.maps.Size(40, 40), // Adjust width and height here
+              scaledSize: new window.google.maps.Size(30, 30), // Adjust width and height here
             }}
           />
         ) : (
@@ -124,7 +124,7 @@ const GoogleMaps = ({ origin, destination }) => {
             position={destination}
             icon={{
               url: "/destination.png",
-              scaledSize: new window.google.maps.Size(40, 40), // Adjust width and height here
+              scaledSize: new window.google.maps.Size(20, 20), // Adjust width and height here
             }}
           />
         )}
