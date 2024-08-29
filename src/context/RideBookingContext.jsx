@@ -23,6 +23,7 @@ export const RideBookingContextProvider = ({ children }) => {
   const [coordinates, setCoordinates] = useState(null);
   const [isWheelChairAccessible, setIsWheelChairAccessible] = useState(false);
   const [created, setCreated] = useState(null);
+  const [rideOrder, setRideOrder] = useState("pickup");
 
   const SOCKET_SERVER_URL = "https://backend.faresharellc.com";
 
@@ -94,6 +95,8 @@ export const RideBookingContextProvider = ({ children }) => {
         }
 
         if (response?.status == "driverAssigned") {
+          setRideOrder("pickup");
+
           console.log({
             lat: response?.data?.driverId?.currentLocation?.coordinates[1],
             lng: response?.data?.driverId?.currentLocation?.coordinates[0],
@@ -114,7 +117,8 @@ export const RideBookingContextProvider = ({ children }) => {
         // });
 
         if (response?.status == "ReachedLocation") {
-          console.log(response);
+          setRideOrder("destination");
+
           setDestCoords({
             lat: response?.data?.destination?.coordinates[1],
             lng: response?.data?.destination?.coordinates[0],
@@ -230,6 +234,8 @@ export const RideBookingContextProvider = ({ children }) => {
         setVehicleType,
         setCreated,
         created,
+        rideOrder,
+        setRideOrder,
       }}
     >
       {children}

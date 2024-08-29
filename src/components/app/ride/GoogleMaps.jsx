@@ -7,9 +7,11 @@ import {
 } from "@react-google-maps/api";
 import { decode } from "@mapbox/polyline";
 import { AppContext } from "../../../context/AppContext";
+import { RideBookingContext } from "../../../context/RideBookingContext";
 
 const GoogleMaps = ({ origin, destination }) => {
   const { setError } = useContext(AppContext);
+  const { rideOrder } = useContext(RideBookingContext);
   const [path, setPath] = useState([]);
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_KEY,
@@ -109,13 +111,23 @@ const GoogleMaps = ({ origin, destination }) => {
           }}
           position={origin}
         />
-        <MarkerF
-          position={destination}
-          icon={{
-            url: "/destination.png",
-            scaledSize: new window.google.maps.Size(40, 40), // Adjust width and height here
-          }}
-        />
+        {rideOrder == "pickup" ? (
+          <MarkerF
+            position={destination}
+            icon={{
+              url: "/pickup.png",
+              scaledSize: new window.google.maps.Size(40, 40), // Adjust width and height here
+            }}
+          />
+        ) : (
+          <MarkerF
+            position={destination}
+            icon={{
+              url: "/destination.png",
+              scaledSize: new window.google.maps.Size(40, 40), // Adjust width and height here
+            }}
+          />
+        )}
       </GoogleMap>
     </div>
   ) : null;
