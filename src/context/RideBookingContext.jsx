@@ -83,10 +83,6 @@ export const RideBookingContextProvider = ({ children }) => {
         setStatus(response?.status);
         setData(response?.data);
         setMessage(response?.message);
-        setDestCoords({
-          lat: response?.data?.origin.coordinates[1],
-          lng: response?.data?.origin.coordinates[0],
-        });
 
         if (response?.status == "findingDriver") {
           setFind(true);
