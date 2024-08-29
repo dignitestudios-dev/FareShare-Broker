@@ -1,19 +1,27 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { FaCar, FaCarAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import CancelRideModal from "../../../components/app/ride/CancelRideModal";
+import { RideBookingContext } from "../../../context/RideBookingContext";
+import { AppContext } from "../../../context/AppContext";
 
-const FindRide = ({ find, setFind, data, message }) => {
-  const navigate = useNavigate();
+const FindRide = ({}) => {
+  const { navigate } = useContext(AppContext);
   const [gotRide, setGotRide] = useState(false);
+  const { data, message, status, find, setFind } =
+    useContext(RideBookingContext);
 
   useEffect(() => {
-    if (message == "Taking longer than expected. Still looking for driver") {
+    if (status == "searching") {
       setFind(false);
+    } else if (status == "driverAssigned") {
+      navigate("Request a ride", "/ride/driver-arriving");
     }
-    console.log(message);
   }, [message, data]);
 
+  useEffect(() => {
+    console.log(find);
+  }, [find]);
   // For now the state is changing after five seconds but after backend is implemented we'll only change it if we've got a driver
 
   const [isOpen, setIsOpen] = useState(false);

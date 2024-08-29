@@ -8,7 +8,7 @@ import { RideBookingContext } from "../../../context/RideBookingContext";
 
 const PersonalInfo = () => {
   const { navigate, tab, setTab, error, setError } = useContext(AppContext);
-  const { setPersonalInfo } = useContext(RideBookingContext);
+  const { setPersonalInfo, setCreated } = useContext(RideBookingContext);
 
   const [loading, setLoading] = useState(false);
   const { values, handleBlur, handleChange, handleSubmit, errors, touched } =
@@ -33,6 +33,7 @@ const PersonalInfo = () => {
         setLoading(true);
         setTimeout(() => {
           setLoading(false);
+          setCreated("Created");
           navigate("Request a ride", "/ride/new-request/where-to");
         }, 2000);
       },

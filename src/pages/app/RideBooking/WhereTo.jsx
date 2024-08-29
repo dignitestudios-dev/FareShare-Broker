@@ -7,9 +7,33 @@ import FindRide from "./FindRide";
 import { Autocomplete, useLoadScript } from "@react-google-maps/api";
 import { personalInfoValues } from "../../../data/personalInfo";
 import { RideBookingContext } from "../../../context/RideBookingContext";
-import io from "socket.io-client";
 
 const WhereTo = () => {
+  const {
+    find,
+    setFind,
+    originCoords,
+    setOriginCoords,
+    destCoords,
+    setDestCoords,
+    data,
+    setData,
+    message,
+    setMessage,
+    status,
+    setStatus,
+    handleSubmit,
+    startAddress,
+    setStartAddress,
+    endAddress,
+    setEndAddress,
+    startError,
+    setStartError,
+    endError,
+    setEndError,
+    coordinates,
+    setCoordinates,
+  } = useContext(RideBookingContext);
   const corporate = [
     {
       title: "Standard",
@@ -52,20 +76,16 @@ const WhereTo = () => {
   ];
 
   const { navigate, tab } = useContext(AppContext);
-  const { personalInfo } = useContext(RideBookingContext);
-
-  const [find, setFind] = useState(false);
-  const [startAddress, setStartAddress] = useState("");
-  const [startError, setStartError] = useState(false);
-  const [endAddress, setEndAddress] = useState("");
-  const [endError, setEndError] = useState(false);
-  const [originCoords, setOriginCoords] = useState(null);
-  const [destCoords, setDestCoords] = useState(null);
-  const [isWheelChairAccessible, setIsWheelChairAccessible] = useState(false);
-
-  const [vehicleType, setVehicleType] = useState(
-    tab == "medical" ? "Ambulatory Services" : "Standard"
-  );
+  const {
+    personalInfo,
+    setIsWheelChairAccessible,
+    vehicleType,
+    setVehicleType,
+    created,
+  } = useContext(RideBookingContext);
+  useEffect(() => {
+    created == null && navigate("Request a ride", "/ride/new-request/info");
+  }, []);
 
   const startLocationRef = useRef();
   const endLocationRef = useRef();
@@ -110,73 +130,6 @@ const WhereTo = () => {
       setEndError(false);
     }
   }, [endAddress]);
-
-  const SOCKET_SERVER_URL = "https://backend.faresharellc.com";
-  const [data, setData] = useState(null);
-  const [message, setMessage] = useState(null);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (originCoords == null && startAddress !== "") {
-      setStartError("You must select a valid pickup location to continue");
-    } else if (destCoords == null && endAddress !== "") {
-      setEndError("You must select a valid destination location to continue");
-    } else {
-      const socket = io(SOCKET_SERVER_URL);
-      socket.on("connect", () => {
-        console.log("Socket connected:", socket.id);
-      });
-
-      socket.on("connect_error", (err) => {
-        console.error("Connection error:", err);
-      });
-
-      socket.on("disconnect", (reason) => {
-        console.warn("Socket disconnected:", reason);
-      });
-      console.log(personalInfo);
-
-      socket.emit(
-        "preRideRequest",
-        JSON.stringify({
-          brokerId: JSON.parse(localStorage.getItem("broker"))?._id,
-          fareshareUserId: personalInfo?.fareshareUserId,
-          requesterFirstName: personalInfo?.requesterFirstName,
-          requesterLastName: personalInfo?.requesterLastName,
-          requesterEmail: personalInfo?.requesterEmail,
-          requesterContact: personalInfo?.requesterContact,
-          patientFirstName: personalInfo?.patientFirstName,
-          patientLastName: personalInfo?.patientLastName,
-          patientMI: personalInfo?.patientMI,
-          additionalRequests: personalInfo?.additionalRequests,
-          originCoords: originCoords,
-          destCoords: destCoords,
-          vehicleType: vehicleType,
-          category: tab,
-          isWheelChairAccessible: isWheelChairAccessible,
-          isScheduled: false,
-          scheduledDate: "2024-07-20T09:00:00.000Z",
-          rideDate: new Date().toISOString(),
-        })
-      );
-
-      // Listen for the response from the server
-      socket.on("preRideRequestResponse", (response) => {
-        // Store the response in state
-        console.log(response);
-        if (response?.success) {
-          setFind(true);
-          setData(response?.data);
-          setMessage(response?.message);
-        }
-      });
-
-      // Cleanup: Disconnect socket when component unmounts
-      return () => {
-        socket.disconnect();
-      };
-    }
-  };
 
   if (!isLoaded)
     return (
@@ -337,7 +290,7 @@ const WhereTo = () => {
         </button>
       </div>
 
-      <FindRide find={find} setFind={setFind} data={data} message={message} />
+      {<FindRide find={find} setFind={setFind} />}
     </form>
   );
 };

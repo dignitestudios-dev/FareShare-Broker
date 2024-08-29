@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import {
   GoogleMap,
   useJsApiLoader,
@@ -6,9 +6,10 @@ import {
   MarkerF,
 } from "@react-google-maps/api";
 import { decode } from "@mapbox/polyline";
+import { AppContext } from "../../../context/AppContext";
 
 const GoogleMaps = ({ origin, destination }) => {
-  console.log(origin);
+  const { setError } = useContext(AppContext);
   const [path, setPath] = useState([]);
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_KEY,
@@ -39,13 +40,13 @@ const GoogleMaps = ({ origin, destination }) => {
                     }))
                   );
                 } catch (error) {
-                  console.error("Error decoding polyline:", error);
+                  setError("Error decoding polyline:", error);
                 }
               } else {
-                console.error("Encoded polyline is missing in the response.");
+                setError("Encoded polyline is missing in the response.");
               }
             } else {
-              console.error("No routes found in the response.");
+              setError("No routes found in the response.");
             }
           } else {
             console.error("Directions request failed due to status: " + status);

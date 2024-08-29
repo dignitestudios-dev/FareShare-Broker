@@ -1,13 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CancelRideModal from "../../../components/app/ride/CancelRideModal";
 import GoogleMaps from "../../../components/app/ride/GoogleMaps";
+import { RideBookingContext } from "../../../context/RideBookingContext";
 
 const DriverArriving = () => {
   const navigate = useNavigate();
-  // useEffect(() => {
-  //   setTimeout(() => navigate("/ride/driver-arrived/"), 3000);
-  // }, []);
+  const { originCoords, destCoords, created, data } =
+    useContext(RideBookingContext);
+  useEffect(() => {
+    console.log(originCoords, destCoords);
+    console.log(data);
+    created == null && navigate("/ride/new-request/info");
+  }, []);
 
   const [isCancelOpen, setIsCancelOpen] = useState(false);
   return (
@@ -17,7 +22,6 @@ const DriverArriving = () => {
           <button
             onClick={() => navigate(-1)}
             class=" text-lg  text-[#c00000] font-medium flex gap-1 justify-start items-center"
-            href="/home/"
           >
             <svg
               stroke="currentColor"
@@ -53,16 +57,18 @@ const DriverArriving = () => {
           <div class="flex gap-3 justify-start items-center w-auto h-auto">
             <div class="w-14 h-14 rounded-full bg-gray-100">
               <img
-                src="https://randomuser.me/api/portraits/men/34.jpg"
+                src={data?.driverId?.profilePicture}
                 alt="driver's_profile_picture"
                 class="w-full h-full rounded-full"
               />
             </div>
             <div class="w-auto h-auto flex flex-col ">
               <span class="text-lg font-bold leading-5 text-[#000]/[0.8]">
-                Jack Anderson
+                {data?.driverId?.firstName} {data?.driverId?.lastName}
               </span>
-              <span class="text-md font-medium text-gray-500">BMW-Black</span>
+              <span class="text-md capitalize font-medium text-gray-500">
+                {data?.vehicleId?.vehicleMake}-{data?.vehicleId?.vehicleName}
+              </span>
             </div>
           </div>
           <div class=" bg-[#c00000] py-2 px-4 rounded-lg flex gap-2 justify-start items-center">
@@ -86,24 +92,26 @@ const DriverArriving = () => {
         <div className="w-full h-auto flex justify-start gap-16 items-center">
           <div class="w-auto flex flex-col  justify-start items-start">
             <span class="text-lg font-semibold text-[#000]/[0.8]">
-              License/Plate Number
+              License Number
             </span>
             <span class="text-md font-medium text-gray-500 ">
-              000001209301203
+              {data?.driverId?.driverLicenseNumber}
             </span>
           </div>
 
           <div class="w-auto flex flex-col  justify-start items-start">
             <span class="text-lg font-semibold text-[#000]/[0.8]">
-              Arriving In
+              Plate Number
             </span>
-            <span class="text-md font-medium text-gray-500 ">08 Mins</span>
+            <span class="text-md font-medium text-gray-500 ">
+              {data?.vehicleId?.plateNumber}
+            </span>
           </div>
         </div>
       </div>
 
       <div class="w-full h-[40vh] rounded-3xl bg-gray-400">
-        <GoogleMaps />
+        <GoogleMaps destination={destCoords} origin={originCoords} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 justify-start items-start w-full gap-2  h-auto">

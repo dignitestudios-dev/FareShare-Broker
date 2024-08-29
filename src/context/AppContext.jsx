@@ -10,7 +10,7 @@ export const AppContextProvider = ({ children }) => {
   const prodUrl = "https://backend.faresharellc.com";
 
   const [activeLink, setActiveLink] = useState("Home");
-  const [tab, setTab] = useState("");
+  const [tab, setTab] = useState("corporate");
   const [requestOpen, setRequestOpen] = useState(false);
 
   const push = useNavigate();

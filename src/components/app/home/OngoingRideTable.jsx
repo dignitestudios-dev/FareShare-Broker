@@ -98,80 +98,85 @@ const OngoingRideTable = () => {
         </div>
       )}
       <table className="w-full border-collapse  text-left text-sm text-gray-500">
-        <thead className="bg-[#c00000]">
-          <tr className="">
-            <th
-              scope="col"
-              className="px-6 lg:px-4  py-4 font-medium text-white"
-            >
-              Date
-            </th>
-            <th
-              scope="col"
-              className="px-6 lg:px-4  py-4 font-medium text-white"
-            >
-              Client Info
-            </th>
-
-            <th
-              scope="col"
-              className="px-6 lg:px-4  py-4 font-medium text-white"
-            >
-              Pickup Location
-            </th>
-
-            <th
-              scope="col"
-              className="px-6 lg:px-4  py-4 font-medium text-white"
-            >
-              Dropoff Location
-            </th>
-            <th
-              scope="col"
-              className="px-6 lg:px-4  py-4 font-medium text-white"
-            >
-              Status
-            </th>
-
-            <th
-              scope="col"
-              className="px-6 lg:px-4  py-4 font-medium text-white"
-            ></th>
-          </tr>
-        </thead>
         <tbody className="divide-y divide-gray-300 border-t border-[#c00000]">
-          {loading
-            ? loadingArr?.map((item) => {
-                return (
-                  <tr key={item} className="animate-pulse">
-                    <td className="px-6 lg:px-4 py-4">
-                      <div className="h-4 bg-gray-300 rounded w-24"></div>
-                    </td>
-                    <th className="px-6 lg:px-4 py-4">
-                      <div className="flex gap-3">
-                        <div className="text-sm">
-                          <div className="h-4 bg-gray-300 rounded w-32 mb-2"></div>
-                          <div className="h-4 bg-gray-300 rounded w-16"></div>
-                        </div>
+          {loading &&
+            loadingArr?.map((item) => {
+              return (
+                <tr key={item} className="animate-pulse">
+                  <td className="px-6 lg:px-4 py-4">
+                    <div className="h-4 bg-gray-300 rounded w-24"></div>
+                  </td>
+                  <th className="px-6 lg:px-4 py-4">
+                    <div className="flex gap-3">
+                      <div className="text-sm">
+                        <div className="h-4 bg-gray-300 rounded w-32 mb-2"></div>
+                        <div className="h-4 bg-gray-300 rounded w-16"></div>
                       </div>
-                    </th>
-                    <td className="px-6 lg:px-4 py-4">
-                      <div className="h-4 bg-gray-300 rounded w-40"></div>
-                    </td>
-                    <td className="px-6 lg:px-4 py-4">
-                      <div className="h-4 bg-gray-300 rounded w-40"></div>
-                    </td>
-                    <td className="px-6 lg:px-4 py-4">
-                      <div className="h-6 bg-gray-300 rounded-full w-20"></div>
-                    </td>
-                    <td className="px-6 lg:px-4 py-4">
-                      <div className="h-4 bg-gray-300 rounded w-16"></div>
-                    </td>
-                  </tr>
-                );
-              })
-            : !loading &&
-              rides?.length > 0 &&
+                    </div>
+                  </th>
+                  <td className="px-6 lg:px-4 py-4">
+                    <div className="h-4 bg-gray-300 rounded w-40"></div>
+                  </td>
+                  <td className="px-6 lg:px-4 py-4">
+                    <div className="h-4 bg-gray-300 rounded w-40"></div>
+                  </td>
+                  <td className="px-6 lg:px-4 py-4">
+                    <div className="h-6 bg-gray-300 rounded-full w-20"></div>
+                  </td>
+                  <td className="px-6 lg:px-4 py-4">
+                    <div className="h-4 bg-gray-300 rounded w-16"></div>
+                  </td>
+                </tr>
+              );
+            })}
+        </tbody>
+      </table>
+
+      {!loading && rides?.length > 0 && (
+        <table className="w-full border-collapse  text-left text-sm text-gray-500">
+          <thead className="bg-[#c00000]">
+            <tr className="">
+              <th
+                scope="col"
+                className="px-6 lg:px-4  py-4 font-medium text-white"
+              >
+                Date
+              </th>
+              <th
+                scope="col"
+                className="px-6 lg:px-4  py-4 font-medium text-white"
+              >
+                Client Info
+              </th>
+
+              <th
+                scope="col"
+                className="px-6 lg:px-4  py-4 font-medium text-white"
+              >
+                Pickup Location
+              </th>
+
+              <th
+                scope="col"
+                className="px-6 lg:px-4  py-4 font-medium text-white"
+              >
+                Dropoff Location
+              </th>
+              <th
+                scope="col"
+                className="px-6 lg:px-4  py-4 font-medium text-white"
+              >
+                Status
+              </th>
+
+              <th
+                scope="col"
+                className="px-6 lg:px-4  py-4 font-medium text-white"
+              ></th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-300 border-t border-[#c00000]">
+            {rides?.length > 0 &&
               rides?.slice(0, 3)?.map((ride, key) => {
                 return (
                   <tr key={key} className="">
@@ -224,8 +229,9 @@ const OngoingRideTable = () => {
                   </tr>
                 );
               })}
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      )}
     </div>
   );
 };

@@ -1,8 +1,14 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { RideBookingContext } from "../../../context/RideBookingContext";
 
 const DriverArrived = () => {
   const navigate = useNavigate();
+  const { originCoords, destCoords, created } = useContext(RideBookingContext);
+
+  useEffect(() => {
+    created == null && navigate("/ride/new-request/info");
+  }, []);
   return (
     <div className="w-full h-auto flex flex-col justify-start items-start gap-4">
       <div className="w-full h-auto flex justify-between items-end">
