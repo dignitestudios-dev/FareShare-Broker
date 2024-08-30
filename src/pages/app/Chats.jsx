@@ -45,7 +45,7 @@ export const Chats = () => {
 
         const docRef = collection(db, "chats", chatRoom, "messages");
 
-        const orderedQuery = query(docRef, orderBy("timestamp"));
+        const orderedQuery = query(docRef, orderBy("createdAt"));
 
         const unsubscribe = onSnapshot(orderedQuery, (querySnapshot) => {
           const documentsArray = querySnapshot.docs.map((doc) => ({
@@ -53,7 +53,7 @@ export const Chats = () => {
             ...doc.data(),
           }));
 
-          console.log(documentsArray);
+          console.log("messages", documentsArray);
 
           setMessages(documentsArray);
 
@@ -70,9 +70,9 @@ export const Chats = () => {
   }, [chatRoom]);
 
   return (
-    <div className="w-full flex h-full flex-row justify-between bg-white">
-      {messages && messages?.length == 0 && (
-        <div className="w-full h-full  flex flex-col justify-between">
+    <div className="w-full  h-full grid grid-cols-4 justify-between bg-white">
+      {messages?.length == 0 && (
+        <div className="w-full h-full col-span-3 flex flex-col justify-between">
           <div className="w-full h-full flex flex-col items-center justify-center">
             <img src={NoData} alt="" className="w-96" />
             <span className="text-xl font-bold text-gray-700">
@@ -102,24 +102,30 @@ export const Chats = () => {
         </div>
       )}
       {!messageLoading && messages?.length > 0 && (
-        <div className="w-full h-full  flex flex-col justify-between">
+        <div className="w-full h-full col-span-3 flex flex-col justify-between">
           <div className="flex flex-col  h-full overflow-y-auto">
             {messages?.map((message) => {
               if (
                 message?.uid !== JSON.parse(localStorage.getItem("broker"))?._id
               ) {
                 return (
-                  <div key={message?.uid} className="flex justify-start mb-4">
-                    <div className=" py-3 px-4 bg-[#c00000] rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-white">
-                      {message?.msg}
+                  <div
+                    key={message?.uid}
+                    className="mr-4 flex justify-end mb-4"
+                  >
+                    <div className=" py-3 px-4 bg-[#c00000] rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white">
+                      {message?.text}
                     </div>
                   </div>
                 );
               } else {
                 return (
-                  <div key={message?.uid} className="flex justify-end mb-4">
-                    <div className=" py-3 px-4 bg-gray-300 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-gray-800">
-                      {message?.msg}
+                  <div
+                    key={message?.uid}
+                    className="flex ml-4 justify-start mb-4"
+                  >
+                    <div className=" py-3 px-4 bg-gray-200 rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-gray-800">
+                      {message?.text}
                     </div>
                   </div>
                 );

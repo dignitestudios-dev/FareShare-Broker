@@ -20,7 +20,7 @@ const ChatSidebar = ({ chatRoom, setChatRoom }) => {
     getChatRooms();
   }, []);
   return (
-    <div className="hidden lg:flex flex-col h-full overflow-y-auto lg:w-2/5 border-l ">
+    <div className="hidden  col-span-1 lg:flex flex-col h-full overflow-y-auto  border-l ">
       <div className="py-5 px-3 w-full flex justify-center items-center gap-2">
         <input
           className="w-[90%] shadow-md h-10 px-4 border outline-none focus:border-[#c00000] rounded-full"

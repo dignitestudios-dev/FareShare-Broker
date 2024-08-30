@@ -9,15 +9,59 @@ const PaymentsInvoice = () => {
 
   // Invoices:
   const [invoices, setInvoices] = useState(null);
+  const [filter, setFilter] = useState("paid");
 
   const getInvoices = async () => {
-    const invoices = await api.get("/broker/invoice");
-    console.log(invoices);
+    const invoices = await api.post(`/broker/invoice`, {
+      filter: filter,
+    });
+    setInvoices(invoices?.data?.data);
   };
 
   useEffect(() => {
     getInvoices();
-  }, []);
+  }, [filter]);
+
+  const formatDate = (isoDateString) => {
+    const date = new Date(isoDateString);
+
+    const day = String(date.getUTCDate()).padStart(2, "0");
+    const month = String(date.getUTCMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+    const year = date.getUTCFullYear();
+
+    return `${day}/${month}/${year}`;
+  };
+
+  function getMonthNameFromISOString(isoString) {
+    // Create a Date object from the ISO 8601 string
+    const date = new Date(isoString);
+
+    // Check if the date is valid
+    if (isNaN(date.getTime())) {
+      throw new Error("Invalid date string");
+    }
+
+    // Array of month names
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+
+    // Get the month name
+    return monthNames[date.getMonth()];
+  }
+
+  const [invoice, setInvoice] = useState(null);
   return (
     <div className="w-full h-auto flex flex-col justify-start items-start gap-2">
       <div className="w-full overflow-x-auto rounded-2xl border  border-gray-300 bg-white   ">
@@ -26,10 +70,22 @@ const PaymentsInvoice = () => {
             Payments & Invoices
           </span>
           <div className="w-auto group flex border rounded-full justify-start items-start">
-            <button class="w-24 h-8 rounded-full   bg-[#c00000] text-white text-xs font-semibold flex items-center justify-center">
+            <button
+              onClick={() => setFilter("paid")}
+              class={`w-24 h-8 rounded-full   ${
+                filter == "paid" ? "bg-[#c00000] text-white" : "text-gray-800 "
+              } text-xs font-semibold flex items-center justify-center`}
+            >
               Paid
             </button>
-            <button class="w-24 h-8 rounded-full  text-gray-800  text-xs font-semibold flex items-center justify-center">
+            <button
+              onClick={() => setFilter("pending")}
+              class={`w-24 h-8 rounded-full   ${
+                filter == "pending"
+                  ? "bg-[#c00000] text-white"
+                  : "text-gray-800 "
+              } text-xs font-semibold flex items-center justify-center`}
+            >
               Pending
             </button>
           </div>
@@ -73,25 +129,30 @@ const PaymentsInvoice = () => {
             </thead>
             <tbody className="divide-y divide-gray-300 border-t border-[#c00000]">
               {invoices?.map((invoice, key) => {
+                console.log(invoice);
                 return (
                   <tr key={key} className="">
                     <td className="px-6 lg:px-4  py-4 text-gray-600 font-normal ">
-                      25/06/2024
+                      {formatDate(invoice?.generatedOn)}
                     </td>
                     <td className="px-6 lg:px-4  py-4 text-gray-600 font-normal ">
-                      25/06/2024
+                      {formatDate(invoice?.dueOn)}
                     </td>
 
                     <td className="px-6 lg:px-4 text-gray-600  py-4 capitalize">
-                      March
+                      {getMonthNameFromISOString(invoice?.dueOn)}
                     </td>
                     <td className="px-6 lg:px-4 text-gray-600 py-4 capitalize">
-                      $800
+                      $
+                      {invoice?.amount ? Number(invoice?.amount.toFixed(2)) : 0}
                     </td>
 
                     <td className="px-6 lg:px-4  py-4 capitalize">
                       <button
-                        onClick={() => setIsOpen(true)}
+                        onClick={() => {
+                          setIsOpen(true);
+                          setInvoice(invoice);
+                        }}
                         className="text-[#c00000] text-xs font-semibold"
                       >
                         View More
@@ -108,7 +169,7 @@ const PaymentsInvoice = () => {
           </div>
         )}
 
-        <InvoiceModal setIsOpen={setIsOpen} isOpen={isOpen} />
+        <InvoiceModal setIsOpen={setIsOpen} isOpen={isOpen} invoice={invoice} />
       </div>
     </div>
   );

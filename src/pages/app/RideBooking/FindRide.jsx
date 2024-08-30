@@ -8,12 +8,12 @@ import { AppContext } from "../../../context/AppContext";
 const FindRide = ({}) => {
   const { navigate } = useContext(AppContext);
   const [gotRide, setGotRide] = useState(false);
-  const { data, message, status, find, setFind } =
+  const { data, message, status, find, setFind, cancelLoading, cancelRide } =
     useContext(RideBookingContext);
 
   useEffect(() => {
     if (status == "searching") {
-      setFind(false);
+      // setFind(false);
     } else if (status == "driverAssigned") {
       navigate("Request a ride", "/ride/driver-arriving");
     }
@@ -45,18 +45,11 @@ const FindRide = ({}) => {
           Finding Ride
         </span>
         <button
-          onClick={() => setIsOpen(true)}
+          onClick={(e) => cancelRide(e)}
           className="w-52 h-12 rounded-full bg-gray-100 text-md transition-all duration-150 hover:bg-[#c00000] hover:text-white text-[#000]/[0.8] flex items-center justify-center font-bold"
         >
-          Cancel
+          {cancelLoading ? "Loading..." : "Cancel"}
         </button>
-        {isOpen && (
-          <CancelRideModal
-            isOpen={isOpen}
-            setIsOpen={setIsOpen}
-            setFind={setFind}
-          />
-        )}
       </div>
     </div>
   );

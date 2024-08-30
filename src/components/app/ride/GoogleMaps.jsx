@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
+import { useState, useEffect, useContext } from "react";
 import {
   GoogleMap,
   useJsApiLoader,
@@ -8,7 +8,6 @@ import {
 import { decode } from "@mapbox/polyline";
 import { AppContext } from "../../../context/AppContext";
 import { RideBookingContext } from "../../../context/RideBookingContext";
-import useSmoothMarkerAnimation from "./useSmoothMarkerAnimation"; // Import the custom hook
 
 const GoogleMaps = ({ origin, destination }) => {
   const { setError } = useContext(AppContext);
@@ -18,17 +17,6 @@ const GoogleMaps = ({ origin, destination }) => {
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_KEY,
     libraries: ["places"],
   });
-
-  const mapRef = useRef(null);
-  const driverMarkerRef = useRef(null);
-  const [driverPosition, setDriverPosition] = useState(origin);
-
-  useSmoothMarkerAnimation(
-    mapRef.current,
-    driverMarkerRef.current,
-    driverPosition,
-    origin
-  );
 
   useEffect(() => {
     if (origin && destination && isLoaded) {
@@ -67,8 +55,9 @@ const GoogleMaps = ({ origin, destination }) => {
           }
         }
       );
+      // setPath(generateIntermediatePoints(origin, destination, 1000000));
     }
-  }, [origin, destination, isLoaded, setError]);
+  }, [origin, destination, isLoaded]);
 
   return isLoaded ? (
     <div style={{ width: "100%", height: "400px", borderRadius: "20px" }}>
@@ -89,36 +78,41 @@ const GoogleMaps = ({ origin, destination }) => {
             },
           ],
         }}
-        onLoad={(map) => (mapRef.current = map)}
       >
         {path.length > 0 && (
           <Polyline
             path={path}
             options={{
-              strokeColor: "#c00000",
+              strokeColor: "#c00000", // Red color
               strokeOpacity: 0.8,
               strokeWeight: 5,
             }}
           />
         )}
         <MarkerF
-          ref={driverMarkerRef}
           icon={{
             url: "/driver.png",
-            scaledSize: new window.google.maps.Size(40, 40),
+            scaledSize: new window.google.maps.Size(30, 30), // Adjust width and height here
           }}
-          position={driverPosition}
+          position={origin}
         />
-        <MarkerF
-          position={destination}
-          icon={{
-            url: rideOrder === "pickup" ? "/pickup.png" : "/destination.png",
-            scaledSize: new window.google.maps.Size(
-              rideOrder === "pickup" ? 30 : 20,
-              rideOrder === "pickup" ? 30 : 20
-            ),
-          }}
-        />
+        {rideOrder == "pickup" ? (
+          <MarkerF
+            position={destination}
+            icon={{
+              url: "/pickup.png",
+              scaledSize: new window.google.maps.Size(30, 30), // Adjust width and height here
+            }}
+          />
+        ) : (
+          <MarkerF
+            position={destination}
+            icon={{
+              url: "/destination.png",
+              scaledSize: new window.google.maps.Size(30, 30), // Adjust width and height here
+            }}
+          />
+        )}
       </GoogleMap>
     </div>
   ) : null;

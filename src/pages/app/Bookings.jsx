@@ -13,6 +13,9 @@ const Bookings = () => {
   const [bookings, setBookings] = useState([]);
   const [search, setSearch] = useState("");
 
+  const [initialDate, setInitialDate] = useState(null);
+  const [finalDate, setFinalDate] = useState(null);
+
   const loadingArr = [1, 2, 3, 4, 5];
   const [loading, setLoading] = useState(false);
 
@@ -37,6 +40,9 @@ const Bookings = () => {
         brokerId: JSON.parse(localStorage.getItem("broker"))?._id,
         page: 1,
         limit: 50,
+        startDate: initialDate,
+        endDate: finalDate,
+        // search: search,
       })
     );
 
@@ -52,7 +58,7 @@ const Bookings = () => {
     return () => {
       socket.disconnect();
     };
-  }, [search]);
+  }, [search, initialDate, finalDate]);
 
   function formatDateToDayMonth(dateString) {
     const date = new Date(dateString);
@@ -90,6 +96,7 @@ const Bookings = () => {
       booking?.patientFirstName?.toLowerCase()?.includes(search.toLowerCase())
     );
   });
+
   return (
     <div className="w-full h-auto flex flex-col gap-4  justify-start items-start">
       <div className="w-full h-12 gap-2 flex justify-end items-center">
@@ -170,7 +177,7 @@ const Bookings = () => {
                   </span>
                   <button
                     onClick={() =>
-                      navigate("Bookings", "/ride/ride-detail/123")
+                      navigate("Bookings", `/ride/ride-detail/${booking?._id}`)
                     }
                     class="w-8 h-8 rounded-full bg-[#c00000] flex items-center justify-center"
                   >
@@ -256,7 +263,14 @@ const Bookings = () => {
           })}
       </div>
 
-      <DateFilterModal isOpen={openFilter} setIsOpen={setOpenFilter} />
+      <DateFilterModal
+        isOpen={openFilter}
+        setIsOpen={setOpenFilter}
+        initialDate={initialDate}
+        setInitialDate={setInitialDate}
+        finalDate={finalDate}
+        setFinalDate={setFinalDate}
+      />
     </div>
   );
 };

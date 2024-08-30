@@ -124,7 +124,7 @@ const AddBank = () => {
                   type="text"
                   name="accountNumber"
                   id="accountNumber"
-                  maxLength={16}
+                  maxLength={12}
                   value={values.accountNumber}
                   onChange={handleChange}
                   onBlur={handleBlur}

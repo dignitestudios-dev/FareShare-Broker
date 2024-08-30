@@ -27,16 +27,18 @@ const CompletedRides = () => {
     });
 
     socket.emit(
-      "getRidesBroker",
+      "getRidesCompletedBroker",
       JSON.stringify({
         brokerId: JSON.parse(localStorage.getItem("broker"))?._id,
         page: 1,
         limit: 50,
+        status: "Completed",
       })
     );
 
     // Listen for the response from the server
-    socket.on("getRidesBrokerResponse", (response) => {
+    socket.on("getRidesCompletedBrokerResponse", (response) => {
+      console.log(response);
       // Store the response in state
       setLoading(false);
       setRides(response?.data);
@@ -57,6 +59,7 @@ const CompletedRides = () => {
 
     return `${day}/${month}/${year}`;
   };
+
   const getStatusStyles = (status) => {
     switch (status) {
       case "active":
@@ -74,7 +77,9 @@ const CompletedRides = () => {
     }
   };
   const formatStatus = (status) => {
-    return status.replace(/([a-z])([A-Z])/g, "$1 $2").toLowerCase();
+    return status
+      ? status.replace(/([a-z])([A-Z])/g, "$1 $2").toLowerCase()
+      : status;
   };
 
   return (

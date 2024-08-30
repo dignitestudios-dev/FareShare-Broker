@@ -1,14 +1,28 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Application, DatePicker } from "react-rainbow-components";
 
-const DateFilterModal = ({ isOpen, setIsOpen }) => {
+const DateFilterModal = ({
+  isOpen,
+  setIsOpen,
+  initialDate,
+  setInitialDate,
+  finalDate,
+  setFinalDate,
+}) => {
   const initialState = {
     date: new Date("2019-10-25"),
     locale: { name: "en-US", label: "English (US)" },
   };
 
-  const [initialDate, setInitialDate] = useState(initialState.date);
-  const [finalDate, setFinalDate] = useState(initialState.date);
+  const finalState = {
+    date: new Date("2080-10-25"),
+    locale: { name: "en-US", label: "English (US)" },
+  };
+
+  useEffect(() => {
+    setInitialDate(initialState?.date);
+    setFinalDate(finalState?.date);
+  }, []);
 
   const theme = {
     rainbow: {
@@ -25,6 +39,12 @@ const DateFilterModal = ({ isOpen, setIsOpen }) => {
       setIsOpen(false);
     }
   };
+  function convertDateToISOString(date) {
+    if (!(date instanceof Date) || isNaN(date.getTime())) {
+      throw new TypeError("Expected a valid Date object");
+    }
+    return date.toISOString();
+  }
 
   return (
     <div
@@ -52,8 +72,9 @@ const DateFilterModal = ({ isOpen, setIsOpen }) => {
             <DatePicker
               value={initialDate}
               minDate={new Date(2018, 0, 4)}
-              maxDate={new Date(2020, 0, 4)}
-              onChange={(value) => setInitialDate(value)}
+              onChange={(value) =>
+                setInitialDate(convertDateToISOString(new Date(value)))
+              }
               borderRadius="semi-rounded"
               className="w-full h-full"
             />
@@ -66,8 +87,9 @@ const DateFilterModal = ({ isOpen, setIsOpen }) => {
             <DatePicker
               value={finalDate}
               minDate={new Date(2018, 0, 4)}
-              maxDate={new Date(2020, 0, 4)}
-              onChange={(value) => setFinalDate(value)}
+              onChange={(value) =>
+                setFinalDate(convertDateToISOString(new Date(value)))
+              }
               borderRadius="semi-rounded"
               className="w-full h-full"
             />

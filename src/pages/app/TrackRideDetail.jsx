@@ -16,6 +16,7 @@ const TrackRideDetail = () => {
   const { id } = useParams();
   const { navigate } = useContext(AppContext);
   const [isCancelOpen, setIsCancelOpen] = useState(false);
+  const { originCoords } = useContext(AppContext);
   const [ride, setRide] = useState([]);
 
   const loadingArr = [1, 2, 3];
@@ -53,23 +54,41 @@ const TrackRideDetail = () => {
       if (response) {
         console.log(response);
         setRide(response?.data);
-        setOrigin({
-          lat: response?.data?.driverId?.currentLocation?.coordinates[1]
-            ? response?.data?.driverId?.currentLocation?.coordinates[1]
-            : 0,
-          lng: response?.data?.driverId?.currentLocation?.coordinates[0]
-            ? response?.data?.driverId?.currentLocation?.coordinates[0]
-            : 0,
-        });
+        response?.data?.driverId !== null
+          ? setOrigin({
+              lat: response?.data?.driverId?.currentLocation?.coordinates[1]
+                ? response?.data?.driverId?.currentLocation?.coordinates[1]
+                : 0,
+              lng: response?.data?.driverId?.currentLocation?.coordinates[0]
+                ? response?.data?.driverId?.currentLocation?.coordinates[0]
+                : 0,
+            })
+          : setOrigin({
+              lat: response?.data?.origin?.coordinates[1]
+                ? response?.data?.origin?.coordinates[1]
+                : 0,
+              lng: response?.data?.origin?.coordinates[0]
+                ? response?.data?.origin?.coordinates[0]
+                : 0,
+            });
 
-        setDest({
-          lat: response?.data?.origin?.coordinates[1]
-            ? response?.data?.origin?.coordinates[1]
-            : 0,
-          lng: response?.data?.origin?.coordinates[0]
-            ? response?.data?.origin?.coordinates[0]
-            : 0,
-        });
+        response?.data?.driverId !== null
+          ? setDest({
+              lat: response?.data?.origin?.coordinates[1]
+                ? response?.data?.origin?.coordinates[1]
+                : 0,
+              lng: response?.data?.origin?.coordinates[0]
+                ? response?.data?.origin?.coordinates[0]
+                : 0,
+            })
+          : setDest({
+              lat: response?.data?.destination?.coordinates[1]
+                ? response?.data?.destination?.coordinates[1]
+                : 0,
+              lng: response?.data?.destination?.coordinates[0]
+                ? response?.data?.destination?.coordinates[0]
+                : 0,
+            });
       }
     });
 
@@ -78,6 +97,7 @@ const TrackRideDetail = () => {
       socket.disconnect();
     };
   }, []);
+
   return (
     <div className="w-[calc(100%+2rem)] h-full -m-4  flex flex-col justify-start items-start">
       <div className="w-full p-4 h-auto flex gap-6 justify-between items-start">

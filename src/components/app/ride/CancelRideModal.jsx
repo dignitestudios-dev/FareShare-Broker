@@ -1,12 +1,61 @@
 import React, { useContext, useRef } from "react";
 import { AppContext } from "../../../context/AppContext";
+import io from "socket.io-client";
 
-const CancelRideModal = ({ isOpen, setIsOpen, setFind }) => {
+const SOCKET_SERVER_URL = "https://backend.faresharellc.com";
+
+const CancelRideModal = ({ isOpen, setIsOpen, id, rideID, setUpdate }) => {
   const cancelRef = useRef();
 
   const closeModal = (e) => {
     if (cancelRef.current && !cancelRef.current.contains(e.target)) {
       setIsOpen(false);
+    }
+  };
+
+  const { setError } = useContext(AppContext);
+
+  const cancelRide = (e, id, rideID) => {
+    e.preventDefault();
+    console.log(rideID, id);
+    if (id && rideID) {
+      const socket = io(SOCKET_SERVER_URL);
+      socket.on("connect", () => {
+        console.log("Socket connected:", socket.id);
+      });
+
+      socket.on("connect_error", (err) => {
+        console.error("Connection error:", err);
+      });
+
+      socket.on("disconnect", (reason) => {
+        console.warn("Socket disconnected:", reason);
+      });
+
+      socket.emit(
+        "cancelRideBroker",
+        JSON.stringify({
+          fareshareUserId: id,
+          brokerId: JSON.parse(localStorage.getItem("broker"))?._id,
+          rideId: rideID,
+        })
+      );
+
+      // Listen for the response from the server
+      socket.on("cancelRideBrokerResponse", (response) => {
+        // Store the response in state
+        console.log("cancel", response);
+        if (response?.success == true) {
+          // setUpdate((prev) => !prev);
+        } else {
+          setError(response?.message);
+        }
+      });
+
+      // Cleanup: Disconnect socket when component unmounts
+      return () => {
+        socket.disconnect();
+      };
     }
   };
 
@@ -31,10 +80,8 @@ const CancelRideModal = ({ isOpen, setIsOpen, setFind }) => {
         </div>
         <div className="w-full h-8 flex items-center justify-end gap-1 mt-2 px-2">
           <button
-            onClick={() => {
-              setIsOpen(false);
-              // setFind && setFind(false);
-              navigate("Home", "/home");
+            onClick={(e) => {
+              cancelRide(e, id, rideID);
             }}
             className="text-white bg-[#c00000] hover:bg-[#c00000d7] w-auto px-4 py-1 rounded-full text-sm font-medium"
           >

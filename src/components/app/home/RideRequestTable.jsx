@@ -10,6 +10,9 @@ const RideRequestTable = () => {
   const [isCancelOpen, setIsCancelOpen] = useState(false);
   const [rides, setRides] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [id, setId] = useState(null);
+  const [rideId, setRideId] = useState(null);
+  const [update, setUpdate] = useState(false);
   useEffect(() => {
     setLoading(true);
     const socket = io(SOCKET_SERVER_URL);
@@ -26,16 +29,19 @@ const RideRequestTable = () => {
     });
 
     socket.emit(
-      "getRidesBroker",
+      "getRidesPendingBroker",
       JSON.stringify({
         brokerId: JSON.parse(localStorage.getItem("broker"))?._id,
         page: 1,
         limit: 50,
+        status: "Pending",
       })
     );
 
     // Listen for the response from the server
-    socket.on("getRidesBrokerResponse", (response) => {
+    socket.on("getRidesPendingBrokerResponse", (response) => {
+      console.log(response);
+
       // Store the response in state
       setLoading(false);
       setRides(response?.data);
@@ -45,7 +51,7 @@ const RideRequestTable = () => {
     return () => {
       socket.disconnect();
     };
-  }, []);
+  }, [update]);
 
   const formatDate = (isoDateString) => {
     const date = new Date(isoDateString);
@@ -74,10 +80,13 @@ const RideRequestTable = () => {
     }
   };
   const formatStatus = (status) => {
-    return status.replace(/([a-z])([A-Z])/g, "$1 $2").toLowerCase();
+    return status
+      ? status.replace(/([a-z])([A-Z])/g, "$1 $2").toLowerCase()
+      : status;
   };
 
   const loadingArr = [1, 2, 3];
+
   return (
     <div className="w-full overflow-x-auto rounded-2xl border  border-gray-300 bg-white   ">
       <div class="w-full h-14 px-4 flex justify-between items-center">
@@ -231,7 +240,11 @@ const RideRequestTable = () => {
                     </td>
                     <td className="px-6 lg:px-4  py-4 capitalize">
                       <button
-                        onClick={() => setIsCancelOpen(true)}
+                        onClick={() => {
+                          setIsCancelOpen(true);
+                          setRideId(ride?.id);
+                          setId(ride?.fareshareUserId?.id);
+                        }}
                         class="w-20 h-8 bg-[#c00000] flex items-center justify-center rounded-full text-xs font-semibold transition-all duration-300 text-[#fff] hover:bg-gray-800"
                       >
                         Cancel
@@ -241,7 +254,13 @@ const RideRequestTable = () => {
                 );
               })}
           </tbody>
-          <CancelRideModal isOpen={isCancelOpen} setIsOpen={setIsCancelOpen} />
+          <CancelRideModal
+            isOpen={isCancelOpen}
+            setIsOpen={setIsCancelOpen}
+            id={id}
+            rideID={rideId}
+            setUpdate={setUpdate}
+          />
         </table>
       )}
     </div>

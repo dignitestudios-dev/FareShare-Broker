@@ -24,6 +24,7 @@ export const AppContextProvider = ({ children }) => {
 
   // Global Error State
   const [error, setError] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   return (
     <AppContext.Provider
@@ -39,6 +40,8 @@ export const AppContextProvider = ({ children }) => {
         setError,
         requestOpen,
         setRequestOpen,
+        success,
+        setSuccess,
       }}
     >
       {children}

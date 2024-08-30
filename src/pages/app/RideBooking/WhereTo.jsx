@@ -33,6 +33,7 @@ const WhereTo = () => {
     setEndError,
     coordinates,
     setCoordinates,
+    rideLoading,
   } = useContext(RideBookingContext);
   const corporate = [
     {
@@ -275,8 +276,17 @@ const WhereTo = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 justify-start items-start w-full gap-2 mt-10 h-auto">
         <button
           type="submit"
-          className="w-full flex justify-center items-center text-white text-md px-8 font-semibold h-12 rounded-full bg-[#c00000]"
+          className="w-full flex justify-center gap-2 items-center text-white text-md px-8 font-semibold h-12 rounded-full bg-[#c00000]"
         >
+          {rideLoading && (
+            <div
+              class="animate-spin inline-block size-4 border-[3px] border-current border-t-transparent text-white rounded-full"
+              role="status"
+              aria-label="loading"
+            >
+              <span class="sr-only">Loading...</span>
+            </div>
+          )}
           Find Ride Now
         </button>
         <button

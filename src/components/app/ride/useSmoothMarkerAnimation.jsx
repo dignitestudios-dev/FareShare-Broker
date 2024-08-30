@@ -1,7 +1,6 @@
 import { useEffect, useRef } from "react";
 
-const useMarkerAnimation = (
-  map,
+const useSmoothMarkerAnimation = (
   marker,
   startPosition,
   endPosition,
@@ -10,7 +9,7 @@ const useMarkerAnimation = (
   const startTime = useRef(null);
 
   useEffect(() => {
-    if (!map || !marker) return;
+    if (!marker) return;
 
     const animate = (time) => {
       if (!startTime.current) startTime.current = time;
@@ -38,7 +37,7 @@ const useMarkerAnimation = (
         new window.google.maps.LatLng(startPosition.lat, startPosition.lng)
       );
     };
-  }, [map, marker, startPosition, endPosition, duration]);
+  }, [marker, startPosition, endPosition, duration]);
 };
 
-export default useMarkerAnimation;
+export default useSmoothMarkerAnimation;

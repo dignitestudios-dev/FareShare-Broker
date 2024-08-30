@@ -43,7 +43,7 @@ const SettingsLayout = ({ page }) => {
           </span>
           <span className="text-sm ">Bank Information</span>
         </button>
-        <button
+        {/* <button
           onClick={() => {
             navigate("Settings", "/settings/notifications");
             setCurrentLink("notifications");
@@ -58,7 +58,7 @@ const SettingsLayout = ({ page }) => {
             <IoNotificationsOutline />
           </span>
           <span className="text-sm ">Notifications</span>
-        </button>
+        </button> */}
         <button
           onClick={() => {
             navigate("Settings", "/terms-and-conditions");

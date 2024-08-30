@@ -29,16 +29,19 @@ const OngoingRides = () => {
     });
 
     socket.emit(
-      "getRidesBroker",
+      "getRidesInProgressBroker",
       JSON.stringify({
         brokerId: JSON.parse(localStorage.getItem("broker"))?._id,
         page: 1,
         limit: 50,
+        status: "InProgress",
       })
     );
 
     // Listen for the response from the server
-    socket.on("getRidesBrokerResponse", (response) => {
+    socket.on("getRidesInProgressBrokerResponse", (response) => {
+      console.log(response);
+
       // Store the response in state
       setLoading(false);
       setRides(response?.data);
@@ -77,8 +80,11 @@ const OngoingRides = () => {
     }
   };
   const formatStatus = (status) => {
-    return status.replace(/([a-z])([A-Z])/g, "$1 $2").toLowerCase();
+    return status
+      ? status.replace(/([a-z])([A-Z])/g, "$1 $2").toLowerCase()
+      : status;
   };
+
   return (
     <div className="w-full overflow-x-auto rounded-2xl border  border-gray-300 bg-white   ">
       <div class="w-full h-14 px-4 flex justify-between items-center">

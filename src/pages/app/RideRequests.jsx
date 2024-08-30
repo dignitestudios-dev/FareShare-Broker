@@ -11,6 +11,8 @@ const RideRequests = () => {
   const [loading, setLoading] = useState(false);
   const loadingArr = [1, 2, 3];
 
+  const [update, setUpdate] = useState(false);
+
   useEffect(() => {
     setLoading(true);
     const socket = io(SOCKET_SERVER_URL);
@@ -27,16 +29,19 @@ const RideRequests = () => {
     });
 
     socket.emit(
-      "getRidesBroker",
+      "getRidesPendingBroker",
       JSON.stringify({
         brokerId: JSON.parse(localStorage.getItem("broker"))?._id,
         page: 1,
         limit: 50,
+        status: "Pending",
       })
     );
 
     // Listen for the response from the server
-    socket.on("getRidesBrokerResponse", (response) => {
+    socket.on("getRidesPendingBrokerResponse", (response) => {
+      console.log(response);
+
       // Store the response in state
       setLoading(false);
       setRides(response?.data);
@@ -46,41 +51,10 @@ const RideRequests = () => {
     return () => {
       socket.disconnect();
     };
-  }, []);
-  // useEffect(() => {
-  //   const socket = io(SOCKET_SERVER_URL);
-  //   socket.on("connect", () => {
-  //     console.log("Socket connected:", socket.id);
-  //   });
+  }, [update]);
 
-  //   socket.on("connect_error", (err) => {
-  //     console.error("Connection error:", err);
-  //   });
-
-  //   socket.on("disconnect", (reason) => {
-  //     console.warn("Socket disconnected:", reason);
-  //   });
-
-  //   socket.emit(
-  //     "getRidesBroker",
-  //     JSON.stringify({
-  //       brokerId: JSON.parse(localStorage.getItem("broker"))?._id,
-  //       page: 1,
-  //       limit: 50,
-  //     })
-  //   );
-
-  //   // Listen for the response from the server
-  //   socket.on("getRidesBrokerResponse", (response) => {
-  //     // Store the response in state
-  //     setRides(response?.data);
-  //   });
-
-  // Cleanup: Disconnect socket when component unmounts
-  //   return () => {
-  //     socket.disconnect();
-  //   };
-  // }, []);
+  const [id, setId] = useState(null);
+  const [rideId, setRideId] = useState(null);
 
   const formatDate = (isoDateString) => {
     const date = new Date(isoDateString);
@@ -109,7 +83,9 @@ const RideRequests = () => {
     }
   };
   const formatStatus = (status) => {
-    return status.replace(/([a-z])([A-Z])/g, "$1 $2").toLowerCase();
+    return status
+      ? status.replace(/([a-z])([A-Z])/g, "$1 $2").toLowerCase()
+      : status;
   };
   return (
     <div className="w-full overflow-x-auto rounded-2xl border  border-gray-300 bg-white   ">
@@ -204,72 +180,83 @@ const RideRequests = () => {
               ></th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-300 border-t border-[#c00000]">
-            {!loading &&
-              rides?.length > 0 &&
-              rides?.map((ride, key) => {
-                return (
-                  <tr key={key} className="">
-                    <td className="px-6 lg:px-4  py-4 text-gray-600 font-normal ">
-                      {formatDate(ride?.createdAt)}
-                    </td>
-                    <th className="px-6 lg:px-4  flex gap-3  py-4 font-normal text-gray-900">
-                      <div className="text-sm">
-                        <div className="font-medium text-gray-800">
-                          {ride?.patientFirstName} {ride?.patientLastName}
+          {!loading && rides?.length > 0 && (
+            <tbody className="divide-y divide-gray-300 border-t border-[#c00000]">
+              {rides?.length > 0 &&
+                rides?.slice(0, 3)?.map((ride, key) => {
+                  return (
+                    <tr key={key} className="">
+                      <td className="px-6 lg:px-4  py-4 text-gray-600 font-normal ">
+                        {formatDate(ride?.createdAt)}
+                      </td>
+                      <th className="px-6 lg:px-4  flex gap-3  py-4 font-normal text-gray-900">
+                        <div className="text-sm">
+                          <div className="font-medium text-gray-800">
+                            {ride?.patientFirstName} {ride?.patientLastName}
+                          </div>
+                          <div className="text-gray-600">
+                            {ride?.fareshareUserId?.id
+                              ? ride?.fareshareUserId?.id
+                              : "N/A"}
+                          </div>
                         </div>
-                        <div className="text-gray-600">
-                          {ride?.fareshareUserId?.id
-                            ? ride?.fareshareUserId?.id
-                            : "N/A"}
-                        </div>
-                      </div>
-                    </th>
+                      </th>
 
-                    <td className="px-6 lg:px-4 text-gray-600  py-4 capitalize">
-                      {ride?.rideId?.originAddress}
-                    </td>
-                    <td className="px-6 lg:px-4 text-gray-600 py-4 capitalize">
-                      {ride?.rideId?.destinationAddress}
-                    </td>
+                      <td className="px-6 lg:px-4 text-gray-600  py-4 capitalize">
+                        {ride?.rideId?.originAddress}
+                      </td>
+                      <td className="px-6 lg:px-4 text-gray-600 py-4 capitalize">
+                        {ride?.rideId?.destinationAddress}
+                      </td>
 
-                    <td className="px-6 lg:px-4  py-4">
-                      <span
-                        className={`w-auto px-2 h-6 capitalize ${getStatusStyles(
-                          ride?.rideId?.status
-                        )}  hover:opacity-80  rounded-full text-xs`}
-                      >
-                        {formatStatus(ride?.rideId?.status)}
-                      </span>
-                    </td>
-                    <td className="px-6 lg:px-4  py-4 capitalize">
-                      <button
-                        onClick={() =>
-                          navigate(
-                            "Home",
-                            `/ride/ride-detail/${ride?.rideId?.id}`
-                          )
-                        }
-                        className="text-[#c00000] text-xs font-semibold"
-                      >
-                        View More
-                      </button>
-                    </td>
-                    <td className="px-6 lg:px-4  py-4 capitalize">
-                      <button
-                        onClick={() => setIsCancelOpen(true)}
-                        class="w-28 h-8 bg-[#c00000] flex items-center justify-center rounded-full text-xs font-semibold transition-all duration-300 text-[#fff] hover:bg-gray-800"
-                      >
-                        Cancel
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-          </tbody>
-          <CancelRideModal isOpen={isCancelOpen} setIsOpen={setIsCancelOpen} />
+                      <td className="px-6 lg:px-4  py-4">
+                        <span
+                          className={`w-auto px-2 h-6 capitalize ${getStatusStyles(
+                            ride?.rideId?.status
+                          )}  hover:opacity-80  rounded-full text-xs`}
+                        >
+                          {formatStatus(ride?.rideId?.status)}
+                        </span>
+                      </td>
+                      <td className="px-6 lg:px-4  py-4 capitalize">
+                        <button
+                          onClick={() =>
+                            navigate(
+                              "Home",
+                              `/ride/ride-detail/${ride?.rideId?.id}`
+                            )
+                          }
+                          className="text-[#c00000] text-xs font-semibold"
+                        >
+                          View More
+                        </button>
+                      </td>
+                      <td className="px-6 lg:px-4  py-4 capitalize">
+                        <button
+                          onClick={() => {
+                            setIsCancelOpen(true);
+                            setRideId(ride?.id);
+                            setId(ride?.fareshareUserId?.id);
+                          }}
+                          class="w-20 h-8 bg-[#c00000] flex items-center justify-center rounded-full text-xs font-semibold transition-all duration-300 text-[#fff] hover:bg-gray-800"
+                        >
+                          Cancel
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+            </tbody>
+          )}
         </table>
       )}
+      <CancelRideModal
+        isOpen={isCancelOpen}
+        setIsOpen={setIsCancelOpen}
+        id={id}
+        rideID={rideId}
+        setUpdate={setUpdate}
+      />
     </div>
   );
 };
