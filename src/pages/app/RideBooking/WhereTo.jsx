@@ -290,7 +290,7 @@ const WhereTo = () => {
         </button>
       </div>
 
-      {<FindRide find={find} setFind={setFind} />}
+      {find && <FindRide />}
     </form>
   );
 };

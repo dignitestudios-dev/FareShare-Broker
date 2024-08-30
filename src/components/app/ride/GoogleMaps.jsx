@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import {
   GoogleMap,
   useJsApiLoader,
@@ -8,6 +8,7 @@ import {
 import { decode } from "@mapbox/polyline";
 import { AppContext } from "../../../context/AppContext";
 import { RideBookingContext } from "../../../context/RideBookingContext";
+import useSmoothMarkerAnimation from "./useSmoothMarkerAnimation"; // Import the custom hook
 
 const GoogleMaps = ({ origin, destination }) => {
   const { setError } = useContext(AppContext);
@@ -18,20 +19,16 @@ const GoogleMaps = ({ origin, destination }) => {
     libraries: ["places"],
   });
 
-  const generateIntermediatePoints = (origin, destination, numPoints) => {
-    const points = [origin];
-    const latStep = (destination.lat - origin.lat) / (numPoints + 1);
-    const lngStep = (destination.lng - origin.lng) / (numPoints + 1);
+  const mapRef = useRef(null);
+  const driverMarkerRef = useRef(null);
+  const [driverPosition, setDriverPosition] = useState(origin);
 
-    for (let i = 1; i <= numPoints; i++) {
-      const lat = origin.lat + i * latStep;
-      const lng = origin.lng + i * lngStep;
-      points.push({ lat, lng });
-    }
-
-    points.push(destination);
-    return points;
-  };
+  useSmoothMarkerAnimation(
+    mapRef.current,
+    driverMarkerRef.current,
+    driverPosition,
+    origin
+  );
 
   useEffect(() => {
     if (origin && destination && isLoaded) {
@@ -70,9 +67,8 @@ const GoogleMaps = ({ origin, destination }) => {
           }
         }
       );
-      // setPath(generateIntermediatePoints(origin, destination, 1000000));
     }
-  }, [origin, destination, isLoaded]);
+  }, [origin, destination, isLoaded, setError]);
 
   return isLoaded ? (
     <div style={{ width: "100%", height: "400px", borderRadius: "20px" }}>
@@ -93,41 +89,36 @@ const GoogleMaps = ({ origin, destination }) => {
             },
           ],
         }}
+        onLoad={(map) => (mapRef.current = map)}
       >
         {path.length > 0 && (
           <Polyline
             path={path}
             options={{
-              strokeColor: "#c00000", // Red color
+              strokeColor: "#c00000",
               strokeOpacity: 0.8,
               strokeWeight: 5,
             }}
           />
         )}
         <MarkerF
+          ref={driverMarkerRef}
           icon={{
             url: "/driver.png",
-            scaledSize: new window.google.maps.Size(40, 40), // Adjust width and height here
+            scaledSize: new window.google.maps.Size(40, 40),
           }}
-          position={origin}
+          position={driverPosition}
         />
-        {rideOrder == "pickup" ? (
-          <MarkerF
-            position={destination}
-            icon={{
-              url: "/pickup.png",
-              scaledSize: new window.google.maps.Size(30, 30), // Adjust width and height here
-            }}
-          />
-        ) : (
-          <MarkerF
-            position={destination}
-            icon={{
-              url: "/destination.png",
-              scaledSize: new window.google.maps.Size(20, 20), // Adjust width and height here
-            }}
-          />
-        )}
+        <MarkerF
+          position={destination}
+          icon={{
+            url: rideOrder === "pickup" ? "/pickup.png" : "/destination.png",
+            scaledSize: new window.google.maps.Size(
+              rideOrder === "pickup" ? 30 : 20,
+              rideOrder === "pickup" ? 30 : 20
+            ),
+          }}
+        />
       </GoogleMap>
     </div>
   ) : null;
