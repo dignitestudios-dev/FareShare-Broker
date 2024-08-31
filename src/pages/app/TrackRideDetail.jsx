@@ -86,6 +86,16 @@ const TrackRideDetail = () => {
                 ? response?.data?.driverId?.currentLocation?.coordinates[0]
                 : 0,
             })
+          : response?.data?.driverId !== null &&
+            response?.status == "inProgress"
+          ? setOrigin({
+              lat: response?.data?.driverId?.currentLocation?.coordinates[1]
+                ? response?.data?.driverId?.currentLocation?.coordinates[1]
+                : 0,
+              lng: response?.data?.driverId?.currentLocation?.coordinates[0]
+                ? response?.data?.driverId?.currentLocation?.coordinates[0]
+                : 0,
+            })
           : setOrigin({
               lat: response?.data?.origin?.coordinates[1]
                 ? response?.data?.origin?.coordinates[1]
@@ -115,6 +125,16 @@ const TrackRideDetail = () => {
                 : 0,
             })
           : response?.status == "reachedLocation" &&
+            response?.data?.driverId !== null
+          ? setDest({
+              lat: response?.data?.destination?.coordinates[1]
+                ? response?.data?.destination?.coordinates[1]
+                : 0,
+              lng: response?.data?.destination?.coordinates[0]
+                ? response?.data?.destination?.coordinates[0]
+                : 0,
+            })
+          : response?.status == "inProgress" &&
             response?.data?.driverId !== null
           ? setDest({
               lat: response?.data?.destination?.coordinates[1]
