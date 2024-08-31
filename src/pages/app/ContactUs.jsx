@@ -27,7 +27,7 @@ const ContactUs = () => {
         try {
           // API call to login using Axios interceptor
           const response = await axios.post(
-            "/broker/contactUsBroker",
+            "https://backend.faresharellc.com/broker/contactUsBroker",
             {
               name: values.name,
               email: values.email,

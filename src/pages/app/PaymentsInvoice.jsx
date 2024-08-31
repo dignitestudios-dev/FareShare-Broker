@@ -17,7 +17,7 @@ const PaymentsInvoice = () => {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     };
     const invoices = await axios.post(
-      `/broker/invoice`,
+      `https://backend.faresharellc.com/broker/invoice`,
       {
         status: filter == "paid" ? "completed" : "pending",
       },
