@@ -3,6 +3,7 @@ import InvoiceModal from "../../components/app/paymentsandinvoice/InvoiceModal";
 import api from "../../api/apiInterceptor";
 import { useEffect } from "react";
 import { NoData } from "../../assets/export";
+import axios from "axios";
 
 const PaymentsInvoice = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,9 +13,16 @@ const PaymentsInvoice = () => {
   const [filter, setFilter] = useState("paid");
 
   const getInvoices = async () => {
-    const invoices = await api.post(`/broker/invoice`, {
-      status: filter == "paid" ? "completed" : "pending",
-    });
+    const headers = {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    };
+    const invoices = await axios.post(
+      `/broker/invoice`,
+      {
+        status: filter == "paid" ? "completed" : "pending",
+      },
+      { headers }
+    );
     setInvoices(invoices?.data?.data);
   };
 

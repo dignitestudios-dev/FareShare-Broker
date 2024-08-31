@@ -6,6 +6,7 @@ import { contactUsSchema } from "../../schema/contactUsSchema";
 import { contactUsValues } from "../../data/contactUs";
 import api from "../../api/apiInterceptor";
 import SuccessToast from "../../components/app/global/SuccessToast";
+import axios from "axios";
 
 const ContactUs = () => {
   const { navigate, error, setError } = useContext(AppContext);
@@ -20,14 +21,21 @@ const ContactUs = () => {
 
       onSubmit: async (values, action) => {
         setLoading(true);
+        const headers = {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        };
         try {
           // API call to login using Axios interceptor
-          const response = await api.post("/broker/contactUsBroker", {
-            name: values.name,
-            email: values.email,
-            subject: values.subject,
-            description: values.message,
-          });
+          const response = await axios.post(
+            "/broker/contactUsBroker",
+            {
+              name: values.name,
+              email: values.email,
+              subject: values.subject,
+              description: values.message,
+            },
+            { headers }
+          );
 
           if (response?.data?.success) {
             // Handle the response (e.g., save token, redirect)
