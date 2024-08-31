@@ -235,7 +235,7 @@ const RideRequests = () => {
                         <button
                           onClick={() => {
                             setIsCancelOpen(true);
-                            setRideId(ride?.id);
+                            setRideId(ride?.rideId?.id);
                             setId(ride?.fareshareUserId?.id);
                           }}
                           class="w-20 h-8 bg-[#c00000] flex items-center justify-center rounded-full text-xs font-semibold transition-all duration-300 text-[#fff] hover:bg-gray-800"
