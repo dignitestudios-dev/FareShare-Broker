@@ -82,6 +82,7 @@ const SocialLogin = () => {
             .then(
               (response) => {
                 // just for now
+                console.log(response);
                 Cookies.set("token", response?.data?.token, {
                   expires: 7,
                 });
@@ -123,6 +124,8 @@ const SocialLogin = () => {
             })
             .then(
               (response) => {
+                console.log(response);
+
                 // just for now
                 Cookies.set("token", response?.data?.token, {
                   expires: 7,
