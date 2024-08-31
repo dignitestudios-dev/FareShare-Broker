@@ -201,6 +201,16 @@ const TrackRideDetail = () => {
               ],
             })
           );
+          console.log(
+            JSON.stringify({
+              driverId: ride?.data?.driverId?.id,
+              rideId: ride?.data?._id,
+              currentLocation: [
+                ride?.data?.driverId?.currentLocation?.coordinates[1],
+                ride?.data?.driverId?.currentLocation?.coordinates[0],
+              ],
+            })
+          );
 
           // Listen for the response from the server
           socket.on("updateLocationResponse", (response) => {
