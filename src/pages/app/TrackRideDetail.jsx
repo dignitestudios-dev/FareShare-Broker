@@ -171,6 +171,8 @@ const TrackRideDetail = () => {
                 : 0,
             });
 
+        useEffect(() => {}, [origin, dest]);
+
         useEffect(() => {
           if (status == "driverAssigned" || status == "ReachedLocation") {
             const socket = io(SOCKET_SERVER_URL);
@@ -493,7 +495,7 @@ const TrackRideDetail = () => {
           //   lng: ride?.driverId?.currentLocation?.coordinates[0],
           // }}
           destination={dest}
-          origin={originCoords}
+          origin={origin}
         />
       </div>
     </div>
