@@ -224,22 +224,22 @@ const TrackRideDetail = () => {
       socket.emit(
         "updateLocation",
         JSON.stringify({
-          driverId: ride?.data?.driverId?.id,
-          rideId: ride?.data?._id,
+          driverId: ride?.driverId?.id,
+          rideId: ride?._id,
           currentLocation: [
-            ride?.data?.driverId?.currentLocation?.coordinates[1],
-            ride?.data?.driverId?.currentLocation?.coordinates[0],
+            ride?.driverId?.currentLocation?.coordinates[1],
+            ride?.driverId?.currentLocation?.coordinates[0],
           ],
         })
       );
       console.log("ride", ride);
       console.log(
         JSON.stringify({
-          driverId: ride?.data?.driverId?.id,
-          rideId: ride?.data?._id,
+          driverId: ride?.driverId?.id,
+          rideId: ride?._id,
           currentLocation: [
-            ride?.data?.driverId?.currentLocation?.coordinates[1],
-            ride?.data?.driverId?.currentLocation?.coordinates[0],
+            ride?.driverId?.currentLocation?.coordinates[1],
+            ride?.driverId?.currentLocation?.coordinates[0],
           ],
         })
       );
