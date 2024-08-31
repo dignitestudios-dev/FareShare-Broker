@@ -171,7 +171,10 @@ const TrackRideDetail = () => {
                 : 0,
             });
 
-        useEffect(() => {}, [origin, dest]);
+        useEffect(() => {
+          console.log(origin);
+          console.log(dest);
+        }, [origin, dest]);
 
         useEffect(() => {
           if (status == "driverAssigned" || status == "ReachedLocation") {
