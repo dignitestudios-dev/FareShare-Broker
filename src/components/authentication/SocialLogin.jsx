@@ -42,7 +42,7 @@ const SocialLogin = () => {
                   expires: 7,
                 });
                 if (response?.data?.token) {
-                  navigate("/home/");
+                  navigate("Home", "/home");
                 }
               },
               (error) => {
@@ -87,7 +87,7 @@ const SocialLogin = () => {
                   expires: 7,
                 });
                 if (response?.data?.token) {
-                  navigate("/home/");
+                  navigate("Home", "/home");
                 }
               },
               (error) => {
@@ -131,7 +131,7 @@ const SocialLogin = () => {
                   expires: 7,
                 });
                 if (response?.data?.token) {
-                  navigate("/home/");
+                  navigate("Home", "/home");
                 }
               },
               (error) => {
