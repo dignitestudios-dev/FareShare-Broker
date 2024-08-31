@@ -38,9 +38,7 @@ const SocialLogin = () => {
             .then(
               (response) => {
                 // just for now
-                Cookies.set("token", response?.data?.token, {
-                  expires: 7,
-                });
+                localStorage.setItem("token", response?.data?.token);
                 if (response?.data?.token) {
                   navigate("Home", "/home");
                 }
@@ -83,9 +81,7 @@ const SocialLogin = () => {
               (response) => {
                 // just for now
                 console.log(response);
-                Cookies.set("token", response?.data?.token, {
-                  expires: 7,
-                });
+                localStorage.setItem("token", response?.data?.token);
                 if (response?.data?.token) {
                   navigate("Home", "/home");
                 }
@@ -127,9 +123,7 @@ const SocialLogin = () => {
                 console.log(response);
 
                 // just for now
-                Cookies.set("token", response?.data?.token, {
-                  expires: 7,
-                });
+                localStorage.setItem("token", response?.data?.token);
                 if (response?.data?.token) {
                   navigate("Home", "/home");
                 }
