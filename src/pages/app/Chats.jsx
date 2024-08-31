@@ -71,7 +71,17 @@ export const Chats = () => {
 
   return (
     <div className="w-full  h-full grid grid-cols-4 justify-between bg-white">
-      {messages?.length == 0 && (
+      {chatRoom == null && (
+        <div className="w-full h-full col-span-3 flex flex-col justify-between">
+          <div className="w-full h-full flex flex-col items-center justify-center">
+            <img src={NoData} alt="" className="w-96" />
+            <span className="text-xl font-bold text-gray-700">
+              Start New Conversation
+            </span>
+          </div>
+        </div>
+      )}
+      {chatRoom && messages?.length == 0 && (
         <div className="w-full h-full col-span-3 flex flex-col justify-between">
           <div className="w-full h-full flex flex-col items-center justify-center">
             <img src={NoData} alt="" className="w-96" />
