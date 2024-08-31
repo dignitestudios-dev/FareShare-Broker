@@ -38,10 +38,10 @@ const SocialLogin = () => {
             .then(
               (response) => {
                 // just for now
-                Cookies.set("token", response?.data?.data?.token, {
+                Cookies.set("token", response?.data?.token, {
                   expires: 7,
                 });
-                if (response?.data?.data?.token) {
+                if (response?.data?.token) {
                   navigate("/home/");
                 }
               },
@@ -82,10 +82,10 @@ const SocialLogin = () => {
             .then(
               (response) => {
                 // just for now
-                Cookies.set("token", response?.data?.data?.token, {
+                Cookies.set("token", response?.data?.token, {
                   expires: 7,
                 });
-                if (response?.data?.data?.token) {
+                if (response?.data?.token) {
                   navigate("/home/");
                 }
               },
@@ -124,10 +124,10 @@ const SocialLogin = () => {
             .then(
               (response) => {
                 // just for now
-                Cookies.set("token", response?.data?.data?.token, {
+                Cookies.set("token", response?.data?.token, {
                   expires: 7,
                 });
-                if (response?.data?.data?.token) {
+                if (response?.data?.token) {
                   navigate("/home/");
                 }
               },
