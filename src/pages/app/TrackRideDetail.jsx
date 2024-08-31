@@ -232,6 +232,7 @@ const TrackRideDetail = () => {
           ],
         })
       );
+      console.log("ride", ride);
       console.log(
         JSON.stringify({
           driverId: ride?.data?.driverId?.id,
