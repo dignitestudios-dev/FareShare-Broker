@@ -1,18 +1,23 @@
-import React, { useRef } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import { FaCheck } from "react-icons/fa";
+import { AppContext } from "../../../context/AppContext";
+import { RideBookingContext } from "../../../context/RideBookingContext";
 
 const RideConfirmedModal = ({ isOpen, setIsOpen }) => {
   const modalRef = useRef();
 
-  const toggleModal = (e) => {
-    if (modalRef.current && !modalRef.current.contains(e.target)) {
-      setIsOpen(false);
-    }
-  };
+  const { navigate } = useContext(AppContext);
+  const { setIsScheduled } = useContext(RideBookingContext);
+
+  useEffect(() => {
+    setTimeout(() => {
+      navigate("Home", "/home");
+      setIsScheduled(false);
+    }, 4000);
+  });
   return (
     <div
       id="confirmed-ride-modal"
-      onClick={toggleModal}
       className={`fixed top-0 left-0 ${
         isOpen ? "flex" : "hidden"
       } w-screen h-screen z-[1000]  justify-center items-center px-2 md:px-0 bg-[#000]/[0.46]`}

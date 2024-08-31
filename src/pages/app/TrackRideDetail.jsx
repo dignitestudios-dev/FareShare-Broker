@@ -23,6 +23,7 @@ const TrackRideDetail = () => {
   const [loading, setLoading] = useState(false);
   const [origin, setOrigin] = useState({ lat: 0, lng: 0 });
   const [dest, setDest] = useState({ lat: 0, lng: 0 });
+  const [status, setStatus] = useState(null);
 
   useEffect(() => {
     setLoading(true);
@@ -52,8 +53,86 @@ const TrackRideDetail = () => {
       // Store the response in state
       setLoading(false);
       if (response) {
+        setStatus(response?.status);
         console.log(response);
         setRide(response?.data);
+
+        response?.status == "reachedDestination"
+          ? setOrigin({
+              lat: response?.data?.origin?.coordinates[1]
+                ? response?.data?.origin?.coordinates[1]
+                : 0,
+              lng: response?.data?.origin?.coordinates[0]
+                ? response?.data?.origin?.coordinates[0]
+                : 0,
+            })
+          : response?.data?.driverId !== null &&
+            response?.status == "driverAssigned"
+          ? setOrigin({
+              lat: response?.data?.driverId?.currentLocation?.coordinates[1]
+                ? response?.data?.driverId?.currentLocation?.coordinates[1]
+                : 0,
+              lng: response?.data?.driverId?.currentLocation?.coordinates[0]
+                ? response?.data?.driverId?.currentLocation?.coordinates[0]
+                : 0,
+            })
+          : response?.data?.driverId !== null &&
+            response?.status == "reachedLocation"
+          ? setOrigin({
+              lat: response?.data?.driverId?.currentLocation?.coordinates[1]
+                ? response?.data?.driverId?.currentLocation?.coordinates[1]
+                : 0,
+              lng: response?.data?.driverId?.currentLocation?.coordinates[0]
+                ? response?.data?.driverId?.currentLocation?.coordinates[0]
+                : 0,
+            })
+          : setOrigin({
+              lat: response?.data?.origin?.coordinates[1]
+                ? response?.data?.origin?.coordinates[1]
+                : 0,
+              lng: response?.data?.origin?.coordinates[0]
+                ? response?.data?.origin?.coordinates[0]
+                : 0,
+            });
+
+        response?.status == "reachedDestination"
+          ? setDest({
+              lat: response?.data?.destination?.coordinates[1]
+                ? response?.data?.destination?.coordinates[1]
+                : 0,
+              lng: response?.data?.destination?.coordinates[0]
+                ? response?.data?.destination?.coordinates[0]
+                : 0,
+            })
+          : response?.status == "driverAssigned" &&
+            response?.data?.driverId !== null
+          ? setDest({
+              lat: response?.data?.origin?.coordinates[1]
+                ? response?.data?.origin?.coordinates[1]
+                : 0,
+              lng: response?.data?.origin?.coordinates[0]
+                ? response?.data?.origin?.coordinates[0]
+                : 0,
+            })
+          : response?.status == "reachedLocation" &&
+            response?.data?.driverId !== null
+          ? setDest({
+              lat: response?.data?.destination?.coordinates[1]
+                ? response?.data?.destination?.coordinates[1]
+                : 0,
+              lng: response?.data?.destination?.coordinates[0]
+                ? response?.data?.destination?.coordinates[0]
+                : 0,
+            })
+          : setDest({
+              lat: response?.data?.destination?.coordinates[1]
+                ? response?.data?.destination?.coordinates[1]
+                : 0,
+              lng: response?.data?.destination?.coordinates[0]
+                ? response?.data?.destination?.coordinates[0]
+                : 0,
+            });
+
         response?.data?.driverId !== null
           ? setOrigin({
               lat: response?.data?.driverId?.currentLocation?.coordinates[1]
@@ -72,23 +151,76 @@ const TrackRideDetail = () => {
                 : 0,
             });
 
-        response?.data?.driverId !== null
-          ? setDest({
-              lat: response?.data?.origin?.coordinates[1]
-                ? response?.data?.origin?.coordinates[1]
-                : 0,
-              lng: response?.data?.origin?.coordinates[0]
-                ? response?.data?.origin?.coordinates[0]
-                : 0,
-            })
-          : setDest({
-              lat: response?.data?.destination?.coordinates[1]
-                ? response?.data?.destination?.coordinates[1]
-                : 0,
-              lng: response?.data?.destination?.coordinates[0]
-                ? response?.data?.destination?.coordinates[0]
-                : 0,
+        useEffect(() => {
+          if (status == "driverAssigned" || status == "ReachedLocation") {
+            const socket = io(SOCKET_SERVER_URL);
+            socket.on("connect", () => {
+              console.log("Socket connected:", socket.id);
             });
+
+            socket.on("connect_error", (err) => {
+              console.error("Connection error:", err);
+            });
+
+            socket.on("disconnect", (reason) => {
+              console.warn("Socket disconnected:", reason);
+            });
+
+            socket.emit(
+              "updateLocation",
+              JSON.stringify({
+                driverId: ride?.data?.driverId?.id,
+                rideId: ride?.data?._id,
+                currentLocation: [
+                  ride?.data?.driverId?.currentLocation?.coordinates[1],
+                  ride?.data?.driverId?.currentLocation?.coordinates[0],
+                ],
+              })
+            );
+
+            // Listen for the response from the server
+            socket.on("updateLocationResponse", (response) => {
+              // Store the response in state
+
+              if (response?.success) {
+                console.log("update", response);
+
+                setOrigin({
+                  lat: response?.data?.coordinates[1],
+                  lng: response?.data?.coordinates[0],
+                });
+              }
+            });
+
+            // Cleanup: Disconnect socket when component unmounts
+            return () => {
+              socket.disconnect();
+            };
+          } else {
+            setOrigin({
+              lat: data?.driverId?.currentLocation?.coordinates[1],
+              lng: data?.driverId?.currentLocation?.coordinates[0],
+            });
+          }
+        }, [status, ride]);
+
+        // response?.data?.driverId !== null
+        //   ? setDest({
+        //       lat: response?.data?.origin?.coordinates[1]
+        //         ? response?.data?.origin?.coordinates[1]
+        //         : 0,
+        //       lng: response?.data?.origin?.coordinates[0]
+        //         ? response?.data?.origin?.coordinates[0]
+        //         : 0,
+        //     })
+        //   : setDest({
+        //       lat: response?.data?.destination?.coordinates[1]
+        //         ? response?.data?.destination?.coordinates[1]
+        //         : 0,
+        //       lng: response?.data?.destination?.coordinates[0]
+        //         ? response?.data?.destination?.coordinates[0]
+        //         : 0,
+        //     });
       }
     });
 
@@ -341,7 +473,7 @@ const TrackRideDetail = () => {
           //   lng: ride?.driverId?.currentLocation?.coordinates[0],
           // }}
           destination={dest}
-          origin={origin}
+          origin={originCoords}
         />
       </div>
     </div>

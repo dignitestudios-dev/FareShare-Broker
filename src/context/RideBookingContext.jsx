@@ -24,6 +24,10 @@ export const RideBookingContextProvider = ({ children }) => {
   const [created, setCreated] = useState(null);
   const [rideOrder, setRideOrder] = useState("pickup");
   const [cancelRides, setCancelRides] = useState({ id: null, rideID: null });
+  const [isScheduled, setIsScheduled] = useState(false);
+  const [locationInfo, setLocationInfo] = useState(null);
+  const [scheduledDate, setScheduledDate] = useState(null);
+  const [openConfirm, setOpenConfirm] = useState(false);
 
   const SOCKET_SERVER_URL = "https://backend.faresharellc.com";
 
@@ -45,6 +49,10 @@ export const RideBookingContextProvider = ({ children }) => {
       setRideLoading(true);
       const socket = io(SOCKET_SERVER_URL);
       socket.on("connect", () => {
+        setStartAddress("");
+        setOriginCoords(null);
+        setEndAddress("");
+        setDestCoords(null);
         console.log("Socket connected:", socket.id);
       });
 
@@ -76,8 +84,8 @@ export const RideBookingContextProvider = ({ children }) => {
           vehicleType: vehicleType,
           category: tab,
           isWheelChairAccessible: isWheelChairAccessible,
-          isScheduled: false,
-          scheduledDate: "2024-07-20T09:00:00.000Z",
+          isScheduled: isScheduled,
+          scheduledDate: isScheduled ? scheduledDate : new Date().toISOString(),
           rideDate: new Date().toISOString(),
         })
       );
@@ -90,9 +98,14 @@ export const RideBookingContextProvider = ({ children }) => {
         setData(response?.data);
         setMessage(response?.message);
 
+        if (isScheduled && response?.success) {
+          setOpenConfirm(true);
+          socket.disconnect();
+        }
+
         setCancelRides({
           id: response?.data?.fareshareUserId?.id,
-          rideID: response?.data?.id,
+          rideID: response?.data?.rideId?.id,
         });
         if (response?.status == "findingDriver") {
           setRideLoading(false);
@@ -165,6 +178,13 @@ export const RideBookingContextProvider = ({ children }) => {
     e.preventDefault();
     console.log(cancelRides?.id, cancelRides?.rideID);
     if (cancelRides?.id && cancelRides?.rideID) {
+      console.log(
+        JSON.stringify({
+          fareshareUserId: cancelRides?.id,
+          brokerId: JSON.parse(localStorage.getItem("broker"))?._id,
+          rideId: cancelRides?.rideID,
+        })
+      );
       const socket = io(SOCKET_SERVER_URL);
       socket.on("connect", () => {
         setCancelLoading(true);
@@ -199,7 +219,9 @@ export const RideBookingContextProvider = ({ children }) => {
         console.log("cancel", response);
         if (response?.success == true) {
           setCancelLoading(false);
+          setFind(false);
           setSuccess("Ride Cancelled Successfully.");
+          navigate("Home", "/home");
           // setUpdate((prev) => !prev);
         } else {
           setCancelLoading(false);
@@ -321,6 +343,14 @@ export const RideBookingContextProvider = ({ children }) => {
         cancelRide,
         cancelRides,
         cancelLoading,
+        isScheduled,
+        setIsScheduled,
+        locationInfo,
+        setLocationInfo,
+        scheduledDate,
+        openConfirm,
+        setOpenConfirm,
+        setScheduledDate,
       }}
     >
       {children}

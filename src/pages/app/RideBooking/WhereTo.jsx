@@ -34,6 +34,12 @@ const WhereTo = () => {
     coordinates,
     setCoordinates,
     rideLoading,
+    isScheduled,
+    setIsScheduled,
+    scheduledDate,
+    setScheduledDate,
+    locationInfo,
+    setLocationInfo,
   } = useContext(RideBookingContext);
   const corporate = [
     {
@@ -291,9 +297,10 @@ const WhereTo = () => {
         </button>
         <button
           type="button"
-          onClick={() =>
-            navigate("Request a ride", "/ride/new-request/schedule-for-later")
-          }
+          onClick={() => {
+            setIsScheduled(true);
+            navigate("Request a ride", "/ride/new-request/schedule-for-later");
+          }}
           className="w-full flex justify-center items-center text-[#c00000] text-md px-8 font-semibold h-12 rounded-full bg-[#c00000]/[0.12]"
         >
           Schedule for later

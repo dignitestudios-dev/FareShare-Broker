@@ -25,6 +25,15 @@ const CompletedRideTable = () => {
       console.warn("Socket disconnected:", reason);
     });
 
+    console.log(
+      JSON.stringify({
+        brokerId: JSON.parse(localStorage.getItem("broker"))?._id,
+        page: 1,
+        limit: 50,
+        status: "Completed",
+      })
+    );
+
     socket.emit(
       "getRidesCompletedBroker",
       JSON.stringify({

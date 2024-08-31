@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Card,
   Calendar,
@@ -10,8 +10,16 @@ import { IoChevronBack } from "react-icons/io5";
 import { useEffect } from "react";
 import moment from "moment";
 import RideConfirmedModal from "../../../components/app/ride/RideConfirmedModal";
+import { RideBookingContext } from "../../../context/RideBookingContext";
 
 const SchdeuleForLater = () => {
+  const {
+    handleSubmit,
+    setScheduledDate,
+    openConfirm,
+    setOpenConfirm,
+    rideLoading,
+  } = useContext(RideBookingContext);
   const today = moment();
   const theme = {
     rainbow: {
@@ -24,7 +32,22 @@ const SchdeuleForLater = () => {
   const [date, setDate] = useState(new Date());
   const [time, setTime] = useState();
 
-  const [openConfirm, setOpenConfirm] = useState(false);
+  // Helper function to combine date and time into an ISO string
+  const getScheduledDate = () => {
+    if (date && time) {
+      const dateTime = new Date(date);
+      const [hours, minutes] = time.split(":");
+      dateTime.setHours(hours, minutes);
+      return dateTime.toISOString();
+    }
+    return null;
+  };
+
+  useEffect(() => {
+    if (date && time) {
+      setScheduledDate(getScheduledDate());
+    }
+  }, [date, time]);
 
   return (
     <div className="w-full h-auto flex flex-col p-4  justify-start items-start gap-4">
@@ -95,13 +118,24 @@ const SchdeuleForLater = () => {
           </Application> */}
         </div>
         <button
-          onClick={() => setOpenConfirm(true)}
-          className="w-full h-12 rounded-full bg-[#c00000] text-white flex justify-center items-center text-lg font-medium"
+          onClick={(e) => handleSubmit(e)}
+          className="w-full h-12 rounded-full bg-[#c00000] text-white flex justify-center gap-2 items-center text-lg font-medium"
         >
+          {rideLoading && (
+            <div
+              class="animate-spin inline-block size-4 border-[3px] border-current border-t-transparent text-white rounded-full"
+              role="status"
+              aria-label="loading"
+            >
+              <span class="sr-only">Loading...</span>
+            </div>
+          )}
           Confirm date and time
         </button>
       </div>
-      <RideConfirmedModal isOpen={openConfirm} setIsOpen={setOpenConfirm} />
+      {openConfirm && (
+        <RideConfirmedModal isOpen={openConfirm} setIsOpen={setOpenConfirm} />
+      )}
     </div>
   );
 };

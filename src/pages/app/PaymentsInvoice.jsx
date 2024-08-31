@@ -13,7 +13,7 @@ const PaymentsInvoice = () => {
 
   const getInvoices = async () => {
     const invoices = await api.post(`/broker/invoice`, {
-      filter: filter,
+      status: filter == "paid" ? "completed" : "pending",
     });
     setInvoices(invoices?.data?.data);
   };

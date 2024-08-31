@@ -34,8 +34,8 @@ const AppLayout = ({ page }) => {
   return (
     <div className="w-screen bg-white h-screen flex justify-start items-start relative">
       <Sidebar />
-      {error && <Error error={error} setError={setError} />}
-      {success && <SuccessToast success={success} setSuccess={setSuccess} />}
+      {<Error error={error} setError={setError} />}
+      {<SuccessToast success={success} setSuccess={setSuccess} />}
       <div className="w-full h-full lg:w-[80%] xl:w-[80%] flex flex-col justify-start items-start relative">
         <Navbar />
         <div className="w-full h-[calc(100%-3.5rem)] p-4 overflow-y-auto">
