@@ -1,6 +1,12 @@
 import React, { useContext, useState } from "react";
 import axios from "axios";
-import { FaApple, FaFacebook, FaFacebookF } from "react-icons/fa";
+import {
+  FaApple,
+  FaFacebook,
+  FaFacebookF,
+  FaRegEye,
+  FaRegEyeSlash,
+} from "react-icons/fa";
 import { FiUser } from "react-icons/fi";
 import { TiUserAddOutline } from "react-icons/ti";
 import { AppContext } from "../../context/AppContext";
@@ -12,6 +18,8 @@ import authentication from "../../api/authenticationInterceptor";
 const ChangePassword = () => {
   const { navigate, error, setError } = useContext(AppContext);
   const [loading, setLoading] = useState(false);
+  const [isShow, setIsShow] = useState(false);
+  const [isConfShow, setIsConfShow] = useState(false);
   const { values, handleBlur, handleChange, handleSubmit, errors, touched } =
     useFormik({
       initialValues: updatePassValues,
@@ -69,54 +77,74 @@ const ChangePassword = () => {
             <p class="mt-4 text-gray-500 ">Setup your new credentials.</p>
 
             <div class="flex flex-col gap-6 mt-8 ">
-              <div class="w-full">
+              <div class="w-full relative">
                 <div class="flex justify-between mb-2">
                   <label for="password" class="text-sm text-gray-600 ">
                     Password
                   </label>
                 </div>
-
-                <input
-                  type="password"
-                  name="password"
-                  id="password"
-                  value={values.password}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  placeholder="Your Password"
-                  class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40  transition-colors duration-300 ${
-                    errors.email && touched.email
-                      ? "border-red-600 shake"
-                      : null
-                  }`}
-                />
+                <div className="w-full relative">
+                  <input
+                    type={isShow ? "text" : "password"}
+                    name="password"
+                    id="password"
+                    value={values.password}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    placeholder="Your Password"
+                    class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40  transition-colors duration-300 ${
+                      errors.email && touched.email
+                        ? "border-red-600 shake"
+                        : null
+                    }`}
+                  />
+                  {
+                    <button
+                      type="button"
+                      onClick={() => setIsShow((prev) => !prev)}
+                      className="absolute top-[35%] text-gray-500 text-lg right-3"
+                    >
+                      {isShow ? <FaRegEyeSlash /> : <FaRegEye />}
+                    </button>
+                  }
+                </div>
                 {errors.password && touched.password ? (
                   <p className="text-red-700 text-sm font-medium">
                     {errors.password}
                   </p>
                 ) : null}
               </div>
-              <div class="w-full">
+              <div class="w-full relative">
                 <div class="flex justify-between mb-2">
                   <label for="password" class="text-sm text-gray-600 ">
                     Confirm Password
                   </label>
                 </div>
-
-                <input
-                  type="password"
-                  name="confirmPassword"
-                  id="confirmPassword"
-                  value={values.confirmPassword}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  placeholder="Confirm Password"
-                  class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40  transition-colors duration-300 ${
-                    errors.confirmPassword && touched.confirmPassword
-                      ? "border-red-600 shake"
-                      : null
-                  }`}
-                />
+                <div className="w-full relative">
+                  <input
+                    type={isConfShow ? "text" : "password"}
+                    name="confirmPassword"
+                    id="confirmPassword"
+                    value={values.confirmPassword}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    placeholder="Confirm Password"
+                    class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40  transition-colors duration-300 ${
+                      errors.confirmPassword && touched.confirmPassword
+                        ? "border-red-600 shake"
+                        : null
+                    }`}
+                  />
+                  {
+                    <button
+                      type="button"
+                      onClick={() => setIsConfShow((prev) => !prev)}
+                      className="absolute top-[35%] text-gray-500 text-lg right-3"
+                    >
+                      {isConfShow ? <FaRegEyeSlash /> : <FaRegEye />}
+                    </button>
+                  }
+                </div>
                 {errors.confirmPassword && touched.confirmPassword ? (
                   <p className="text-red-700 text-sm font-medium">
                     {errors.confirmPassword}

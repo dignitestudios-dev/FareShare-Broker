@@ -9,15 +9,19 @@ import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../context/AppContext";
 import io from "socket.io-client";
 import { useParams } from "react-router-dom";
+import { RideBookingContext } from "../../context/RideBookingContext";
+import RideCompletionSuccess from "../../components/app/ride/RideCompletionSuccess";
 
 const SOCKET_SERVER_URL = "https://backend.faresharellc.com";
 
 const TrackRideDetail = () => {
   const { id } = useParams();
-  const { navigate } = useContext(AppContext);
+  const { navigate, setSuccess, setError } = useContext(AppContext);
   const [isCancelOpen, setIsCancelOpen] = useState(false);
   const { originCoords } = useContext(AppContext);
   const [ride, setRide] = useState([]);
+  const { completeSuccess, setCompleteSuccess } =
+    useContext(RideBookingContext);
 
   const loadingArr = [1, 2, 3];
   const [loading, setLoading] = useState(false);
@@ -171,23 +175,21 @@ const TrackRideDetail = () => {
                 : 0,
             });
 
-        // response?.data?.driverId !== null
-        //   ? setDest({
-        //       lat: response?.data?.origin?.coordinates[1]
-        //         ? response?.data?.origin?.coordinates[1]
-        //         : 0,
-        //       lng: response?.data?.origin?.coordinates[0]
-        //         ? response?.data?.origin?.coordinates[0]
-        //         : 0,
-        //     })
-        //   : setDest({
-        //       lat: response?.data?.destination?.coordinates[1]
-        //         ? response?.data?.destination?.coordinates[1]
-        //         : 0,
-        //       lng: response?.data?.destination?.coordinates[0]
-        //         ? response?.data?.destination?.coordinates[0]
-        //         : 0,
-        //     });
+        if (response?.status == "ReachedLocation") {
+          setSuccess("Driver has reached the pickup point.");
+        }
+        if (response?.status == "inProgress") {
+          setSuccess(
+            "Ride has been started. The driver will take the customer to the destination."
+          );
+        }
+
+        if (response?.status == "reachedDestination") {
+          setCompleteSuccess("Congratulation! Customer reached destination.");
+        }
+        if (response?.status == "cancelled") {
+          setError("Unfortunately the ride was cancelled.");
+        }
       }
     });
 
@@ -510,6 +512,13 @@ const TrackRideDetail = () => {
           origin={origin}
         />
       </div>
+
+      {completeSuccess && (
+        <RideCompletionSuccess
+          isOpen={completeSuccess}
+          setIsOpen={setCompleteSuccess}
+        />
+      )}
     </div>
   );
 };

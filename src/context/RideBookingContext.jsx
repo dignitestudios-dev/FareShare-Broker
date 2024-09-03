@@ -28,6 +28,7 @@ export const RideBookingContextProvider = ({ children }) => {
   const [locationInfo, setLocationInfo] = useState(null);
   const [scheduledDate, setScheduledDate] = useState(null);
   const [openConfirm, setOpenConfirm] = useState(false);
+  const [completeSuccess, setCompleteSuccess] = useState(false);
 
   const SOCKET_SERVER_URL = "https://backend.faresharellc.com";
 
@@ -57,12 +58,14 @@ export const RideBookingContextProvider = ({ children }) => {
       });
 
       socket.on("connect_error", (err) => {
+        setFind(false);
         setRideLoading(false);
         console.error("Connection error:", err);
       });
 
       socket.on("disconnect", (reason) => {
         setRideLoading(false);
+        setFind(false);
         console.warn("Socket disconnected:", reason);
       });
 
@@ -121,7 +124,7 @@ export const RideBookingContextProvider = ({ children }) => {
           setRideLoading(false);
           setSuccess("Driver is assigned and is on the way.");
           setRideOrder("pickup");
-
+          setFind(false);
           console.log({
             lat: response?.data?.driverId?.currentLocation?.coordinates[1],
             lng: response?.data?.driverId?.currentLocation?.coordinates[0],
@@ -145,7 +148,7 @@ export const RideBookingContextProvider = ({ children }) => {
           setRideLoading(false);
           setSuccess("Driver has reached the pickup point.");
           setRideOrder("destination");
-
+          setFind(false);
           setDestCoords({
             lat: response?.data?.destination?.coordinates[1],
             lng: response?.data?.destination?.coordinates[0],
@@ -153,16 +156,20 @@ export const RideBookingContextProvider = ({ children }) => {
           navigate("Request a ride", "/ride/driver-arrived");
         }
         if (response?.status == "inProgress") {
+          setFind(false);
           setSuccess(
             "Ride has been started. The driver will take the customer to the destination."
           );
         }
 
         if (response?.status == "reachedDestination") {
-          setSuccess("Congratulation! Customer reached destination.");
+          setCompleteSuccess("Congratulation! Customer reached destination.");
+          setFind(false);
         }
         if (response?.status == "cancelled") {
           setError("Unfortunately the ride was cancelled.");
+          setFind(false);
+          navigate("Home", "/home");
         }
       });
 
@@ -351,6 +358,8 @@ export const RideBookingContextProvider = ({ children }) => {
         openConfirm,
         setOpenConfirm,
         setScheduledDate,
+        completeSuccess,
+        setCompleteSuccess,
       }}
     >
       {children}

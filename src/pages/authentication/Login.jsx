@@ -1,5 +1,11 @@
 import React, { useContext } from "react";
-import { FaApple, FaFacebook, FaFacebookF } from "react-icons/fa";
+import {
+  FaApple,
+  FaFacebook,
+  FaFacebookF,
+  FaRegEye,
+  FaRegEyeSlash,
+} from "react-icons/fa";
 import { FiUser } from "react-icons/fi";
 import { TiUserAddOutline } from "react-icons/ti";
 import { AppContext } from "../../context/AppContext";
@@ -16,6 +22,7 @@ import axios from "axios";
 const Login = () => {
   const { navigate, error, setError } = useContext(AppContext);
   const [loading, setLoading] = useState(false);
+  const [isShow, setIsShow] = useState(false);
   const { values, handleBlur, handleChange, handleSubmit, errors, touched } =
     useFormik({
       initialValues: loginValues,
@@ -118,8 +125,8 @@ const Login = () => {
                   </p>
                 ) : null}
               </div>
-              <div class="w-full">
-                <div class="flex justify-between mb-2">
+              <div class="w-full relative">
+                <div class="flex justify-between  mb-2">
                   <label for="password" class="text-sm text-gray-600 ">
                     Password
                   </label>
@@ -134,20 +141,32 @@ const Login = () => {
                   </button>
                 </div>
 
-                <input
-                  type="password"
-                  name="password"
-                  id="password"
-                  value={values.password}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  placeholder="Your Password"
-                  class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40  transition-colors duration-300 ${
-                    errors.password && touched.password
-                      ? "border-red-600 shake"
-                      : null
-                  }`}
-                />
+                <div className="w-full relative">
+                  <input
+                    type={isShow ? "text" : "password"}
+                    name="password"
+                    id="password"
+                    value={values.password}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    placeholder="Your Password"
+                    class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40  transition-colors duration-300 ${
+                      errors.password && touched.password
+                        ? "border-red-600 shake"
+                        : null
+                    }`}
+                  />
+                  {
+                    <button
+                      type="button"
+                      onClick={() => setIsShow((prev) => !prev)}
+                      className="absolute top-[32%] text-gray-500 text-lg right-3"
+                    >
+                      {isShow ? <FaRegEyeSlash /> : <FaRegEye />}
+                    </button>
+                  }
+                </div>
+
                 {errors.password && touched.password ? (
                   <p className="text-red-700 text-sm font-medium">
                     {errors.password}
