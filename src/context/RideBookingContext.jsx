@@ -39,6 +39,7 @@ export const RideBookingContextProvider = ({ children }) => {
   );
 
   const [rideLoading, setRideLoading] = useState(false);
+  const [timer, setTimer] = useState(180);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -111,6 +112,23 @@ export const RideBookingContextProvider = ({ children }) => {
           rideID: response?.data?.rideId?.id,
         });
         if (response?.status == "findingDriver") {
+          const startTimer = () => {
+            const interval = setInterval(() => {
+              setTimer((prev) => {
+                if (prev <= 1) {
+                  clearInterval(interval);
+                  setFind(false);
+                  setError(
+                    "Unfortunaltely, There is no driver available in your region."
+                  );
+                  socket.disconnect(); // No ride found
+                  return 0;
+                }
+                return prev - 1;
+              });
+            }, 1000); // Update every second
+          };
+          startTimer();
           setRideLoading(false);
           setFind(true);
 
@@ -121,6 +139,7 @@ export const RideBookingContextProvider = ({ children }) => {
         }
 
         if (response?.status == "driverAssigned") {
+          setTimer(180);
           setRideLoading(false);
           setSuccess("Driver is assigned and is on the way.");
           setRideOrder("pickup");
@@ -163,10 +182,13 @@ export const RideBookingContextProvider = ({ children }) => {
         }
 
         if (response?.status == "reachedDestination") {
+          socket.disconnect();
+
           setCompleteSuccess("Congratulation! Customer reached destination.");
           setFind(false);
         }
         if (response?.status == "cancelled") {
+          socket.disconnect();
           setError("Unfortunately the ride was cancelled.");
           setFind(false);
           navigate("Home", "/home");
@@ -176,6 +198,7 @@ export const RideBookingContextProvider = ({ children }) => {
       // Cleanup: Disconnect socket when component unmounts
       return () => {
         socket.disconnect();
+        clearInterval(startTimer);
       };
     }
   };

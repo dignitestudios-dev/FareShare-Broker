@@ -91,6 +91,7 @@ const WhereTo = () => {
     created,
   } = useContext(RideBookingContext);
   useEffect(() => {
+    setFind(false);
     created == null && navigate("Request a ride", "/ride/new-request/info");
   }, []);
 

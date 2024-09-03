@@ -63,6 +63,7 @@ const Profile = () => {
         // Handle the response (e.g., save token, redirect)
         if (response?.data?.success) {
           setLoading(false);
+          localStorage.setItem("broker", JSON.stringify(response?.data?.data));
           setUpdate((prev) => !prev);
         }
       })

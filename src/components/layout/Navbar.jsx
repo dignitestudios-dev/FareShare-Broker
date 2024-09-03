@@ -41,6 +41,7 @@ const Navbar = () => {
               <button
                 onClick={() => {
                   localStorage.removeItem("token");
+                  localStorage.removeItem("broker");
                   navigate("Home", "/login");
                 }}
                 class="w-full px-4 py-1 hover:bg-gray-100 "

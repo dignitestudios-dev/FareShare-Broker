@@ -185,9 +185,12 @@ const TrackRideDetail = () => {
         }
 
         if (response?.status == "reachedDestination") {
+          socket.disconnect();
+
           setCompleteSuccess("Congratulation! Customer reached destination.");
         }
         if (response?.status == "cancelled") {
+          socket.disconnect();
           setError("Unfortunately the ride was cancelled.");
         }
       }

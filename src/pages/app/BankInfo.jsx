@@ -27,44 +27,37 @@ const BankInfo = () => {
 
       onSubmit: async (values, action) => {
         setLoading(true);
-        try {
-          const headers = {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          };
-          // API call to login using Axios interceptor
-          axios
-            .post(
-              `${prodUrl}/broker/bank`,
-              {
-                routingNumber: values?.routingNumber,
-                accountNumber: values?.accountNumber,
-                accountHolderName: values?.accountHolderName,
-                bankName: values?.bankName,
-              },
-              { headers }
-            )
-            .then((response) => {
-              // Handle the response (e.g., save token, redirect)
-              if (response?.data?.success) {
-                // navigate("Home", "/home");
-                localStorage.setItem(
-                  "broker",
-                  JSON.stringify(response?.data?.data)
-                );
-                setUpdated((prev) => !prev);
-              }
-            })
-            .catch((error) => {
-              setError(error?.response?.data?.message);
-              setLoading(false);
-            });
-        } catch (error) {
-          // Handle errors (e.g., show error message)
-          setError(error?.response?.data?.message);
-          // console.error("Login failed:", error.response?.data);
-        } finally {
-          setLoading(false);
-        }
+
+        const headers = {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        };
+        // API call to login using Axios interceptor
+        axios
+          .post(
+            `${prodUrl}/broker/bank`,
+            {
+              routingNumber: values?.routingNumber,
+              accountNumber: values?.accountNumber,
+              accountHolderName: values?.accountHolderName,
+              bankName: values?.bankName,
+            },
+            { headers }
+          )
+          .then((response) => {
+            // Handle the response (e.g., save token, redirect)
+            if (response?.data?.success) {
+              // navigate("Home", "/home");
+              localStorage.setItem(
+                "broker",
+                JSON.stringify(response?.data?.data)
+              );
+              setUpdated((prev) => !prev);
+            }
+          })
+          .catch((error) => {
+            setError(error?.response?.data?.message);
+            setLoading(false);
+          });
       },
     });
 
