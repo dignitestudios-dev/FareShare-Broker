@@ -23,9 +23,10 @@ import {
 } from "firebase/auth";
 import Error from "../../components/app/global/Error";
 import { useEffect } from "react";
+import axios from "axios";
 
 const Signup = () => {
-  const { navigate, error, setError } = useContext(AppContext);
+  const { navigate, error, setError, prodUrl } = useContext(AppContext);
   const [loading, setLoading] = useState(false);
   const [idToken, setIdToken] = useState(null);
   const { values, handleBlur, handleChange, handleSubmit, errors, touched } =
@@ -38,98 +39,106 @@ const Signup = () => {
       onSubmit: async (values, action) => {
         setLoading(true);
         try {
-          try {
-            const newUser = await createUserWithEmailAndPassword(
+          const newUser = await createUserWithEmailAndPassword(
+            auth,
+            values?.email,
+            values?.password
+          );
+          const user = newUser.user;
+          // Get the ID token
+          const token = await getIdToken(user);
+          if (token) {
+            setIdToken(token);
+            setLoading(true);
+            const ip = await axios.get("https://api.ipify.org?format=json");
+            if (ip) {
+              // API call to login using Axios interceptor
+              axios
+                .post(`${prodUrl}/auth/brokerSignUp`, {
+                  companyName: values.companyName,
+                  accountHandlerName: values.accountHandlerName,
+                  email: values.email,
+                  companyTaxIdenfication: values.companyTaxIdentification,
+                  password: values.password,
+                  confirmPassword: values.confirmPassword,
+                  department: values.department,
+                  idToken: token,
+                  ip: ip.data.ip,
+                })
+                .then((response) => {
+                  // Handle the response (e.g., save token, redirect)
+                  if (response?.data?.success) {
+                    localStorage.setItem("email", values?.email);
+                    navigate("Verify Otp", "/verify-otp");
+                    setLoading(false);
+                  }
+                })
+                .catch((error) => {
+                  setError(error?.response?.data?.message);
+                  setLoading(false);
+                });
+            }
+          } else {
+            setError("Token Not Found");
+            setLoading(false);
+          }
+        } catch (error) {
+          console.log(error);
+          if (error.code === "auth/email-already-in-use") {
+            // Try to sign in the user
+            const userCredential = await signInWithEmailAndPassword(
               auth,
               values?.email,
               values?.password
             );
-            const user = newUser.user;
-            // Get the ID token
+            const user = userCredential.user;
+            //   // Get the ID token
             const token = await getIdToken(user);
             if (token) {
               setIdToken(token);
+              setLoading(true);
+              const ip = await axios.get("https://api.ipify.org?format=json");
+              if (ip) {
+                // API call to login using Axios interceptor
+                axios
+                  .post(`${prodUrl}/auth/brokerSignUp`, {
+                    companyName: values.companyName,
+                    accountHandlerName: values.accountHandlerName,
+                    email: values.email,
+                    companyTaxIdenfication: values.companyTaxIdentification,
+                    password: values.password,
+                    confirmPassword: values.confirmPassword,
+                    department: values.department,
+                    idToken: token,
+                    ip: ip.data.ip,
+                  })
+                  .then((response) => {
+                    // Handle the response (e.g., save token, redirect)
+                    if (response?.data?.success) {
+                      localStorage.setItem("email", values?.email);
+                      navigate("Verify Otp", "/verify-otp");
+                      setLoading(false);
+                    }
+                  })
+                  .catch((error) => {
+                    setError(error?.response?.data?.message);
+                    setLoading(false);
+                  });
+              }
             } else {
               setError("Token Not Found");
               setLoading(false);
             }
-          } catch (error) {
-            console.log(error);
-            if (error.code === "auth/email-already-in-use") {
-              // Try to sign in the user
-              const userCredential = await signInWithEmailAndPassword(
-                auth,
-                values?.email,
-                values?.password
-              );
-              const user = userCredential.user;
-              //   // Get the ID token
-              const token = await getIdToken(user);
-              if (token) {
-                setIdToken(token);
-              } else {
-                setError("Token Not Found");
-                setLoading(false);
-              }
-            } else {
-              setError("Login error");
-              setLoading(false);
-            }
+          } else {
+            setError("Login error");
+            setLoading(false);
           }
-        } finally {
-          setLoading(false);
         }
       },
     });
 
-  const sendDataToBackend = async () => {
-    if (idToken) {
-      setLoading(true);
-      try {
-        const ip = await authentication.get(
-          "https://api.ipify.org?format=json"
-        );
-        if (ip) {
-          // API call to login using Axios interceptor
-          authentication
-            .post("/auth/brokerSignUp", {
-              companyName: values.companyName,
-              accountHandlerName: values.accountHandlerName,
-              email: values.email,
-              companyTaxIdenfication: values.companyTaxIdentification,
-              password: values.password,
-              confirmPassword: values.confirmPassword,
-              department: values.department,
-              idToken: idToken,
-              ip: ip.data.ip,
-            })
-            .then((response) => {
-              // Handle the response (e.g., save token, redirect)
-              if (response?.data?.success) {
-                localStorage.setItem("email", values?.email);
-                navigate("Verify Otp", "/verify-otp");
-                setLoading(false);
-              }
-            })
-            .catch((error) => {
-              setError(error?.response?.data?.message);
-              setLoading(false);
-            });
-        }
-      } catch (error) {
-        setError(error?.response?.data?.message);
-        // Handle errors (e.g., show error message)
-        // console.error("Login failed:", error.response?.data);
-      } finally {
-        setLoading(false);
-      }
-    }
-  };
   const [isShow, setIsShow] = useState(false);
   const [isConfShow, setIsConfShow] = useState(false);
-  useEffect(() => {
-    sendDataToBackend();
-  }, [idToken]);
 
   return (
     <section class="bg-white ">
@@ -304,13 +313,12 @@ const Signup = () => {
                     }`}
                   />
                   {
-                    <button
-                      type="button"
+                    <span
                       onClick={() => setIsShow((prev) => !prev)}
-                      className="absolute top-[32%] text-gray-500 text-lg right-3"
+                      className="absolute cursor-pointer top-[32%] text-gray-500 text-lg right-3"
                     >
                       {isShow ? <FaRegEyeSlash /> : <FaRegEye />}
-                    </button>
+                    </span>
                   }
                 </div>
 
@@ -341,13 +349,12 @@ const Signup = () => {
                     }`}
                   />
                   {
-                    <button
-                      type="button"
+                    <span
                       onClick={() => setIsConfShow((prev) => !prev)}
-                      className="absolute top-[32%] text-gray-500 text-lg right-3"
+                      className="absolute cursor-pointer top-[32%] text-gray-500 text-lg right-3"
                     >
                       {isConfShow ? <FaRegEyeSlash /> : <FaRegEye />}
-                    </button>
+                    </span>
                   }
                 </div>
                 {errors.confirmPassword && touched.confirmPassword ? (

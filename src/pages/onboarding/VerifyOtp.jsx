@@ -8,9 +8,12 @@ import { verifyOtpValues } from "../../data/authentication";
 import { useFormik } from "formik";
 import authentication from "../../api/authenticationInterceptor";
 import Cookies from "js-cookie";
+import Error from "../../components/app/global/Error";
+import axios from "axios";
 
 const VerifyOtp = () => {
-  const { navigate, error, setError } = useContext(AppContext);
+  const { navigate, error, setError, prodUrl, setSuccess } =
+    useContext(AppContext);
   const [loading, setLoading] = useState(false);
   const { values, handleBlur, handleChange, handleSubmit, errors, touched } =
     useFormik({
@@ -22,33 +25,24 @@ const VerifyOtp = () => {
       onSubmit: async (values, action) => {
         const email = localStorage.getItem("email");
         setLoading(true);
-        try {
-          const otp = values.otp1 + values.otp2 + values.otp3 + values.otp4;
-          // API call to login using Axios interceptor
-          authentication
-            .post("/auth/validateOTP", {
-              email: email,
-              code: otp,
-            })
-            .then((response) => {
-              if (response?.data?.success) {
-                localStorage.setItem("token", response?.data?.token);
-                navigate("Add Bank", "/add-bank");
-                setLoading(false);
-              }
-            })
-            .catch((error) => {
-              setError(error?.response?.data?.message);
+        const otp = values.otp1 + values.otp2 + values.otp3 + values.otp4;
+        // API call to login using Axios interceptor
+        axios
+          .post(`${prodUrl}/auth/validateOTP`, {
+            email: email,
+            code: otp,
+          })
+          .then((response) => {
+            if (response?.data?.success) {
+              localStorage.setItem("token", response?.data?.token);
+              navigate("Add Bank", "/add-bank");
               setLoading(false);
-            });
-        } catch (error) {
-          // Handle errors (e.g., show error message)
-          setError(error?.response?.data?.message);
-
-          // console.error("Login failed:", error.response?.data);
-        } finally {
-          setLoading(false);
-        }
+            }
+          })
+          .catch((error) => {
+            setError(error?.response?.data?.message);
+            setLoading(false);
+          });
       },
     });
 
@@ -125,8 +119,30 @@ const VerifyOtp = () => {
   // If you want to manually handle `touched`, you can set the field as touched
   // formik.setFieldTouched(name, true, false);
 
+  // Resend OTP:
+  const [resendLoading, setResendLoading] = useState(false);
+  const resendOtp = async () => {
+    setResendLoading(true);
+    try {
+      const response = await axios.post(`${prodUrl}/auth/sendOTP`, {
+        email: localStorage.getItem("email"),
+      });
+      if (response?.data?.success) {
+        setResendLoading(false);
+        setSuccess("OTP Resend Successfully.");
+      }
+    } catch (error) {
+      // Handle errors (e.g., show error message)
+      setError(error?.response?.data?.message);
+      // console.error("Login failed:", error.response?.data);
+    } finally {
+      setResendLoading(false);
+    }
+  };
+
   return (
     <section className="bg-white">
+      {error && <Error error={error} setError={setError} />}
       <div className="flex justify-center min-h-screen">
         <div className="hidden bg-gray-50 lg:flex justify-center items-center bg-cover lg:w-1/2">
           <div className="w-full h-full flex items-center justify-center animate-one text-4xl font-bold text-[#c00000]">
@@ -285,6 +301,7 @@ const VerifyOtp = () => {
                       </button>
                       <button
                         type="button"
+                        onClick={resendOtp}
                         class="h-14 text-lg font-semibold w-[24rem] border-2 border-[#c00000] text-[#c00000] rounded-full transition-all duration-200 hover:bg-[#c00000] hover:text-white"
                       >
                         Resend Code
