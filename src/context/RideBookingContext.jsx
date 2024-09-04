@@ -187,7 +187,7 @@ export const RideBookingContextProvider = ({ children }) => {
           setCompleteSuccess("Congratulation! Customer reached destination.");
           setFind(false);
         }
-        if (response?.status == "cancelled") {
+        if (response?.status == "cancel") {
           socket.disconnect();
           setError("Unfortunately the ride was cancelled.");
           setFind(false);
