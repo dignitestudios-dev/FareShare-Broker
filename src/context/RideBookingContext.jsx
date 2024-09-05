@@ -66,8 +66,7 @@ export const RideBookingContextProvider = ({ children }) => {
       timerInterval = null; // Reset timerInterval
     }
     setFind(false);
-    setError(""); // Clear any error message
-    setTimer(0); // Optionally reset the timer
+    setTimer(180); // Optionally reset the timer
     socket.disconnect(); // Ensure socket disconnection
   };
 

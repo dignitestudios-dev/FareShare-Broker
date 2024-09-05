@@ -298,23 +298,57 @@ const TrackRideDetail = () => {
             <li>
               <div class="relative pb-8 color-drip-container">
                 <span
-                  class=" bg-gray-200 absolute top-4 left-4 -ml-px h-full w-0.5 "
+                  class=" bg-[#c00000] absolute top-4 left-4 -ml-px h-full w-0.5 "
                   aria-hidden="true"
                 >
-                  <span className="anim"></span>
+                  <span className=""></span>
                 </span>
                 <div class="relative flex space-x-3">
                   <div>
-                    <span class="h-8 w-8 rounded-full bg-[#c00000] text-white text-lg flex items-center justify-center">
+                    <span
+                      class={`h-8 w-8 rounded-full bg-[#c00000] text-white text-lg flex items-center justify-center`}
+                    >
                       <MdOutlinePending />
                     </span>
                   </div>
                   <div class="flex min-w-0 flex-1 justify-between space-x-4 pt-1.5">
                     <div>
-                      <p class="text-sm text-gray-500">Pending</p>
+                      <p class="text-sm text-gray-500">Driver on it's way</p>
                     </div>
-                    <div class="whitespace-nowrap text-right text-sm text-gray-500">
-                      <time datetime="2020-09-20">08:00 PM</time>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div class="relative pb-8 color-drip-container">
+                <span
+                  class={`${
+                    status == "driverAssigned" ? "bg-gray-200 " : "bg-[#c00000]"
+                  }  absolute top-4 left-4 -ml-px h-full w-0.5 `}
+                  aria-hidden="true"
+                >
+                  {status == "driverAssigned" ||
+                    (status == "reachedLocation" && (
+                      <span className="anim"></span>
+                    ))}
+                </span>
+                <div class="relative flex space-x-3">
+                  <div>
+                    <span
+                      class={`h-8 w-8 rounded-full ${
+                        status == "driverAssigned"
+                          ? "bg-gray-200 text-black"
+                          : "bg-[#c00000] text-white"
+                      }  text-lg flex items-center justify-center`}
+                    >
+                      <MdOutlinePending />
+                    </span>
+                  </div>
+                  <div class="flex min-w-0 flex-1 justify-between space-x-4 pt-1.5">
+                    <div>
+                      <p class="text-sm text-gray-500">
+                        Reached Pickup Location
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -323,21 +357,33 @@ const TrackRideDetail = () => {
             <li>
               <div class="relative pb-8">
                 <span
-                  class="absolute left-4 top-4 -ml-px h-full w-0.5 bg-gray-200"
+                  class={`${
+                    status == "driverAssigned" || status == "reachedLocation"
+                      ? "bg-gray-200 "
+                      : "bg-[#c00000]"
+                  }  absolute top-4 left-4 -ml-px h-full w-0.5 `}
                   aria-hidden="true"
-                ></span>
+                >
+                  {status == "driverAssigned" ||
+                    status == "reachedLocation" ||
+                    (status == "inProgress" && <span className="anim"></span>)}
+                </span>
                 <div class="relative flex space-x-3">
                   <div>
-                    <span class="h-8 w-8 rounded-full bg-gray-200 text-gray-600 text-lg  flex items-center justify-center ">
+                    <span
+                      class={`h-8 w-8 rounded-full ${
+                        status == "driverAssigned" ||
+                        status == "reachedLocation"
+                          ? "bg-gray-200 text-black"
+                          : "bg-[#c00000] text-white"
+                      }  text-lg flex items-center justify-center`}
+                    >
                       <VscOpenPreview />
                     </span>
                   </div>
                   <div class="flex min-w-0 flex-1 justify-between space-x-4 pt-1.5">
                     <div>
-                      <p class="text-sm text-gray-500">In-review</p>
-                    </div>
-                    <div class="whitespace-nowrap text-right text-sm text-gray-500">
-                      <time datetime="2020-09-22">08:02 PM</time>
+                      <p class="text-sm text-gray-500">Ride Started</p>
                     </div>
                   </div>
                 </div>
@@ -345,64 +391,23 @@ const TrackRideDetail = () => {
             </li>
             <li>
               <div class="relative pb-8">
-                <span
-                  class="absolute left-4 top-4 -ml-px h-full w-0.5 bg-gray-200"
-                  aria-hidden="true"
-                ></span>
                 <div class="relative flex space-x-3">
                   <div>
-                    <span class="h-8 w-8 rounded-full bg-gray-200 text-gray-600 text-lg  flex items-center justify-center ">
+                    <span
+                      class={`h-8 w-8 rounded-full ${
+                        status == "driverAssigned" ||
+                        status == "reachedLocation" ||
+                        status == "inProgress"
+                          ? "bg-gray-200 text-black"
+                          : "bg-[#c00000] text-white"
+                      }  text-lg flex items-center justify-center`}
+                    >
                       <IoMdCheckmarkCircleOutline />
                     </span>
                   </div>
                   <div class="flex min-w-0 flex-1 justify-between space-x-4 pt-1.5">
                     <div>
-                      <p class="text-sm text-gray-500">Confirmed</p>
-                    </div>
-                    <div class="whitespace-nowrap text-right text-sm text-gray-500">
-                      <time datetime="2020-09-28">08:04 PM</time>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </li>
-            <li>
-              <div class="relative pb-8">
-                <span
-                  class="absolute left-4 top-4 -ml-px h-full w-0.5 bg-gray-200"
-                  aria-hidden="true"
-                ></span>
-                <div class="relative flex space-x-3">
-                  <div>
-                    <span class="h-8 w-8 rounded-full bg-gray-200 text-gray-600 text-lg  flex items-center justify-center ">
-                      <RiProgress2Line />
-                    </span>
-                  </div>
-                  <div class="flex min-w-0 flex-1 justify-between space-x-4 pt-1.5">
-                    <div>
-                      <p class="text-sm text-gray-500">In-progress</p>
-                    </div>
-                    <div class="whitespace-nowrap text-right text-sm text-gray-500">
-                      <time datetime="2020-09-30">08:04 PM</time>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </li>
-            <li>
-              <div class="relative pb-8">
-                <div class="relative flex space-x-3">
-                  <div>
-                    <span class="h-8 w-8 rounded-full bg-gray-200 text-gray-600 text-lg  flex items-center justify-center ">
-                      <IoCheckmarkDoneCircleOutline />
-                    </span>
-                  </div>
-                  <div class="flex min-w-0 flex-1 justify-between space-x-4 pt-1.5">
-                    <div>
-                      <p class="text-sm text-gray-500">Completed</p>
-                    </div>
-                    <div class="whitespace-nowrap text-right text-sm text-gray-500">
-                      <time datetime="2020-10-04">N/A</time>
+                      <p class="text-sm text-gray-500">Reached Destination</p>
                     </div>
                   </div>
                 </div>
