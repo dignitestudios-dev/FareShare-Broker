@@ -288,13 +288,14 @@ const WhereTo = () => {
 
       <div className="flex flex-col justify-start items-start w-full gap-4 h-auto">
         <span className="text-4xl font-medium text-[#000]/[0.9]">
-          Available Options
+          Available Options{" "}
+          {types == null && (
+            <span className="text-red-500 text-sm font-medium">
+              (Select a valid pickup and dropoff point to calculate your fares.)
+            </span>
+          )}
         </span>
-        {types == null && (
-          <span className="text-red-500 text-sm font-medium">
-            Select a valid pickup and dropoff point to calculate your fares.
-          </span>
-        )}
+
         <div className="w-full flex flex-wrap h-auto justify-start gap-4">
           {typesLoading ||
             (types == null
