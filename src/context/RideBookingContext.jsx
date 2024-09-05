@@ -156,8 +156,11 @@ export const RideBookingContextProvider = ({ children }) => {
         }
 
         if (response?.status == "driverAssigned") {
-          endTimer();
-          setRideLoading(false);
+          if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null; // Reset timerInterval
+          }
+          setTimer(180);
           setSuccess("Driver is assigned and is on the way.");
           setRideOrder("pickup");
           navigate("Request a ride", "/ride/driver-arriving");
