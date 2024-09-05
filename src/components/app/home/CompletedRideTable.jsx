@@ -216,16 +216,16 @@ const CompletedRideTable = () => {
                       {ride?.rideId?.destinationAddress}
                     </td>
 
-                    <td className="px-6 lg:px-4  py-4">
+                    <td className="py-4">
                       <span
-                        className={`w-auto px-2 h-6 capitalize ${getStatusStyles(
+                        className={`inline-flex items-center justify-center px-2 h-6 min-w-[100px] max-w-full overflow-hidden text-ellipsis whitespace-nowrap capitalize ${getStatusStyles(
                           ride?.rideId?.status
-                        )}  hover:opacity-80  rounded-full text-xs`}
+                        )} hover:opacity-80 rounded-full text-xs`}
                       >
                         {formatStatus(ride?.rideId?.status)}
                       </span>
                     </td>
-                    <td className="px-6 lg:px-4  py-4 capitalize">
+                    <td className="py-4 capitalize">
                       <button
                         onClick={() =>
                           navigate(
@@ -233,7 +233,7 @@ const CompletedRideTable = () => {
                             `/ride/ride-detail/${ride?.rideId?.id}`
                           )
                         }
-                        className="text-[#c00000] text-xs font-semibold"
+                        className="text-[#c00000] inline-flex items-center justify-center px-2 h-6 min-w-[100px] max-w-full overflow-hidden text-ellipsis whitespace-nowrap capitalize font-semibold"
                       >
                         View More
                       </button>

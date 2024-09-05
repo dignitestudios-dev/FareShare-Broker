@@ -161,6 +161,7 @@ export const RideBookingContextProvider = ({ children }) => {
           setRideLoading(false);
           setSuccess("Driver is assigned and is on the way.");
           setRideOrder("pickup");
+          navigate("Request a ride", "/ride/driver-arriving");
           setFind(false);
           console.log({
             lat: response?.data?.driverId?.currentLocation?.coordinates[1],
