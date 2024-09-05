@@ -29,6 +29,8 @@ export const RideBookingContextProvider = ({ children }) => {
   const [scheduledDate, setScheduledDate] = useState(null);
   const [openConfirm, setOpenConfirm] = useState(false);
   const [completeSuccess, setCompleteSuccess] = useState(false);
+  const [types, setTypes] = useState(null);
+  const [typesLoading, setTypesLoading] = useState(false);
 
   const SOCKET_SERVER_URL = "https://backend.faresharellc.com";
 
@@ -73,6 +75,10 @@ export const RideBookingContextProvider = ({ children }) => {
       setStartError("You must select a valid pickup location to continue");
     } else if (destCoords == null && endAddress !== "") {
       setEndError("You must select a valid destination location to continue");
+    } else if (typesLoading || types == null) {
+      setEndError(
+        "Please wait untill we calculate your fares & show you available ride options."
+      );
     } else {
       setRideLoading(true);
       const socket = io(SOCKET_SERVER_URL);
@@ -406,6 +412,10 @@ export const RideBookingContextProvider = ({ children }) => {
         setScheduledDate,
         completeSuccess,
         setCompleteSuccess,
+        types,
+        setTypes,
+        typesLoading,
+        setTypesLoading,
       }}
     >
       {children}

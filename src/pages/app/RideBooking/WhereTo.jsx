@@ -90,6 +90,10 @@ const WhereTo = () => {
     vehicleType,
     setVehicleType,
     created,
+    types,
+    setTypes,
+    typesLoading,
+    setTypesLoading,
   } = useContext(RideBookingContext);
   useEffect(() => {
     setFind(false);
@@ -139,9 +143,6 @@ const WhereTo = () => {
       setEndError(false);
     }
   }, [endAddress]);
-
-  const [types, setTypes] = useState(null);
-  const [typesLoading, setTypesLoading] = useState(false);
 
   const filterVehicles = (tab, data) => {
     if (tab === "medical") {
@@ -305,7 +306,7 @@ const WhereTo = () => {
                   .map((_, index) => (
                     <div
                       key={index}
-                      className="w-[calc(25%-0.5rem)] h-[120px] bg-gray-300 rounded-xl"
+                      className="w-[calc(25%-0.5rem)] h-[120px] bg-gray-100 rounded-xl"
                     ></div>
                   ))
               : types?.map((type, key) => {
