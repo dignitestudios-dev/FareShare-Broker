@@ -290,17 +290,34 @@ const WhereTo = () => {
         <span className="text-4xl font-medium text-[#000]/[0.9]">
           Available Options
         </span>
+        {types == null && (
+          <span className="text-red-500 text-sm font-medium">
+            Select a valid pickup and dropoff point to calculate your fares.
+          </span>
+        )}
         <div className="w-full flex flex-wrap h-auto justify-start gap-4">
           {typesLoading ||
-            (types == null &&
-              Array(5)
-                .fill()
-                .map((_, index) => (
-                  <div
-                    key={index}
-                    className="w-[calc(50%-0.5rem)] h-[120px] bg-gray-300 rounded-xl"
-                  ></div>
-                )))}
+            (types == null
+              ? Array(5)
+                  .fill()
+                  .map((_, index) => (
+                    <div
+                      key={index}
+                      className="w-[calc(25%-0.5rem)] h-[120px] bg-gray-300 rounded-xl"
+                    ></div>
+                  ))
+              : types?.map((type, key) => {
+                  return (
+                    <OptionsCard
+                      setIsWheelChairAccessible={setIsWheelChairAccessible}
+                      setVehicleType={setVehicleType}
+                      vehicleType={vehicleType}
+                      title={type.vehicleType}
+                      price={type.fare}
+                      key={key}
+                    />
+                  );
+                }))}
           {/* {tab === "corporate"
             ? corporate.map((item, key) => (
                 <OptionsCard
@@ -324,23 +341,6 @@ const WhereTo = () => {
                   key={key}
                 />
               ))} */}
-
-          {typesLoading ? (
-            <h1>Loading....</h1>
-          ) : (
-            types?.map((type, key) => {
-              return (
-                <OptionsCard
-                  setIsWheelChairAccessible={setIsWheelChairAccessible}
-                  setVehicleType={setVehicleType}
-                  vehicleType={vehicleType}
-                  title={type.vehicleType}
-                  price={type.fare}
-                  key={key}
-                />
-              );
-            })
-          )}
         </div>
       </div>
 
