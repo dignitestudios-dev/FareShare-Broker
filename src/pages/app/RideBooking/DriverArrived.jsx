@@ -2,11 +2,18 @@ import React, { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { RideBookingContext } from "../../../context/RideBookingContext";
 import GoogleMaps from "../../../components/app/ride/GoogleMaps";
+import RideCompletionSuccess from "../../../components/app/ride/RideCompletionSuccess";
 
 const DriverArrived = () => {
   const navigate = useNavigate();
-  const { originCoords, destCoords, created, data } =
-    useContext(RideBookingContext);
+  const {
+    originCoords,
+    destCoords,
+    created,
+    data,
+    completeSuccess,
+    setCompleteSuccess,
+  } = useContext(RideBookingContext);
   useEffect(() => {
     console.log("origin", originCoords);
     console.log("dest", destCoords);
@@ -113,6 +120,13 @@ const DriverArrived = () => {
       <div class="w-full h-auto rounded-3xl bg-gray-400">
         <GoogleMaps destination={destCoords} origin={originCoords} />
       </div>
+
+      {completeSuccess && (
+        <RideCompletionSuccess
+          isOpen={completeSuccess}
+          setIsOpen={setCompleteSuccess}
+        />
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 justify-start items-start w-full gap-2  h-auto">
         <button className="w-full  flex justify-center items-center text-white text-md px-8 font-semibold h-12 rounded-full bg-[#c00000]">

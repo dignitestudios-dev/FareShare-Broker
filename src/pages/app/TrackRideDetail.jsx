@@ -518,12 +518,12 @@ const TrackRideDetail = () => {
         />
       </div>
 
-      {completeSuccess && (
+      {/* {completeSuccess && (
         <RideCompletionSuccess
           isOpen={completeSuccess}
           setIsOpen={setCompleteSuccess}
         />
-      )}
+      )} */}
     </div>
   );
 };

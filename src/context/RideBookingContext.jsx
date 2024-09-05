@@ -202,7 +202,7 @@ export const RideBookingContextProvider = ({ children }) => {
 
         if (response?.status == "reachedDestination") {
           socket.disconnect();
-
+          setSuccess("Congratulation! Customer reached destination.");
           setCompleteSuccess("Congratulation! Customer reached destination.");
           setFind(false);
         }
