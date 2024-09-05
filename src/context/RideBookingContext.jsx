@@ -157,7 +157,7 @@ export const RideBookingContextProvider = ({ children }) => {
         }
 
         if (response?.status == "driverAssigned") {
-          setTimer(180);
+          endTimer();
           setRideLoading(false);
           setSuccess("Driver is assigned and is on the way.");
           setRideOrder("pickup");
@@ -176,11 +176,6 @@ export const RideBookingContextProvider = ({ children }) => {
             lng: response?.data?.driverId?.currentLocation?.coordinates[0],
           });
         }
-
-        // socket.on("cancelRideResponse", (response) => {
-        //   console.log("cancel", response);
-        //   setData(response?.data);
-        // });
 
         if (response?.status == "ReachedLocation") {
           setRideLoading(false);
