@@ -290,9 +290,61 @@ const TrackRideDetail = () => {
       </div>
 
       <div className="w-full border-y grid grid-cols-3 justify-start items-start">
-        <div className="w-full px-6 py-4 lg:col-span-1 border-r flex flex-col gap-4 justify-start items-start ">
+        <div className="w-full h-full  px-6 py-4 lg:col-span-1 border-r flex flex-col gap-4 justify-start items-start ">
           <span className="text-xl font-bold text-gray-900">Timeline</span>
-          <ul
+          <span
+            className={`w-full h-12 rounded-full ${
+              status == "driverAssigned" ||
+              status == "reachedLocation" ||
+              status == "inProgress" ||
+              status == "reachedDestination"
+                ? "bg-[#c00000] text-white"
+                : "bg-[#c00000]/[0.1] text-[#c00000]"
+            }  font-semibold flex items-center justify-center`}
+          >
+            Driver on the way
+          </span>
+          <span
+            className={`w-full h-12 rounded-full ${
+              status == "reachedLocation" ||
+              status == "inProgress" ||
+              status == "reachedDestination"
+                ? "bg-[#c00000] text-white"
+                : "bg-[#c00000]/[0.1] text-[#c00000]"
+            }  font-semibold flex items-center justify-center`}
+          >
+            Reached pickup point
+          </span>
+          <span
+            className={`w-full h-12 rounded-full ${
+              status == "inProgress" || status == "reachedDestination"
+                ? "bg-[#c00000] text-white"
+                : "bg-[#c00000]/[0.1] text-[#c00000]"
+            }  font-semibold flex items-center justify-center`}
+          >
+            Ride Started
+          </span>
+          <span
+            className={`w-full h-12 rounded-full ${
+              status == "reachedDestination"
+                ? "bg-[#c00000] text-white"
+                : "bg-[#c00000]/[0.1] text-[#c00000]"
+            }  font-semibold flex items-center justify-center`}
+          >
+            Reached Destination
+          </span>
+
+          <span
+            className={`w-full h-12 rounded-full ${
+              status == "cancelled"
+                ? "bg-[#c00000] text-white"
+                : "bg-[#c00000]/[0.1] text-[#c00000]"
+            }  font-semibold flex items-center justify-center`}
+          >
+            Ride Cancelled
+          </span>
+
+          {/* <ul
             role="list"
             class="w-auto flex flex-col items-start justify-center"
           >
@@ -326,15 +378,15 @@ const TrackRideDetail = () => {
               <div class="relative pb-8 color-drip-container">
                 <span
                   class={`${
-                    status == "driverAssigned" || "reachedLocation"
+                    status == "reachedLocation"
                       ? "bg-[#c00000] "
                       : "bg-gray-200"
                   }  absolute top-4 left-4 -ml-px h-full w-0.5 `}
                   aria-hidden="true"
                 >
-                  {status == "driverAssigned" || "reachedLocation" ? null : (
+                  {status == "reachedLocation" ? (
                     <span className="anim"></span>
-                  )}
+                  ) : null}
                 </span>
                 <div class="relative flex space-x-3">
                   <div>
@@ -362,17 +414,11 @@ const TrackRideDetail = () => {
               <div class="relative pb-8">
                 <span
                   class={`${
-                    status == "driverAssigned" ||
-                    status == "reachedLocation" ||
-                    status == "inProgress"
-                      ? "bg-gray-200 "
-                      : "bg-[#c00000]"
+                    status == "inProgress" ? "bg-[#c00000] " : " bg-gray-200"
                   }  absolute top-4 left-4 -ml-px h-full w-0.5 `}
                   aria-hidden="true"
                 >
-                  {status == "driverAssigned" ||
-                  status == "reachedLocation" ||
-                  status == "inProgress" ? (
+                  {status == "inProgress" ? (
                     <span className="anim"></span>
                   ) : null}
                 </span>
@@ -421,7 +467,7 @@ const TrackRideDetail = () => {
                 </div>
               </div>
             </li>
-          </ul>
+          </ul> */}
         </div>
 
         <div className="w-full lg:col-span-2 flex flex-col justify-start items-start gap-4">

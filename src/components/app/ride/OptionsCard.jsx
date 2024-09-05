@@ -2,7 +2,6 @@ import React from "react";
 
 const OptionsCard = ({
   title,
-  label,
   price,
   vehicleType,
   setVehicleType,
@@ -12,10 +11,9 @@ const OptionsCard = ({
     <button
       type="button"
       onClick={() => {
-        if (title == "Wheelchair Accessible") {
-          setVehicleType("Wheelchair Accessible Vehicle");
-
+        if (title == "Wheelchair Accessible Vehicle") {
           setIsWheelChairAccessible(true);
+          setVehicleType(title);
         } else {
           setVehicleType(title);
           setIsWheelChairAccessible(false);
@@ -37,7 +35,7 @@ const OptionsCard = ({
           vehicleType == title ? "text-gray-200" : "text-gray-400"
         } group-hover:text-gray-200 text-md font-normal`}
       >
-        {label}
+        Estimated Fare
       </span>
       <span
         className={`text-[16px] font-bold text-black ${

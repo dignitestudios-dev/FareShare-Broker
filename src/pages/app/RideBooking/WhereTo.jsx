@@ -7,6 +7,7 @@ import FindRide from "./FindRide";
 import { Autocomplete, useLoadScript } from "@react-google-maps/api";
 import { personalInfoValues } from "../../../data/personalInfo";
 import { RideBookingContext } from "../../../context/RideBookingContext";
+import api from "../../../api/apiInterceptor";
 
 const WhereTo = () => {
   const {
@@ -82,7 +83,7 @@ const WhereTo = () => {
     },
   ];
 
-  const { navigate, tab } = useContext(AppContext);
+  const { navigate, tab, setError } = useContext(AppContext);
   const {
     personalInfo,
     setIsWheelChairAccessible,
@@ -139,6 +140,41 @@ const WhereTo = () => {
     }
   }, [endAddress]);
 
+  const [types, setTypes] = useState(null);
+  const [typesLoading, setTypesLoading] = useState(false);
+
+  const filterVehicles = (tab, data) => {
+    if (tab === "medical") {
+      return data.filter(
+        (vehicle) =>
+          vehicle.vehicleType === "Wheelchair Accessible Vehicle" ||
+          vehicle.vehicleType === "Standard"
+      );
+    } else {
+      return data;
+    }
+  };
+  useEffect(() => {
+    if (originCoords && destCoords) {
+      setVehicleType("Standard");
+      setTypesLoading(true);
+      api
+        .post("/user/rideEstimations", {
+          originLatitude: originCoords[0],
+          originLongitude: originCoords[1],
+          destLatitude: destCoords[0],
+          destLongitude: destCoords[1],
+        })
+        .then((response) => {
+          setTypes(filterVehicles(tab, response?.data?.data));
+          setTypesLoading(false);
+        })
+        .catch((error) => {
+          setError(error?.response?.data?.message);
+        });
+    }
+  }, [originCoords, destCoords]);
+
   if (!isLoaded)
     return (
       <div className="w-full h-auto flex p-4 flex-col gap-4 animate-pulse">
@@ -182,6 +218,7 @@ const WhereTo = () => {
     >
       <div className="w-full h-12 flex items-end gap-4 justify-start">
         <button
+          type="button"
           onClick={() => navigate("Request a ride", -1)}
           className="w-10 h-10 rounded-full border-2 border-[#c00000] text-[#c00000] flex items-center justify-center"
         >
@@ -254,7 +291,7 @@ const WhereTo = () => {
           Available Options
         </span>
         <div className="w-full flex flex-wrap h-auto justify-start gap-4">
-          {tab === "corporate"
+          {/* {tab === "corporate"
             ? corporate.map((item, key) => (
                 <OptionsCard
                   setIsWheelChairAccessible={setIsWheelChairAccessible}
@@ -276,7 +313,24 @@ const WhereTo = () => {
                   price={item.price}
                   key={key}
                 />
-              ))}
+              ))} */}
+
+          {typesLoading ? (
+            <h1>Loading....</h1>
+          ) : (
+            types?.map((type, key) => {
+              return (
+                <OptionsCard
+                  setIsWheelChairAccessible={setIsWheelChairAccessible}
+                  setVehicleType={setVehicleType}
+                  vehicleType={vehicleType}
+                  title={type.vehicleType}
+                  price={type.fare}
+                  key={key}
+                />
+              );
+            })
+          )}
         </div>
       </div>
 

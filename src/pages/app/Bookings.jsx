@@ -208,15 +208,18 @@ const Bookings = () => {
                             )}` + "%"}
                       </span>
                     </div>
-                    <div class="w-full bg-gray-300 h-[2px] rounded-full">
+                    <div class="w-full bg-gray-300 relative h-[2px] rounded-full">
                       <span
-                        class={`w-[${
-                          booking?.rideId?.driverId == null
-                            ? "0"
-                            : `${
-                                booking?.rideId?.driverId?.preferrability * 100
-                              }%`
-                        }] bg-[#c00000] h-[2px] rounded-full`}
+                        style={{
+                          width:
+                            booking?.rideId?.driverId == null
+                              ? "0%"
+                              : `${
+                                  booking?.rideId?.driverId?.preferrability *
+                                  100
+                                }%`,
+                        }}
+                        class="bg-[#c00000] z-10 absolute top-0 left-0 h-[2px] rounded-full"
                       ></span>
                     </div>
                   </div>

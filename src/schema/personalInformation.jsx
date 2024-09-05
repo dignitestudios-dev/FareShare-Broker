@@ -7,7 +7,7 @@ export const personalInfoSchema = Yup.object({
   requesterContact: Yup.string().required("Please enter your contact number."),
   patientFirstName: Yup.string().required("Please enter client's first name."),
   patientLastName: Yup.string().required("Please enter client's last name."),
-  patientMI: Yup.string().required("Please enter client's MI."),
-  fareshareUserId: Yup.string().required("Please enter client's Fareshare Id."),
+  patientMI: Yup.string(),
+  fareshareUserId: Yup.string(),
   additionalRequests: Yup.string().max(1000),
 });

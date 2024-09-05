@@ -67,7 +67,6 @@ export const RideBookingContextProvider = ({ children }) => {
     }
     setFind(false);
     setTimer(180); // Optionally reset the timer
-    socket.disconnect(); // Ensure socket disconnection
   };
 
   const handleSubmit = (e) => {
@@ -103,14 +102,18 @@ export const RideBookingContextProvider = ({ children }) => {
         "preRideRequest",
         JSON.stringify({
           brokerId: JSON.parse(localStorage.getItem("broker"))?._id,
-          fareshareUserId: personalInfo?.fareshareUserId,
+          fareshareUserId:
+            personalInfo?.fareshareUserId == ""
+              ? null
+              : personalInfo?.fareshareUserId,
           requesterFirstName: personalInfo?.requesterFirstName,
           requesterLastName: personalInfo?.requesterLastName,
           requesterEmail: personalInfo?.requesterEmail,
           requesterContact: personalInfo?.requesterContact,
           patientFirstName: personalInfo?.patientFirstName,
           patientLastName: personalInfo?.patientLastName,
-          patientMI: personalInfo?.patientMI,
+          patientMI:
+            personalInfo?.patientMI == "" ? null : personalInfo?.patientMI,
           additionalRequests: personalInfo?.additionalRequests,
           originCoords: originCoords,
           destCoords: destCoords,
