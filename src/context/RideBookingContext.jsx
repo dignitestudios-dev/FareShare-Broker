@@ -34,9 +34,7 @@ export const RideBookingContextProvider = ({ children }) => {
 
   const { tab, navigate, setSuccess, setError, error } = useContext(AppContext);
 
-  const [vehicleType, setVehicleType] = useState(
-    tab == "medical" ? "Ambulatory Services" : "Standard"
-  );
+  const [vehicleType, setVehicleType] = useState("Standard");
 
   const [rideLoading, setRideLoading] = useState(false);
   const [timer, setTimer] = useState(180);

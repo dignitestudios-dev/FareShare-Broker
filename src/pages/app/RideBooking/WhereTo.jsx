@@ -291,6 +291,16 @@ const WhereTo = () => {
           Available Options
         </span>
         <div className="w-full flex flex-wrap h-auto justify-start gap-4">
+          {typesLoading ||
+            (types == null &&
+              Array(5)
+                .fill()
+                .map((_, index) => (
+                  <div
+                    key={index}
+                    className="w-[calc(50%-0.5rem)] h-[120px] bg-gray-300 rounded-xl"
+                  ></div>
+                )))}
           {/* {tab === "corporate"
             ? corporate.map((item, key) => (
                 <OptionsCard
