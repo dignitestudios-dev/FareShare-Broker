@@ -290,7 +290,7 @@ const WhereTo = () => {
         <span className="text-4xl font-medium text-[#000]/[0.9]">
           Available Options{" "}
           {types == null && (
-            <span className="text-red-500 text-sm font-medium">
+            <span className="text-red-500 ml-2 text-sm font-medium">
               (Select a valid pickup and dropoff point to calculate your fares.)
             </span>
           )}
