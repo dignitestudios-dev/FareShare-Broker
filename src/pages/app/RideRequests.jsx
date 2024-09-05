@@ -222,7 +222,7 @@ const RideRequests = () => {
                             setRideId(ride?.rideId?.id);
                             setId(ride?.fareshareUserId?.id);
                           }}
-                          class="w-20 h-8 bg-[#c00000] flex items-center justify-center rounded-full text-xs font-semibold transition-all duration-300 text-[#fff] hover:bg-gray-800"
+                          class="w-20 h-8 bg-[#1c1c1c] flex items-center justify-center rounded-full text-xs font-semibold transition-all duration-300 text-[#fff] hover:bg-gray-800"
                         >
                           Cancel
                         </button>
