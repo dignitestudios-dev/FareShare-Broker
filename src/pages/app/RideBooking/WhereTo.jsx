@@ -291,7 +291,8 @@ const WhereTo = () => {
           Available Options{" "}
           {types == null && (
             <span className="text-red-500 ml-2 text-sm font-medium">
-              (Select a valid pickup and dropoff point to calculate your fares.)
+              (Select a valid pickup and dropoff point to see available ride
+              options.)
             </span>
           )}
         </span>
