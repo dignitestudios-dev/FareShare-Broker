@@ -267,6 +267,7 @@ const TrackRideDetail = () => {
         socket.disconnect();
       };
     }
+    console.log(status);
   }, [status, ride]);
 
   return (
@@ -298,10 +299,12 @@ const TrackRideDetail = () => {
             <li>
               <div class="relative pb-8 color-drip-container">
                 <span
-                  class=" bg-[#c00000] absolute top-4 left-4 -ml-px h-full w-0.5 "
+                  class={`${
+                    status == "driverAssigned" ? "bg-gray-200 " : "bg-[#c00000]"
+                  }  absolute top-4 left-4 -ml-px h-full w-0.5 `}
                   aria-hidden="true"
                 >
-                  <span className=""></span>
+                  {status == "driverAssigned" && <span className="anim"></span>}
                 </span>
                 <div class="relative flex space-x-3">
                   <div>
@@ -323,14 +326,15 @@ const TrackRideDetail = () => {
               <div class="relative pb-8 color-drip-container">
                 <span
                   class={`${
-                    status == "driverAssigned" ? "bg-gray-200 " : "bg-[#c00000]"
+                    status == "driverAssigned" || "reachedLocation"
+                      ? "bg-[#c00000] "
+                      : "bg-gray-200"
                   }  absolute top-4 left-4 -ml-px h-full w-0.5 `}
                   aria-hidden="true"
                 >
-                  {status == "driverAssigned" ||
-                    (status == "reachedLocation" && (
-                      <span className="anim"></span>
-                    ))}
+                  {status == "driverAssigned" || "reachedLocation" ? null : (
+                    <span className="anim"></span>
+                  )}
                 </span>
                 <div class="relative flex space-x-3">
                   <div>
@@ -358,15 +362,19 @@ const TrackRideDetail = () => {
               <div class="relative pb-8">
                 <span
                   class={`${
-                    status == "driverAssigned" || status == "reachedLocation"
+                    status == "driverAssigned" ||
+                    status == "reachedLocation" ||
+                    status == "inProgress"
                       ? "bg-gray-200 "
                       : "bg-[#c00000]"
                   }  absolute top-4 left-4 -ml-px h-full w-0.5 `}
                   aria-hidden="true"
                 >
                   {status == "driverAssigned" ||
-                    status == "reachedLocation" ||
-                    (status == "inProgress" && <span className="anim"></span>)}
+                  status == "reachedLocation" ||
+                  status == "inProgress" ? (
+                    <span className="anim"></span>
+                  ) : null}
                 </span>
                 <div class="relative flex space-x-3">
                   <div>
