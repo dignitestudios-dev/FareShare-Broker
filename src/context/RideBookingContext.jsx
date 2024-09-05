@@ -41,6 +41,36 @@ export const RideBookingContextProvider = ({ children }) => {
   const [rideLoading, setRideLoading] = useState(false);
   const [timer, setTimer] = useState(180);
 
+  let timerInterval = null;
+
+  const startTimer = () => {
+    timerInterval = setInterval(() => {
+      setTimer((prev) => {
+        if (prev <= 1) {
+          clearInterval(timerInterval);
+          setFind(false);
+          setError(
+            "Unfortunately, there is no driver available in your region."
+          );
+          socket.disconnect(); // No ride found
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000); // Update every second
+  };
+
+  const endTimer = () => {
+    if (timerInterval) {
+      clearInterval(timerInterval);
+      timerInterval = null; // Reset timerInterval
+    }
+    setFind(false);
+    setError(""); // Clear any error message
+    setTimer(0); // Optionally reset the timer
+    socket.disconnect(); // Ensure socket disconnection
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (originCoords == null && startAddress !== "") {
@@ -96,6 +126,10 @@ export const RideBookingContextProvider = ({ children }) => {
 
       // Listen for the response from the server
       socket.on("preRideRequestResponse", (response) => {
+        if (response?.success == false) {
+          setRideLoading(false);
+          setError(response?.message);
+        }
         // Store the response in state
         console.log("ride", response);
         setStatus(response?.status);
@@ -112,22 +146,6 @@ export const RideBookingContextProvider = ({ children }) => {
           rideID: response?.data?.rideId?.id,
         });
         if (response?.status == "findingDriver") {
-          const startTimer = () => {
-            const interval = setInterval(() => {
-              setTimer((prev) => {
-                if (prev <= 1) {
-                  clearInterval(interval);
-                  setFind(false);
-                  setError(
-                    "Unfortunaltely, There is no driver available in your region."
-                  );
-                  socket.disconnect(); // No ride found
-                  return 0;
-                }
-                return prev - 1;
-              });
-            }, 1000); // Update every second
-          };
           startTimer();
           setRideLoading(false);
           setFind(true);
@@ -188,8 +206,9 @@ export const RideBookingContextProvider = ({ children }) => {
           setFind(false);
         }
         if (response?.status == "cancel") {
+          endTimer();
           socket.disconnect();
-          setError("Unfortunately the ride was cancelled.");
+          setError("Unfortunately! the ride was cancelled.");
           setFind(false);
           navigate("Home", "/home");
         }
@@ -247,15 +266,16 @@ export const RideBookingContextProvider = ({ children }) => {
       socket.on("cancelRideBrokerResponse", (response) => {
         // Store the response in state
         console.log("cancel", response);
+        if (response?.success == false) {
+          setCancelLoading(false);
+          setError(response?.message);
+        }
         if (response?.success == true) {
           setCancelLoading(false);
           setFind(false);
           setSuccess("Ride Cancelled Successfully.");
           navigate("Home", "/home");
           // setUpdate((prev) => !prev);
-        } else {
-          setCancelLoading(false);
-          setError(response?.message);
         }
       });
 

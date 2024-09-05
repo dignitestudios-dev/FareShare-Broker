@@ -276,7 +276,9 @@ const TrackRideDetail = () => {
           <h3 className="text-xl font-semibold text-gray-900">
             Requester Information
           </h3>
-          <span className="text-2xl font-bold text-[#c00000]">Jane Doe</span>
+          <span className="text-2xl font-bold text-[#c00000]">
+            {JSON.parse(localStorage.getItem("broker"))?.accountHandlerName}
+          </span>
         </div>
         <div className="w-auto flex flex-col justify-start items-start">
           <span className="flex text-lg text-gray-900 font-semibold justify-start items-center gap-2">

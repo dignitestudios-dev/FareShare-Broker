@@ -7,7 +7,7 @@ import { addBankSchema } from "../../schema/addBankSchema";
 import { useFormik } from "formik";
 
 const BankInfo = () => {
-  const [isEdit, setIsEdit] = useState(true);
+  const [isEdit, setIsEdit] = useState(false);
   const [bank, setBank] = useState(null);
 
   const getBank = async () => {
@@ -52,6 +52,8 @@ const BankInfo = () => {
                 JSON.stringify(response?.data?.data)
               );
               setUpdated((prev) => !prev);
+              setIsEdit(false);
+              setLoading(false);
             }
           })
           .catch((error) => {
@@ -111,6 +113,7 @@ const BankInfo = () => {
                   type="text"
                   name="accountHolderName"
                   id="accountHolderName"
+                  disabled={!isEdit}
                   value={accountHandler}
                   onChange={(e) => {
                     handleChange(e);
@@ -142,6 +145,7 @@ const BankInfo = () => {
                   type="text"
                   name="accountNumber"
                   id="accountNumber"
+                  disabled={!isEdit}
                   maxLength={12}
                   value={accountNumber}
                   onChange={(e) => {
@@ -174,6 +178,7 @@ const BankInfo = () => {
                   type="text"
                   name="routingNumber"
                   id="routingNumber"
+                  disabled={!isEdit}
                   value={routingNumber}
                   onChange={(e) => {
                     handleChange(e);
@@ -194,13 +199,23 @@ const BankInfo = () => {
                   </p>
                 ) : null}
               </div>
-
-              <button
-                type="submit"
-                className="w-full mt-6 col-span-2 flex justify-center items-center text-white text-md px-8 font-semibold h-12 rounded-full bg-[#c00000]"
-              >
-                {loading ? "Saving" : "Save"}
-              </button>
+              {!isEdit && (
+                <button
+                  type="button"
+                  onClick={() => setIsEdit(true)}
+                  className="w-full mt-6 col-span-2 flex justify-center items-center text-white text-md px-8 font-semibold h-12 rounded-full bg-[#c00000]"
+                >
+                  Edit
+                </button>
+              )}
+              {isEdit && (
+                <button
+                  type="submit"
+                  className="w-full mt-6 col-span-2 flex justify-center items-center text-white text-md px-8 font-semibold h-12 rounded-full bg-[#c00000]"
+                >
+                  {loading ? "Saving" : "Save"}
+                </button>
+              )}
             </div>
           </div>
         </div>

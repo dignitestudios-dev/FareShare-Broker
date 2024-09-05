@@ -174,7 +174,7 @@ const Bookings = () => {
                       onClick={() =>
                         navigate(
                           "Bookings",
-                          `/ride/ride-detail/${booking?._id}`
+                          `/ride/ride-detail/${booking?.rideId?.id}`
                         )
                       }
                       class="w-8 h-8 rounded-full bg-[#c00000] flex items-center justify-center"

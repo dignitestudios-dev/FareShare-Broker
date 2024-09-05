@@ -13,7 +13,7 @@ const OptionsCard = ({
       type="button"
       onClick={() => {
         if (title == "Wheelchair Accessible") {
-          setVehicleType(title);
+          setVehicleType("Wheelchair Accessible Vehicle");
 
           setIsWheelChairAccessible(true);
         } else {

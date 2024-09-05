@@ -8,9 +8,13 @@ import { verifyOtpValues } from "../../data/authentication";
 import { useFormik } from "formik";
 import authentication from "../../api/authenticationInterceptor";
 import Cookies from "js-cookie";
+import Error from "../../components/app/global/Error";
+import axios from "axios";
+import SuccessToast from "../../components/app/global/SuccessToast";
 
 const VerifyForgotOtp = () => {
-  const { navigate, error, setError } = useContext(AppContext);
+  const { navigate, error, setError, prodUrl, setSuccess, success } =
+    useContext(AppContext);
   const [loading, setLoading] = useState(false);
   const { values, handleBlur, handleChange, handleSubmit, errors, touched } =
     useFormik({
@@ -22,28 +26,24 @@ const VerifyForgotOtp = () => {
       onSubmit: async (values, action) => {
         const email = localStorage.getItem("email");
         setLoading(true);
-        try {
-          const otp = values.otp1 + values.otp2 + values.otp3 + values.otp4;
-          // API call to login using Axios interceptor
-          const response = await authentication.post("/auth/validatePassOTP", {
+        const otp = values.otp1 + values.otp2 + values.otp3 + values.otp4;
+        // API call to login using Axios interceptor
+        axios
+          .post(`${prodUrl}/auth/validatePassOTP`, {
             email: email,
             code: otp,
+          })
+          .then((response) => {
+            if (response?.data?.success) {
+              localStorage.setItem("forgot_token", response?.data?.resetToken);
+              navigate("Change Password", "/change-password");
+              setLoading(false);
+            }
+          })
+          .catch((error) => {
+            setError(error?.response?.data?.message);
+            setLoading(false);
           });
-
-          // Handle the response (e.g., save token, redirect)
-          if (response?.data?.success) {
-            console.log(response?.data);
-            localStorage.setItem("forgot_token", response?.data?.resetToken);
-            navigate("Change Password", "/change-password");
-          }
-        } catch (error) {
-          // Handle errors (e.g., show error message)
-          setError(error?.response?.data?.message);
-
-          // console.error("Login failed:", error.response?.data);
-        } finally {
-          setLoading(false);
-        }
       },
     });
 
@@ -120,8 +120,31 @@ const VerifyForgotOtp = () => {
   // If you want to manually handle `touched`, you can set the field as touched
   // formik.setFieldTouched(name, true, false);
 
+  // Resend OTP:
+  const [resendLoading, setResendLoading] = useState(false);
+  const resendOtp = async () => {
+    setResendLoading(true);
+    try {
+      const response = await axios.post(`${prodUrl}/auth/sendPassOTP`, {
+        email: localStorage.getItem("email"),
+      });
+      if (response?.data?.success) {
+        setResendLoading(false);
+        setSuccess("OTP Resend Successfully.");
+      }
+    } catch (error) {
+      // Handle errors (e.g., show error message)
+      setError(error?.response?.data?.message);
+      // console.error("Login failed:", error.response?.data);
+    } finally {
+      setResendLoading(false);
+    }
+  };
+
   return (
     <section className="bg-white">
+      {error && <Error error={error} setError={setError} />}
+      {success && <SuccessToast success={success} setSuccess={setSuccess} />}
       <div className="flex justify-center min-h-screen">
         <div className="hidden bg-gray-50 lg:flex justify-center items-center bg-cover lg:w-1/2">
           <div className="w-full h-full flex items-center justify-center animate-one text-4xl font-bold text-[#c00000]">
@@ -280,8 +303,18 @@ const VerifyForgotOtp = () => {
                       </button>
                       <button
                         type="button"
+                        onClick={resendOtp}
                         class="h-14 text-lg font-semibold w-[24rem] border-2 border-[#c00000] text-[#c00000] rounded-full transition-all duration-200 hover:bg-[#c00000] hover:text-white"
                       >
+                        {resendLoading && (
+                          <div
+                            class="animate-spin inline-block size-4 border-[3px] mr-2 border-current border-t-transparent text-white rounded-full"
+                            role="status"
+                            aria-label="loading"
+                          >
+                            <span class="sr-only">Loading...</span>
+                          </div>
+                        )}
                         Resend Code
                       </button>
                     </div>

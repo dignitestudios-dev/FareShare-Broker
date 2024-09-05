@@ -6,7 +6,7 @@ import { AppContext } from "../../context/AppContext";
 import axios from "axios";
 
 const Profile = () => {
-  const [isEdit, setIsEdit] = useState(true);
+  const [isEdit, setIsEdit] = useState(false);
 
   const { setError } = useContext(AppContext);
   const [update, setUpdate] = useState(false);
@@ -106,6 +106,7 @@ const Profile = () => {
                 </label>
                 <input
                   type="text"
+                  disabled={!isEdit}
                   value={companyName}
                   onChange={(e) => setCompanyName(e.target.value)}
                   class="w-full h-[52px] bg-gray-50 disabled:text-gray-500 outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
@@ -118,6 +119,7 @@ const Profile = () => {
                 </label>
                 <input
                   type="text"
+                  disabled={!isEdit}
                   value={accountHandlerName}
                   onChange={(e) => setAccountHandlerName(e.target.value)}
                   class="w-full h-[52px] bg-gray-50 disabled:text-gray-500 outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
@@ -145,6 +147,7 @@ const Profile = () => {
                 </label>
                 <input
                   type="text"
+                  disabled={!isEdit}
                   value={companyTaxIdentification}
                   onChange={(e) => setCompanyTaxIdentification(e.target.value)}
                   class="w-full h-[52px] bg-gray-50 disabled:text-gray-500 outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
@@ -152,12 +155,23 @@ const Profile = () => {
                 />
               </div>
             </div>
-            <button
-              type="submit"
-              className="w-full mt-6 flex justify-center items-center text-white text-md px-8 font-semibold h-12 rounded-full bg-[#c00000]"
-            >
-              {loading ? "Updating" : "Update"}
-            </button>
+            {!isEdit && (
+              <button
+                type="button"
+                onClick={() => setIsEdit(true)}
+                className="w-full mt-6 col-span-2 flex justify-center items-center text-white text-md px-8 font-semibold h-12 rounded-full bg-[#c00000]"
+              >
+                Edit
+              </button>
+            )}
+            {isEdit && (
+              <button
+                type="submit"
+                className="w-full mt-6 flex justify-center items-center text-white text-md px-8 font-semibold h-12 rounded-full bg-[#c00000]"
+              >
+                {loading ? "Updating" : "Update"}
+              </button>
+            )}
             {/* <div class="w-full h-auto flex justify-start items-start gap-4">
               <div class="w-full h-auto flex flex-col gap-1 justify-start items-start">
                 <label class="text-[16px] font-medium leading-[21.6px]">
@@ -174,6 +188,9 @@ const Profile = () => {
           </form>
 
           <span className="w-full h-[2px] bg-gray-100"></span>
+          <h1 class="text-[24px] font-bold leading-[5.4px]">
+            Notification Settings
+          </h1>
           <div className="bg-gray-100 w-full rounded-xl  px-4 h-12 flex gap-6 justify-between items-center">
             <span className="text-black text-md font-medium">
               Show Notifications

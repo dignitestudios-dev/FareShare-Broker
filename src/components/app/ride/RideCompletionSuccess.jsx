@@ -15,8 +15,15 @@ const RideCompletionSuccess = ({ isOpen, setIsOpen }) => {
       setCompleteSuccess(false);
     }, 4000);
   });
+
+  const toggleModal = (e) => {
+    if (modalRef.current && !modalRef.current.contains(e.target)) {
+      setCompleteSuccess(false);
+    }
+  };
   return (
     <div
+      onClick={toggleModal}
       id="confirmed-ride-modal"
       className={`fixed top-0 left-0 ${
         isOpen ? "flex" : "hidden"

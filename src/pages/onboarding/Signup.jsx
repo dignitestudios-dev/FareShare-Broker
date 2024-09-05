@@ -142,8 +142,8 @@ const Signup = () => {
 
   return (
     <section class="bg-white ">
-      <div class="flex justify-center min-h-screen">
-        <div class="hidden bg-gray-50 lg:flex justify-center items-center bg-cover  lg:w-2/5">
+      <div class="flex justify-center items-start min-h-screen">
+        <div class="hidden  mb-10 bg-gray-50 lg:flex justify-center items-center bg-cover  lg:w-2/5">
           <div class="w-full h-full  flex items-center justify-center animate one text-4xl font-bold text-[#c00000]">
             <img
               src="https://fareshare.vercel.app/assets/fareshare_logo-15fzbzBE.svg"
@@ -162,7 +162,7 @@ const Signup = () => {
                 <button
                   type="button"
                   onClick={() => navigate("Sign in", "/login")}
-                  className="w-full h-full rounded-full  font-medium hover:bg-[#c00000]  text-gray-600 hover:text-white flex items-center justify-center"
+                  className="w-full h-full rounded-full  font-medium   text-gray-600  flex items-center justify-center"
                 >
                   Sign In
                 </button>
@@ -170,7 +170,7 @@ const Signup = () => {
                 <button
                   type="button"
                   onClick={() => navigate("Sign up", "/signup")}
-                  className="w-full h-full rounded-full bg-[#c00000] text-white hover:bg-[#c00000] font-medium hover:text-white flex items-center justify-center"
+                  className="w-full h-full rounded-full bg-[#c00000] text-white  font-medium  flex items-center justify-center"
                 >
                   Sign Up
                 </button>
@@ -247,9 +247,10 @@ const Signup = () => {
                 </label>
                 <input
                   type="text"
-                  placeholder="XXX-XX-XXXX-XXX"
+                  placeholder="XXXXXXXXX"
                   id="companyTaxIdentification"
                   name="companyTaxIdentification"
+                  maxLength={9}
                   value={values.companyTaxIdentification}
                   onChange={handleChange}
                   onBlur={handleBlur}

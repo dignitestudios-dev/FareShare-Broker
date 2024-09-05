@@ -10,9 +10,10 @@ import authentication from "../../api/authenticationInterceptor";
 import Cookies from "js-cookie";
 import Error from "../../components/app/global/Error";
 import axios from "axios";
+import SuccessToast from "../../components/app/global/SuccessToast";
 
 const VerifyOtp = () => {
-  const { navigate, error, setError, prodUrl, setSuccess } =
+  const { navigate, error, setError, prodUrl, setSuccess, success } =
     useContext(AppContext);
   const [loading, setLoading] = useState(false);
   const { values, handleBlur, handleChange, handleSubmit, errors, touched } =
@@ -143,6 +144,7 @@ const VerifyOtp = () => {
   return (
     <section className="bg-white">
       {error && <Error error={error} setError={setError} />}
+      {success && <SuccessToast success={success} setSuccess={setSuccess} />}
       <div className="flex justify-center min-h-screen">
         <div className="hidden bg-gray-50 lg:flex justify-center items-center bg-cover lg:w-1/2">
           <div className="w-full h-full flex items-center justify-center animate-one text-4xl font-bold text-[#c00000]">
@@ -304,6 +306,15 @@ const VerifyOtp = () => {
                         onClick={resendOtp}
                         class="h-14 text-lg font-semibold w-[24rem] border-2 border-[#c00000] text-[#c00000] rounded-full transition-all duration-200 hover:bg-[#c00000] hover:text-white"
                       >
+                        {resendLoading && (
+                          <div
+                            class="animate-spin inline-block size-4 border-[3px] mr-2 border-current border-t-transparent text-white rounded-full"
+                            role="status"
+                            aria-label="loading"
+                          >
+                            <span class="sr-only">Loading...</span>
+                          </div>
+                        )}
                         Resend Code
                       </button>
                     </div>

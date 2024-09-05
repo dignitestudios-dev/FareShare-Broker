@@ -178,10 +178,7 @@ const RideRequestTable = () => {
               >
                 Status
               </th>
-              <th
-                scope="col"
-                className="px-6 lg:px-4  py-4 font-medium text-white"
-              ></th>
+
               <th
                 scope="col"
                 className="px-6 lg:px-4  py-4 font-medium text-white"
@@ -225,19 +222,7 @@ const RideRequestTable = () => {
                         {formatStatus(ride?.rideId?.status)}
                       </span>
                     </td>
-                    <td className="px-6 lg:px-4  py-4 capitalize">
-                      <button
-                        onClick={() =>
-                          navigate(
-                            "Home",
-                            `/ride/ride-detail/${ride?.rideId?.id}`
-                          )
-                        }
-                        className="text-[#c00000] text-xs font-semibold"
-                      >
-                        View More
-                      </button>
-                    </td>
+
                     <td className="px-6 lg:px-4  py-4 capitalize">
                       <button
                         onClick={() => {
