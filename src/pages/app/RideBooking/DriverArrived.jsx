@@ -119,8 +119,7 @@ const DriverArrived = () => {
           Meet Your Driver
         </button>
         <button
-          onClick={() => navigate(`/ride/ride-detail/${data?.id}`)}
-          to="/ride/schedule-for-later/" //later
+          onClick={() => navigate(`/ride/ride-detail/${data?.rideId?.id}`)}
           className="w-full  flex justify-center items-center text-[#c00000] text-md px-8 font-semibold h-12 rounded-full bg-[#c00000]/[0.12]"
         >
           Track Ride

@@ -290,7 +290,11 @@ export const RideBookingContextProvider = ({ children }) => {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
-    if (status == "driverAssigned" || status == "ReachedLocation") {
+    if (
+      status == "driverAssigned" ||
+      status == "ReachedLocation" ||
+      status == "inProgress"
+    ) {
       const socket = io(SOCKET_SERVER_URL);
       socket.on("connect", () => {
         console.log("Socket connected:", socket.id);
