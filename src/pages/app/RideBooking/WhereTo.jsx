@@ -237,7 +237,17 @@ const WhereTo = () => {
             onPlaceChanged={handleStartPlaceChanged}
           >
             <div className="w-full ">
-              <label htmlFor="from">From</label>
+              <label
+                htmlFor="from"
+                className="flex justify-start text-sm font-medium items-center gap-1"
+              >
+                From{" "}
+                {startError ? (
+                  <p className="text-red-700 text-xs font-medium">
+                    ({startError})
+                  </p>
+                ) : null}
+              </label>
               <input
                 type="text"
                 name="from"
@@ -249,9 +259,6 @@ const WhereTo = () => {
                 onChange={(e) => setStartAddress(e.target.value)}
                 placeholder="Select pickup location"
               />
-              {startError ? (
-                <p className="text-red-700 text-sm font-medium">{startError}</p>
-              ) : null}
             </div>
           </Autocomplete>
           <div className="w-full lg:w-auto flex justify-center items-center">
@@ -267,7 +274,17 @@ const WhereTo = () => {
             onPlaceChanged={handleEndPlaceChanged}
           >
             <div className="w-full">
-              <label htmlFor="to">To</label>
+              <label
+                htmlFor="to"
+                className="flex justify-start text-sm font-medium items-center gap-1"
+              >
+                To{" "}
+                {endError ? (
+                  <p className="text-red-700 text-xs font-medium">
+                    ({endError})
+                  </p>
+                ) : null}
+              </label>
               <input
                 type="text"
                 name="to"
@@ -279,9 +296,6 @@ const WhereTo = () => {
                 onChange={(e) => setEndAddress(e.target.value)}
                 placeholder="Select destination location"
               />
-              {endError ? (
-                <p className="text-red-700 text-sm font-medium">{endError}</p>
-              ) : null}
             </div>
           </Autocomplete>
         </div>

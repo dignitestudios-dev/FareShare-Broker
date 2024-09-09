@@ -71,99 +71,102 @@ export const Chats = () => {
 
   return (
     <div className="w-full  h-full grid grid-cols-4 justify-between bg-white">
-      {chatRoom == null && (
-        <div className="w-full h-full col-span-3 flex flex-col justify-between">
-          <div className="w-full h-full flex flex-col items-center justify-center">
-            <img src={NoData} alt="" className="w-96" />
-            <span className="text-xl font-bold text-gray-700">
-              Start New Conversation
-            </span>
+      <div className="w-full h-full col-span-3 grid grid-cols-3 justify-start items-start">
+        {chatRoom == null && (
+          <div className="w-full h-full col-span-3 flex flex-col justify-between">
+            <div className="w-full h-full flex flex-col items-center justify-center">
+              <img src={NoData} alt="" className="w-96" />
+              <span className="text-xl font-bold text-gray-700">
+                Start New Conversation
+              </span>
+            </div>
           </div>
-        </div>
-      )}
-      {chatRoom && messages?.length == 0 && (
-        <div className="w-full h-full col-span-3 flex flex-col justify-between">
-          <div className="w-full h-full flex flex-col items-center justify-center">
-            <img src={NoData} alt="" className="w-96" />
-            <span className="text-xl font-bold text-gray-700">
-              Start New Conversation
-            </span>
-          </div>
-          <form
-            onSubmit={(e) => sendMessage(chatRoom, message, e)}
-            className=" w-full flex px-4 justify-center items-center gap-2"
-          >
-            <input
-              className="w-full  shadow-md py-3 px-4 border outline-none focus:border-[#c00000] rounded-full"
-              type="text"
-              placeholder="Type your message here..."
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-            />
-            <button
-              onClick={() => {
-                sendMessage(chatRoom, message);
-              }}
-              className="w-12 h-12 shadow-md rounded-full bg-[#c00000] hover:opacity-95 text-xl text-white flex items-center justify-center font-medium"
+        )}
+        {chatRoom && messages?.length == 0 && (
+          <div className="w-full h-full col-span-3 flex flex-col justify-between">
+            <div className="w-full h-full flex flex-col items-center justify-center">
+              <img src={NoData} alt="" className="w-96" />
+              <span className="text-xl font-bold text-gray-700">
+                Start New Conversation
+              </span>
+            </div>
+            <form
+              onSubmit={(e) => sendMessage(chatRoom, message, e)}
+              className=" w-full flex px-4 justify-center items-center gap-2"
             >
-              <BsSend />
-            </button>
-          </form>
-        </div>
-      )}
-      {!messageLoading && messages?.length > 0 && (
-        <div className="w-full h-full col-span-3 flex flex-col justify-between">
-          <div className="flex flex-col  h-full overflow-y-auto">
-            {messages?.map((message) => {
-              if (
-                message?.uid !== JSON.parse(localStorage.getItem("broker"))?._id
-              ) {
-                return (
-                  <div
-                    key={message?.uid}
-                    className="mr-4 flex justify-end mb-4"
-                  >
-                    <div className=" py-3 px-4 bg-[#c00000] rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white">
-                      {message?.text}
-                    </div>
-                  </div>
-                );
-              } else {
-                return (
-                  <div
-                    key={message?.uid}
-                    className="flex ml-4 justify-start mb-4"
-                  >
-                    <div className=" py-3 px-4 bg-gray-200 rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-gray-800">
-                      {message?.text}
-                    </div>
-                  </div>
-                );
-              }
-            })}
+              <input
+                className="w-full  shadow-md py-3 px-4 border outline-none focus:border-[#c00000] rounded-full"
+                type="text"
+                placeholder="Type your message here..."
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+              />
+              <button
+                onClick={() => {
+                  sendMessage(chatRoom, message);
+                }}
+                className="w-12 h-12 shadow-md rounded-full bg-[#c00000] hover:opacity-95 text-xl text-white flex items-center justify-center font-medium"
+              >
+                <BsSend />
+              </button>
+            </form>
           </div>
-          <form
-            onSubmit={(e) => sendMessage(chatRoom, message, e)}
-            className="px-4 w-full flex justify-center items-center gap-2"
-          >
-            <input
-              className="w-full shadow-md py-3 px-4 border outline-none focus:border-[#c00000] rounded-full"
-              type="text"
-              placeholder="Type your message here..."
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-            />
-            <button
-              onClick={() => {
-                sendMessage(chatRoom, message);
-              }}
-              className="w-12 h-12 shadow-md rounded-full bg-[#c00000] hover:opacity-95 text-xl text-white flex items-center justify-center font-medium"
+        )}
+        {!messageLoading && messages?.length > 0 && (
+          <div className="w-full h-full col-span-3 flex flex-col justify-between">
+            <div className="flex flex-col  h-full overflow-y-auto">
+              {messages?.map((message) => {
+                if (
+                  message?.uid !==
+                  JSON.parse(localStorage.getItem("broker"))?._id
+                ) {
+                  return (
+                    <div
+                      key={message?.uid}
+                      className="mr-4 flex justify-end mb-4"
+                    >
+                      <div className=" py-3 px-4 bg-[#c00000] rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white">
+                        {message?.text}
+                      </div>
+                    </div>
+                  );
+                } else {
+                  return (
+                    <div
+                      key={message?.uid}
+                      className="flex ml-4 justify-start mb-4"
+                    >
+                      <div className=" py-3 px-4 bg-gray-200 rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-gray-800">
+                        {message?.text}
+                      </div>
+                    </div>
+                  );
+                }
+              })}
+            </div>
+            <form
+              onSubmit={(e) => sendMessage(chatRoom, message, e)}
+              className="px-4 w-full flex justify-center items-center gap-2"
             >
-              <BsSend />
-            </button>
-          </form>
-        </div>
-      )}
+              <input
+                className="w-full shadow-md py-3 px-4 border outline-none focus:border-[#c00000] rounded-full"
+                type="text"
+                placeholder="Type your message here..."
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+              />
+              <button
+                onClick={() => {
+                  sendMessage(chatRoom, message);
+                }}
+                className="w-12 h-12 shadow-md rounded-full bg-[#c00000] hover:opacity-95 text-xl text-white flex items-center justify-center font-medium"
+              >
+                <BsSend />
+              </button>
+            </form>
+          </div>
+        )}
+      </div>
 
       <ChatSidebar setChatRoom={setChatRoom} chatRoom={chatRoom} />
     </div>

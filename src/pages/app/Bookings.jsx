@@ -265,8 +265,11 @@ const Bookings = () => {
         </div>
       ) : (
         !loading && (
-          <div className="w-full h-[75vh] flex border-t items-center border-collapse justify-center">
+          <div className="w-full h-[75vh] flex flex-col  border-t items-center border-collapse justify-center">
             <img src={NoData} alt="no-data" className="w-96" />
+            <span className="text-gray-700 text-2xl font-bold">
+              No Data Available
+            </span>
           </div>
         )
       )}

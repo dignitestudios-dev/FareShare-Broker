@@ -31,7 +31,7 @@ const ChatSidebar = ({ chatRoom, setChatRoom }) => {
           <FiSearch />
         </button>
       </div>
-      {chatRooms == null || chatRooms?.length < 0 ? (
+      {chatRooms == null || chatRooms?.length <= 0 ? (
         <div className="w-full h-[60vh] flex border-t items-center border-collapse justify-center">
           <span className="text-xl font-bold text-gray-600">
             No Chat Rooms Available

@@ -8,7 +8,7 @@ import axios from "axios";
 const Profile = () => {
   const [isEdit, setIsEdit] = useState(false);
 
-  const { setError, setSuccess } = useContext(AppContext);
+  const { setError, setSuccess, prodUrl } = useContext(AppContext);
   const [update, setUpdate] = useState(false);
 
   const [broker, setBroker] = useState(
@@ -75,29 +75,40 @@ const Profile = () => {
 
   const [isChecked, setIsChecked] = useState(false);
 
-  useEffect(() => {
-    const sendNotificationPreference = async () => {
-      try {
-        const response = await api.post("/notification/settings", {
-          isEnabled: isChecked,
-        });
+  const sendNotificationPreference = async (bool) => {
+    try {
+      const response = await api.post("/notification/settings", {
+        isEnabled: bool,
+      });
 
-        console.log("Response:", response);
-        if (response?.data?.success) {
-          setSuccess("Notification settings updated successfully.");
-        }
+      console.log("Response:", response);
+      if (response?.data?.success) {
+        setSuccess("Notification settings updated successfully.");
+      }
+    } catch (error) {
+      setError(error?.response?.data?.message);
+      console.error("Error:", error);
+    }
+  };
+
+  useEffect(() => {
+    const getNotificationSetting = async () => {
+      try {
+        const response = await api.get("/notification/settings");
+        setIsChecked(response?.data?.data?.settings);
       } catch (error) {
         setError(error?.response?.data?.message);
         console.error("Error:", error);
       }
     };
 
-    // Call the function when `isChecked` changes
-    sendNotificationPreference();
-  }, [isChecked]); // Dependency array includes `isChecked`
+    getNotificationSetting();
+  }, [isChecked]);
+  // Dependency array includes `isChecked`
 
   const handleCheckboxChange = (event) => {
     setIsChecked(event.target.checked);
+    sendNotificationPreference(event.target.checked);
   };
 
   return (
@@ -196,7 +207,7 @@ const Profile = () => {
                 type="submit"
                 className="w-full mt-6 flex justify-center items-center text-white text-md px-8 font-semibold h-12 rounded-full bg-[#c00000]"
               >
-                {loading ? "Updating" : "Update"}
+                {loading ? "Saving" : "Save"}
               </button>
             )}
             {/* <div class="w-full h-auto flex justify-start items-start gap-4">

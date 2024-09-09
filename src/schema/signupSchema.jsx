@@ -6,13 +6,16 @@ export const signupSchema = Yup.object({
     "Please enter the account handler name"
   ),
 
-  companyTaxIdentification: Yup.string().required(
-    "Please enter the tax identification number."
-  ),
+  companyTaxIdentification: Yup.string()
+    .required("Please enter the tax identification number.")
+    .matches(/^\d+$/, "Tax Identification number must be a numeric value."),
+
   department: Yup.string().required(
     "You must select a department i.e medical or corporate."
   ),
-  email: Yup.string().email().required("Please enter your email"),
+  email: Yup.string()
+    .email("Email must be a valid email.")
+    .required("Please enter your email"),
   password: Yup.string()
     .min(8, "Password must be at least 8 characters long")
     .matches(

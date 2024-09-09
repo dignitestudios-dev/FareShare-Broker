@@ -43,7 +43,7 @@ export const RideBookingContextProvider = ({ children }) => {
 
   let timerInterval = null;
 
-  const startTimer = () => {
+  const startTimer = (socket) => {
     timerInterval = setInterval(() => {
       setTimer((prev) => {
         if (prev <= 1) {
@@ -152,7 +152,7 @@ export const RideBookingContextProvider = ({ children }) => {
           rideID: response?.data?.rideId?.id,
         });
         if (response?.status == "findingDriver") {
-          startTimer();
+          startTimer(socket);
           setRideLoading(false);
           setFind(true);
 

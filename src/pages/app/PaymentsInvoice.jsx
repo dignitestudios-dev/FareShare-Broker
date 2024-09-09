@@ -37,7 +37,7 @@ const PaymentsInvoice = () => {
     const month = String(date.getUTCMonth() + 1).padStart(2, "0"); // Months are 0-indexed
     const year = date.getUTCFullYear();
 
-    return `${day}/${month}/${year}`;
+    return `${month}/${day}/${year}`;
   };
 
   function getMonthNameFromISOString(isoString) {
@@ -172,8 +172,11 @@ const PaymentsInvoice = () => {
             </tbody>
           </table>
         ) : (
-          <div className="w-full h-[75vh] flex border-t items-center border-collapse justify-center">
+          <div className="w-full h-[75vh] flex flex-col  border-t items-center border-collapse justify-center">
             <img src={NoData} alt="no-data" className="w-96" />
+            <span className="text-gray-700 text-2xl font-bold">
+              No Data Available
+            </span>
           </div>
         )}
 
