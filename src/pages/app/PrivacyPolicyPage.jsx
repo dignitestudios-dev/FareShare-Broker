@@ -5,14 +5,14 @@ const PrivacyPolicyPage = () => {
   // Privacy:
   const [privacy, setPrivacy] = useState(null);
 
-  const getPrivacy = async () => {
-    const privacy = await api.get("/policy/privacy");
-    console.log(privacy);
-  };
+  // const getPrivacy = async () => {
+  //   const privacy = await api.get("/policy/privacy");
+  //   console.log(privacy);
+  // };
 
-  useEffect(() => {
-    getPrivacy();
-  }, []);
+  // useEffect(() => {
+  //   getPrivacy();
+  // }, []);
   return (
     <div class="w-full h-full overflow-y-auto flex flex-col justify-start items-start gap-2">
       <div class="container mx-auto px-4 py-6">

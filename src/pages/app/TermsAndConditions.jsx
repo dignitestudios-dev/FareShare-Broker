@@ -5,14 +5,14 @@ const TermsAndConditions = () => {
   // Terms:
   const [terms, setTerms] = useState(null);
 
-  const getTerms = async () => {
-    const terms = await api.get("/policy/termsOfService");
-    console.log(terms);
-  };
+  // const getTerms = async () => {
+  //   const terms = await api.get("/policy/termsOfService");
+  //   console.log(terms);
+  // };
 
-  useEffect(() => {
-    getTerms();
-  }, []);
+  // useEffect(() => {
+  //   getTerms();
+  // }, []);
   return (
     <div class=" flex flex-col w-full h-full overflow-y-auto justify-start items-start gap-2">
       <div class="container mx-auto max-w-4xl bg-white p-6 rounded-lg shadow-lg">
