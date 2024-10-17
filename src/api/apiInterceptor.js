@@ -2,6 +2,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 
 // axios instance
+//
 const api = axios.create({
   baseURL: "https://backend.faresharellc.com",
   // timeout: 15000,
