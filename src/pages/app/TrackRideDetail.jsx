@@ -502,7 +502,7 @@ const TrackRideDetail = () => {
                   {ride?.destinationAddress ? ride?.destinationAddress : "N/A"}
                 </span>
               </div>
-              <div className="w-full flex justify-between items-start">
+              {/* <div className="w-full flex justify-between items-start">
                 <span className="w-1/2 text-[#c00000] text-sm font-semibold">
                   Additional Request:
                 </span>
@@ -510,7 +510,7 @@ const TrackRideDetail = () => {
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui,
                   repudiandae.
                 </span>
-              </div>
+              </div> */}
             </div>
           </div>
           <div className="w-full  px-6 py-4 flex flex-col gap-4 justify-start items-start">

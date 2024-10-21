@@ -48,6 +48,7 @@ const InvoiceModal = ({ isOpen, setIsOpen, invoice }) => {
     // Get the month name
     return monthNames[date.getMonth()];
   }
+
   return (
     <div
       onClick={toggleModal}
@@ -113,17 +114,17 @@ const InvoiceModal = ({ isOpen, setIsOpen, invoice }) => {
               </thead>
               {invoice?.transactionId?.length > 0 ? (
                 <tbody>
-                  {invoice?.transactionId?.map(() => {
+                  {invoice?.transactionId?.map((item) => {
                     return (
                       <tr className="bg-white border-b text-sm  border-gray-700">
                         <th
                           scope="row"
                           className="px-6 py-2 font-medium text-gray-900 whitespace-nowrap"
                         >
-                          Mike Smith
+                          {item?.name}
                         </th>
-                        <td className="px-6 py-2">4 June 2023</td>
-                        <td className="px-6 py-2">$20</td>
+                        <td className="px-6 py-2">{formatDate(item?.date)}</td>
+                        <td className="px-6 py-2">${item?.amount}</td>
                       </tr>
                     );
                   })}
