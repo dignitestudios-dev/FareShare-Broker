@@ -294,6 +294,12 @@ export const RideBookingContextProvider = ({ children }) => {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
+    setTimeout(() => {
+      setCompleteSuccess(false);
+    }, 2000);
+  }, [completeSuccess]);
+
+  useEffect(() => {
     if (
       status == "driverAssigned" ||
       status == "ReachedLocation" ||

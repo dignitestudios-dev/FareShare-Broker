@@ -13,7 +13,7 @@ const RideCompletionSuccess = ({ isOpen, setIsOpen }) => {
     setTimeout(() => {
       navigate("Home", "/home");
       setCompleteSuccess(false);
-    }, 4000);
+    }, 2000);
   });
 
   const toggleModal = (e) => {
