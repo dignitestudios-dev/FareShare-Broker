@@ -12,6 +12,7 @@ const RideConfirmedModal = ({ isOpen, setIsOpen }) => {
   useEffect(() => {
     setTimeout(() => {
       setIsScheduled(false);
+      setIsOpen(false);
       navigate("Home", "/home");
     }, 1000);
   });
