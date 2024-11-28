@@ -11,9 +11,9 @@ const RideConfirmedModal = ({ isOpen, setIsOpen }) => {
 
   useEffect(() => {
     setTimeout(() => {
-      navigate("Home", "/home");
       setIsScheduled(false);
-    }, 4000);
+      navigate("Home", "/home");
+    }, 1000);
   });
   return (
     <div
