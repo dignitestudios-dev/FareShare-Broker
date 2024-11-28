@@ -71,7 +71,9 @@ export const RideBookingContextProvider = ({ children }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (originCoords == null && startAddress !== "") {
+    if (originCoords == null || destCoords == null) {
+      setError("You must select pickup and destination address.");
+    } else if (originCoords == null && startAddress !== "") {
       setStartError("You must select a valid pickup location to continue");
     } else if (destCoords == null && endAddress !== "") {
       setEndError("You must select a valid destination location to continue");
