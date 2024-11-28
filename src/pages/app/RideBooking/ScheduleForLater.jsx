@@ -11,6 +11,8 @@ import { useEffect } from "react";
 import moment from "moment";
 import RideConfirmedModal from "../../../components/app/ride/RideConfirmedModal";
 import { RideBookingContext } from "../../../context/RideBookingContext";
+import { useNavigate } from "react-router-dom";
+import { AppContext } from "../../../context/AppContext";
 
 const SchdeuleForLater = () => {
   const {
@@ -20,6 +22,7 @@ const SchdeuleForLater = () => {
     setOpenConfirm,
     rideLoading,
   } = useContext(RideBookingContext);
+  const { navigate } = useContext(AppContext);
   const today = moment();
   const theme = {
     rainbow: {
