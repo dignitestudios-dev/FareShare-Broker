@@ -161,6 +161,7 @@ const WhereTo = () => {
       setTypesLoading(true);
       api
         .post("/user/rideEstimations", {
+          rideDate: Date().now(),
           originLatitude: originCoords[0],
           originLongitude: originCoords[1],
           destLatitude: destCoords[0],
