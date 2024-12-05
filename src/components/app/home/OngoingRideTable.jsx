@@ -84,7 +84,7 @@ const OngoingRideTable = () => {
   };
 
   return (
-    <div className="w-full overflow-x-auto rounded-2xl border  border-gray-300 bg-white   ">
+    <div className="w-full overflow-x-auto rounded-2xl border  border-gray-300 bg-gray-50   ">
       <div class="w-full h-14 px-4 flex justify-between items-center">
         <span class="text-lg  text-[#c00000] font-semibold">Ongoing Rides</span>
         <button
@@ -95,11 +95,13 @@ const OngoingRideTable = () => {
         </button>
       </div>
       {!loading && rides?.length == 0 && (
-        <div className="w-full border-t border-collapse h-32 flex items-center justify-center">
-          {/* <img src="" alt="" /> */}
-          <span className="text-lg font-bold text-gray-800">
-            No Data Available
-          </span>
+        <div className="w-full border-t border-collapse h-auto flex items-center justify-center">
+          <div className="w-full h-auto py-6 flex flex-col  border-t items-center border-collapse justify-center">
+            <img src={"/no-data.png"} alt="no-data" className="w-48" />
+            <span className="text-gray-700 text-xl font-bold">
+              No Data Available
+            </span>
+          </div>
         </div>
       )}
       <table className="w-full border-collapse  text-left text-sm text-gray-500">

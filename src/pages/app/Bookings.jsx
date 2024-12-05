@@ -101,7 +101,7 @@ const Bookings = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="e.g. John Smith"
-            className="mt-2 block w-full rounded-full border border-gray-200 bg-gray-50 px-3 h-12 shadow-sm outline-none focus:border-gradient focus:ring focus:ring-purple-200 focus:ring-opacity-50"
+            className="mt-2 block w-full rounded-full border border-gray-200 bg-gray-50 px-3 h-12  outline-none focus:border-gradient focus:ring focus:ring-purple-200 focus:ring-opacity-50"
           />
 
           <button className="active:scale-95 absolute right-1 top-2 rounded-full bg-[#c00000] px-8 h-10 font-medium text-white outline-none   hover:opacity-90">
@@ -265,11 +265,13 @@ const Bookings = () => {
         </div>
       ) : (
         !loading && (
-          <div className="w-full h-[75vh] flex flex-col  border-t items-center border-collapse justify-center">
-            <img src={NoData} alt="no-data" className="w-96" />
-            <span className="text-gray-700 text-2xl font-bold">
-              No Data Available
-            </span>
+          <div className="w-full border-collapse h-auto flex items-center justify-center">
+            <div className="w-full h-[75vh] py-6 flex flex-col  items-center border-collapse justify-center">
+              <img src={"/no-data.png"} alt="no-data" className="w-48" />
+              <span className="text-gray-700 text-xl font-bold">
+                No Data Available
+              </span>
+            </div>
           </div>
         )
       )}

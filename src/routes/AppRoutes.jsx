@@ -96,11 +96,11 @@ export const AppRoutes = [
     url: "/settings/profile",
     page: <AppLayout page={<SettingsLayout page={<Profile />} />} />,
   },
-  {
-    title: "Settings",
-    url: "/settings/bank-info",
-    page: <AppLayout page={<SettingsLayout page={<BankInfo />} />} />,
-  },
+  // {
+  //   title: "Settings",
+  //   url: "/settings/bank-info",
+  //   page: <AppLayout page={<SettingsLayout page={<BankInfo />} />} />,
+  // },
   {
     title: "Settings",
     url: "/settings/notifications",

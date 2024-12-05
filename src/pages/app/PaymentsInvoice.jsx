@@ -72,7 +72,15 @@ const PaymentsInvoice = () => {
   const [invoice, setInvoice] = useState(null);
   return (
     <div className="w-full h-auto flex flex-col justify-start items-start gap-2">
-      <div className="w-full overflow-x-auto rounded-2xl border  border-gray-300 bg-white   ">
+      <div className="w-full h-auto p-4 text-left text-xs text-[#c00000] rounded-3xl font-normal bg-[#c00000]/[0.1] ">
+        Note: Late Payment and Fees: Any outstanding balance not paid within
+        three (3) days of the payment due date will incur a late fee of 10% of
+        the total outstanding balance for each day the payment remains overdue.
+        If the balance remains unpaid beyond three (3) days from the payment due
+        date, the account associated with the outstanding balance will be
+        temporarily suspended or deactivated until the full payment is received.
+      </div>
+      <div className="w-full overflow-x-auto rounded-2xl border  border-gray-300 bg-gray-50   ">
         <div class="w-full h-14 px-4 flex justify-between items-center">
           <span class="text-lg  text-[#c00000] font-semibold">
             Payments & Invoices
@@ -173,7 +181,7 @@ const PaymentsInvoice = () => {
           </table>
         ) : (
           <div className="w-full h-[75vh] flex flex-col  border-t items-center border-collapse justify-center">
-            <img src={NoData} alt="no-data" className="w-96" />
+            <img src={"/no-data.png"} alt="no-data" className="w-48" />
             <span className="text-gray-700 text-2xl font-bold">
               No Data Available
             </span>

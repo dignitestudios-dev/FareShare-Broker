@@ -16,6 +16,30 @@ const VerifyOtp = () => {
   const { navigate, error, setError, prodUrl, setSuccess, success } =
     useContext(AppContext);
   const [loading, setLoading] = useState(false);
+  const addAchBank = async () => {
+    setLoading(true);
+    try {
+      const headers = {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      };
+      const response = await axios.post(
+        `${prodUrl}/finance/broker/rideBilling`,
+        {},
+        { headers }
+      );
+      if (response?.data?.success) {
+        setLoading(false);
+        setSuccess("Redirecting you to the stripe bank url.");
+        window.location.href = response?.data?.data?.url;
+      }
+    } catch (error) {
+      // Handle errors (e.g., show error message)
+      setError(error?.response?.data?.message);
+      // console.error("Login failed:", error.response?.data);
+    } finally {
+      setLoading(false);
+    }
+  };
   const { values, handleBlur, handleChange, handleSubmit, errors, touched } =
     useFormik({
       initialValues: verifyOtpValues,
@@ -36,8 +60,10 @@ const VerifyOtp = () => {
           .then((response) => {
             if (response?.data?.success) {
               localStorage.setItem("token", response?.data?.token);
-              navigate("Add Bank", "/add-bank");
-              setLoading(false);
+
+              addAchBank();
+              // navigate("Add Bank", "/add-bank");
+              // setLoading(false);
             }
           })
           .catch((error) => {

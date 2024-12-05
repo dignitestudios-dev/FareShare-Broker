@@ -5,6 +5,7 @@ import api from "../../../api/apiInterceptor";
 import { useEffect } from "react";
 import { NoData } from "../../../assets/export";
 import { FaArrowRight } from "react-icons/fa";
+import { HiOutlineUsers } from "react-icons/hi2";
 
 const ChatSidebar = ({ chatRoom, setChatRoom }) => {
   // Chat Rooms:
@@ -20,7 +21,7 @@ const ChatSidebar = ({ chatRoom, setChatRoom }) => {
     getChatRooms();
   }, []);
   return (
-    <div className="hidden  col-span-1 lg:flex flex-col h-full overflow-y-auto  border-l ">
+    <div className="hidden  col-span-1 lg:flex flex-col h-full bg-gray-50 overflow-y-auto  border-l ">
       <div className="py-5 px-3 w-full flex justify-center items-center gap-2">
         <input
           className="w-[90%] shadow-md h-10 px-4 border outline-none focus:border-[#c00000] rounded-full"
@@ -33,9 +34,12 @@ const ChatSidebar = ({ chatRoom, setChatRoom }) => {
       </div>
       {chatRooms == null || chatRooms?.length <= 0 ? (
         <div className="w-full h-[60vh] flex border-t items-center border-collapse justify-center">
-          <span className="text-xl font-bold text-gray-600">
-            No Chat Rooms Available
-          </span>
+          <div className="w-full h-full py-6 flex flex-col   items-center border-collapse justify-center">
+            <HiOutlineUsers className="text-6xl text-gray-500" />
+            <span className="text-gray-700 text-center text-xl font-bold">
+              No Chat Rooms <br /> Available
+            </span>
+          </div>
         </div>
       ) : (
         chatRooms?.map((room, key) => {

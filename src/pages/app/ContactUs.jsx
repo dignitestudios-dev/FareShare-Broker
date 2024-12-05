@@ -56,8 +56,8 @@ const ContactUs = () => {
       },
     });
   return (
-    <div className="w-full h-auto lg:h-full flex flex-col justify-center border p-4 rounded-3xl items-center">
-      <div class="w-full grid grid-cols-1 lg:grid-cols-2  items-start gap-16 p-4  bg-white font-[sans-serif]">
+    <div className="w-full h-auto lg:h-full flex flex-col justify-center border bg-gray-50 p-4 rounded-3xl items-center">
+      <div class="w-full grid grid-cols-1 lg:grid-cols-2  items-start gap-16 p-4   font-[sans-serif]">
         <div className="w-full hidden  border-r lg:flex">
           <img src={ContactUsVector} alt="" className="w-[95%]" />
         </div>
@@ -83,7 +83,7 @@ const ContactUs = () => {
               onChange={handleChange}
               onBlur={handleBlur}
               placeholder="Name"
-              class={`w-full rounded-md py-3 px-4 bg-gray-50 text-gray-800 text-sm outline-[#c00000] focus:bg-transparent transition-colors duration-300 ${
+              class={`w-full rounded-md py-3 px-4 bg-gray-100 border text-gray-800 text-sm outline-[#c00000] focus:bg-transparent transition-colors duration-300 ${
                 errors.name && touched.name
                   ? "border border-red-600 shake"
                   : null
@@ -103,7 +103,7 @@ const ContactUs = () => {
               onChange={handleChange}
               onBlur={handleBlur}
               placeholder="Email"
-              class={`w-full rounded-md py-3 px-4 bg-gray-50 text-gray-800 text-sm outline-[#c00000] focus:bg-transparent transition-colors duration-300 ${
+              class={`w-full rounded-md py-3 px-4 bg-gray-100 border text-gray-800 text-sm outline-[#c00000] focus:bg-transparent transition-colors duration-300 ${
                 errors.email && touched.email
                   ? "border border-red-600 shake"
                   : null
@@ -122,7 +122,7 @@ const ContactUs = () => {
               value={values.subject}
               onChange={handleChange}
               onBlur={handleBlur}
-              class={`w-full rounded-md py-3 px-4 bg-gray-50 text-gray-800 text-sm outline-[#c00000] focus:bg-transparent transition-colors duration-300 ${
+              class={`w-full rounded-md py-3 px-4 bg-gray-100 border text-gray-800 text-sm outline-[#c00000] focus:bg-transparent transition-colors duration-300 ${
                 errors.subject && touched.subject
                   ? "border border-red-600 shake"
                   : null
@@ -144,7 +144,7 @@ const ContactUs = () => {
               onChange={handleChange}
               onBlur={handleBlur}
               rows="6"
-              class={`w-full resize-none rounded-md py-3 px-4 bg-gray-50 text-gray-800 text-sm outline-[#c00000] focus:bg-transparent transition-colors duration-300 ${
+              class={`w-full resize-none rounded-md py-3 px-4 bg-gray-100 border text-gray-800 text-sm outline-[#c00000] focus:bg-transparent transition-colors duration-300 ${
                 errors.message && touched.message
                   ? "border border-red-600 shake"
                   : null

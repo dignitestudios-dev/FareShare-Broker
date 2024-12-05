@@ -9,7 +9,7 @@ const Navbar = () => {
   const { navigate } = useContext(AppContext);
   const [isOpen, setIsOpen] = useState(false);
   return (
-    <div className="w-full h-14 border-b flex justify-between lg:justify-end items-center px-4">
+    <div className="w-full h-14 bg-gray-50 border-b flex justify-between lg:justify-end items-center px-4">
       <button className="text-2xl block lg:hidden">
         <IoMenuOutline />
       </button>
@@ -31,7 +31,7 @@ const Navbar = () => {
         <div
           class={`w-32 z-10 ${
             isOpen ? "block" : "hidden"
-          } absolute top-16 right-2 bg-white divide-y divide-gray-100 rounded-lg shadow `}
+          } absolute top-16 right-2 bg-white border divide-y divide-gray-100 rounded-lg shadow `}
         >
           <ul
             class="py-2 w-full text-sm  text-gray-700 "

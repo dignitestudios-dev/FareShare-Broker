@@ -91,19 +91,19 @@ const Profile = () => {
     }
   };
 
-  useEffect(() => {
-    const getNotificationSetting = async () => {
-      try {
-        const response = await api.get("/notification/settings");
-        setIsChecked(response?.data?.data?.settings);
-      } catch (error) {
-        setError(error?.response?.data?.message);
-        console.error("Error:", error);
-      }
-    };
-
-    getNotificationSetting();
-  }, [isChecked]);
+  const [update2, setUpdate2] = useState(false);
+  const getNotificationSetting = async () => {
+    try {
+      const response = await api.get("/notification/settings");
+      setIsChecked(response?.data?.data?.settings);
+    } catch (error) {
+      setError(error?.response?.data?.message);
+      console.error("Error:", error);
+    }
+  };
+  // useEffect(() => {
+  //   getNotificationSetting();
+  // }, [update]);
   // Dependency array includes `isChecked`
 
   const handleCheckboxChange = (event) => {
@@ -125,12 +125,16 @@ const Profile = () => {
                 changes or updates.
               </p>
             </div>
+
+            {/* <button className="w-auto h-9 rounded-lg bg-[#1c1c1c] text-white font-medium px-2 flex items-center justify-center">
+              Update Bank Info
+            </button> */}
           </div>
           <form
             onSubmit={(e) => sendDataToBackend(e)}
             class="w-full flex flex-col justify-start items-start gap-4"
           >
-            {/* <div class="w-[120px] h-[120px] rounded-full bg-gray-50 flex justify-center items-center relative">
+            {/* <div class="w-[120px] h-[120px] rounded-full bg-gray-100 border flex justify-center items-center relative">
               <img
                 src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
                 alt="user_image"
@@ -147,7 +151,7 @@ const Profile = () => {
                   disabled={!isEdit}
                   value={companyName}
                   onChange={(e) => setCompanyName(e.target.value)}
-                  class="w-full h-[52px] bg-gray-50 disabled:text-gray-500 outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
+                  class="w-full h-[52px] bg-gray-100 border disabled:text-gray-500 outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
                   placeholder="Mike"
                 />
               </div>
@@ -160,7 +164,7 @@ const Profile = () => {
                   disabled={!isEdit}
                   value={accountHandlerName}
                   onChange={(e) => setAccountHandlerName(e.target.value)}
-                  class="w-full h-[52px] bg-gray-50 disabled:text-gray-500 outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
+                  class="w-full h-[52px] bg-gray-100 border disabled:text-gray-500 outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
                   placeholder="Smith"
                 />
               </div>
@@ -175,7 +179,7 @@ const Profile = () => {
                   value={email}
                   disabled={true}
                   onChange={(e) => setEmail(e.target.value)}
-                  class="w-full h-[52px] bg-gray-50 disabled:text-gray-500 outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
+                  class="w-full h-[52px] bg-gray-100 border disabled:text-gray-500 outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
                   placeholder="mikesmith@gmail.com"
                 />
               </div>
@@ -188,7 +192,7 @@ const Profile = () => {
                   disabled={!isEdit}
                   value={companyTaxIdentification}
                   onChange={(e) => setCompanyTaxIdentification(e.target.value)}
-                  class="w-full h-[52px] bg-gray-50 disabled:text-gray-500 outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
+                  class="w-full h-[52px] bg-gray-100 border disabled:text-gray-500 outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
                   placeholder="000 000 0000"
                 />
               </div>
@@ -218,17 +222,17 @@ const Profile = () => {
                 <input
                   type="text"
                  
-                  class="w-full h-[52px] bg-gray-50 disabled:text-gray-500 outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
+                  class="w-full h-[52px] bg-gray-100 border disabled:text-gray-500 outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
                   placeholder="3505 Lake Lynda Dr. Orlando, FL"
                 />
               </div>
             </div> */}
           </form>
-          <span className="w-full h-[2px] bg-gray-100"></span>
+          {/* <span className="w-full h-[2px] bg-gray-200"></span>
           <h1 class="text-[24px] font-bold leading-[5.4px]">
             Notification Settings
           </h1>
-          <div className="bg-gray-100 w-full rounded-xl px-4 h-12 flex gap-6 justify-between items-center">
+          <div className="bg-gray-100 border w-full rounded-xl px-4 h-12 flex gap-6 justify-between items-center">
             <span className="text-black text-md font-medium">
               Show Notifications
             </span>
@@ -241,7 +245,7 @@ const Profile = () => {
               />
               <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-green-300 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500" />
             </label>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

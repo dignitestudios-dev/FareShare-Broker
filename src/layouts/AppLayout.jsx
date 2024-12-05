@@ -8,7 +8,7 @@ import Error from "../components/app/global/Error";
 import SuccessToast from "../components/app/global/SuccessToast";
 
 const AppLayout = ({ page }) => {
-  const { setError, error, prodUrl, success, setSuccess } =
+  const { setError, error, prodUrl, success, setSuccess, activeLink } =
     useContext(AppContext);
   // Broker:
   const [broker, setBroker] = useState(null);
@@ -38,7 +38,11 @@ const AppLayout = ({ page }) => {
       {<SuccessToast success={success} setSuccess={setSuccess} />}
       <div className="w-full h-full lg:w-[80%] xl:w-[80%] flex flex-col justify-start items-start relative">
         <Navbar />
-        <div className="w-full h-[calc(100%-3.5rem)] p-4 overflow-y-auto">
+        <div
+          className={`w-full h-[calc(100%-3.5rem)] ${
+            activeLink !== "Chats" ? "p-4" : "p-0"
+          } overflow-y-auto`}
+        >
           {page}
         </div>
       </div>

@@ -15,7 +15,7 @@ const TermsAndConditions = () => {
   // }, []);
   return (
     <div class=" flex flex-col w-full h-full overflow-y-auto justify-start items-start gap-2">
-      <div class="container mx-auto max-w-4xl bg-white p-6 rounded-lg shadow-lg">
+      <div class="container mx-auto max-w-4xl bg-gray-100 border p-6 rounded-2xl shadow-lg">
         <h1 class="section-title">FareShare LLC’s Terms of Service</h1>
         <p class="content">
           <strong>Last Updated: July 10, 2024</strong>

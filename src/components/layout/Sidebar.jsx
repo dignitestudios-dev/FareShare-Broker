@@ -34,7 +34,7 @@ const Sidebar = () => {
   } = useContext(AppContext);
 
   return (
-    <div className="w-[70%] h-full md:w-[40%] fixed top-0 left-0 -translate-x-full lg:translate-x-0 lg:static  border-r lg:w-[20%] xl:w-[20%] flex flex-col justify-start items-start gap-1 overflow-y-auto">
+    <div className="w-[70%] h-full md:w-[40%] fixed top-0 left-0 -translate-x-full lg:translate-x-0 lg:static border-r bg-gray-50  lg:w-[20%] xl:w-[20%] flex flex-col justify-start items-start  gap-1 overflow-y-auto">
       <img
         src="https://fareshare.vercel.app/assets/fareshare_logo-15fzbzBE.svg"
         alt=""
@@ -46,28 +46,49 @@ const Sidebar = () => {
           key={"home"}
         />
         <div className="w-full flex flex-col justify-start items-start gap-2 relative">
-          <button
+          <div
             onClick={() => {
               setActiveLink("Request a ride");
               setRequestOpen((prev) => !prev);
             }}
-            className={`w-[98%] rounded-r-full h-12 transition-all duration-300 flex justify-between items-center gap-2 px-4 pr-6 ${
-              activeLink === "Request a ride"
-                ? "bg text-[#fff]"
-                : "bg-gray-50 text-[#191919]"
-            }  font-medium text-xl`}
+            className="w-full flex items-center justify-start gap-2 h-12  "
           >
-            <div className="w-auto flex gap-2 justify-start items-center">
-              <span>
-                <TbAmbulance />
-              </span>
-              <span className="text-sm ">{"Request a ride"}</span>
-            </div>
-            <TbCaretDownFilled className="text-xs" />
-          </button>
+            <span
+              className={`transform  w-[10px] h-[18px] ${
+                activeLink === "Request a ride"
+                  ? "bg text-[#fff]"
+                  : "bg-gray-100 text-[#191919]"
+              } rounded-r-full`}
+            ></span>
+            <button
+              className={`w-[90%] rounded-full h-12 transition-all duration-300 flex justify-between items-center gap-2 px-4 pr-6 ${
+                activeLink === "Request a ride"
+                  ? "bg text-[#fff]"
+                  : "bg-gray-100 text-black/40"
+              }  font-medium text-xl`}
+            >
+              <div className="w-auto flex gap-2 justify-start items-center">
+                <span
+                  className={`${
+                    activeLink == "Request a ride"
+                      ? "text-white"
+                      : "text-[#c00000]"
+                  }`}
+                >
+                  <TbAmbulance />
+                </span>
+                <span className="capitalize text-[13px]  leading-none font-bold ">
+                  {"Request a ride"}
+                </span>
+              </div>
+              <TbCaretDownFilled className="text-xs" />
+            </button>
+          </div>
           <div
             className={`w-full bg-transparent ${
-              requestOpen ? "flex flex-col gap-2" : "hidden"
+              requestOpen
+                ? "flex flex-col items-start ml-9 gap-4 py-2"
+                : "hidden"
             } h-auto rounded-xl transition-all duration-300 `}
           >
             <button
@@ -75,14 +96,14 @@ const Sidebar = () => {
                 setTab("corporate");
                 navigate("Request a ride", "/ride/new-request/info");
               }}
-              className={`w-[96%] translate-x-1 rounded-full h-12 transition-all duration-300 flex justify-between items-center gap-2 px-10 pr-6 ${
-                tab === "corporate"
-                  ? "bg text-[#fff]"
-                  : "bg-gray-50 text-[#191919]"
+              className={`w-[85%]  rounded-full transition-all duration-300 flex justify-between items-center gap-2 px-6 pr-6 ${
+                tab === "corporate" ? " text-[#c00000]" : " text-black/40"
               }  font-medium text-xl`}
             >
               <div className="w-auto flex gap-2 justify-center items-center">
-                <span className="text-sm ">{"Corporate Ride"}</span>
+                <span className="capitalize text-[13px]  leading-none font-bold ">
+                  {"Corporate Ride"}
+                </span>
               </div>
             </button>
             <button
@@ -90,14 +111,14 @@ const Sidebar = () => {
                 setTab("medical");
                 navigate("Request a ride", "/ride/new-request/info");
               }}
-              className={`w-[96%] translate-x-1 rounded-full h-12 transition-all duration-300 flex justify-between items-center gap-2 px-10 pr-6 ${
-                tab === "medical"
-                  ? "bg text-[#fff]"
-                  : "bg-gray-50 text-[#191919]"
+              className={`w-[85%]  rounded-full transition-all duration-300 flex justify-between items-center gap-2 px-6 pr-6 ${
+                tab === "medical" ? " text-[#c00000]" : " text-black/40"
               }  font-medium text-xl`}
             >
               <div className="w-auto flex gap-2 justify-center items-center">
-                <span className="text-sm ">{"Medical Ride"}</span>
+                <span className="capitalize text-[13px]  leading-none font-bold ">
+                  {"Medical Ride"}
+                </span>
               </div>
             </button>
           </div>

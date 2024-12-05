@@ -73,22 +73,24 @@ export const Chats = () => {
     <div className="w-full  h-full grid grid-cols-4 justify-between bg-white">
       <div className="w-full h-full col-span-3 grid grid-cols-3 justify-start items-start">
         {chatRoom == null && (
-          <div className="w-full h-full col-span-3 flex flex-col justify-between">
-            <div className="w-full h-full flex flex-col items-center justify-center">
-              <img src={NoData} alt="" className="w-96" />
-              <span className="text-xl font-bold text-gray-700">
-                Start New Conversation
+          <div className="w-full  col-span-3 border-collapse h-full flex items-center justify-center">
+            <div className="w-full h-full py-6 flex flex-col   items-center border-collapse justify-center">
+              <img src={"/no-data.png"} alt="no-data" className="w-48" />
+              <span className="text-gray-700 text-xl font-bold">
+                No Chat Rooms Available
               </span>
             </div>
           </div>
         )}
         {chatRoom && messages?.length == 0 && (
           <div className="w-full h-full col-span-3 flex flex-col justify-between">
-            <div className="w-full h-full flex flex-col items-center justify-center">
-              <img src={NoData} alt="" className="w-96" />
-              <span className="text-xl font-bold text-gray-700">
-                Start New Conversation
-              </span>
+            <div className="w-full border-t border-collapse h-full flex items-center justify-center">
+              <div className="w-full h-full py-6 flex flex-col  border-t items-center border-collapse justify-center">
+                <img src={"/no-data.png"} alt="no-data" className="w-48" />
+                <span className="text-gray-700 text-xl font-bold">
+                  No Data Available
+                </span>
+              </div>
             </div>
             <form
               onSubmit={(e) => sendMessage(chatRoom, message, e)}

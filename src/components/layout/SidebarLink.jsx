@@ -4,17 +4,36 @@ import { AppContext } from "../../context/AppContext";
 const SidebarLink = ({ data }) => {
   const { navigate, activeLink } = useContext(AppContext);
   return (
-    <button
+    <div
       onClick={() => navigate(data?.title, data?.url)}
-      className={`w-[98%] rounded-r-full h-12 transition-all duration-300 flex justify-start items-center gap-2 px-4 ${
-        activeLink === data?.title
-          ? "bg text-[#fff]"
-          : "bg-gray-50 text-[#191919]"
-      }  font-medium text-xl`}
+      className="w-full flex items-center justify-start gap-2 h-12  "
     >
-      <span>{data?.icon}</span>
-      <span className="text-sm ">{data?.title}</span>
-    </button>
+      <span
+        className={`transform  w-[10px] h-[18px] ${
+          activeLink === data?.title
+            ? "bg text-[#fff]"
+            : "bg-gray-100 text-black/40"
+        } rounded-r-full`}
+      ></span>
+      <button
+        className={`w-[90%] rounded-full h-full  transition-all duration-300 flex justify-start items-center gap-2 px-4 ${
+          activeLink === data?.title
+            ? "bg text-[#fff]"
+            : "bg-gray-100 text-black/40"
+        }  font-medium text-xl`}
+      >
+        <span
+          className={`${
+            activeLink == data?.title ? "text-white" : "text-[#c00000]"
+          }`}
+        >
+          {data?.icon}
+        </span>
+        <span className="capitalize text-[13px]  leading-none font-bold ">
+          {data?.title}
+        </span>
+      </button>
+    </div>
   );
 };
 

@@ -14,8 +14,8 @@ const PrivacyPolicyPage = () => {
   //   getPrivacy();
   // }, []);
   return (
-    <div class="w-full h-full overflow-y-auto flex flex-col justify-start items-start gap-2">
-      <div class="container mx-auto px-4 py-6">
+    <div class=" flex flex-col w-full h-full overflow-y-auto justify-start items-start gap-2">
+      <div class="container mx-auto max-w-4xl bg-gray-100 border p-6 rounded-2xl shadow-lg">
         <h1 class="section-title">FareShare LLC’s Privacy Policy</h1>
         <p class="content">
           <strong>Last Updated: July 10, 2024</strong>

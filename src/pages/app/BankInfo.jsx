@@ -121,7 +121,7 @@ const BankInfo = () => {
                   }}
                   onBlur={handleBlur}
                   placeholder="Jack White"
-                  class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-gray-50 border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40 transition-colors duration-300 ${
+                  class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-gray-100 border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40 transition-colors duration-300 ${
                     errors.accountHolderName && touched.accountHolderName
                       ? "border-red-600 shake"
                       : null
@@ -154,7 +154,7 @@ const BankInfo = () => {
                   }}
                   onBlur={handleBlur}
                   placeholder="XXX-XX-XXXX-XXX"
-                  class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-gray-50 border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40 transition-colors duration-300 ${
+                  class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-gray-100 border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40 transition-colors duration-300 ${
                     errors.accountNumber && touched.accountNumber
                       ? "border-red-600 shake"
                       : null
@@ -187,7 +187,7 @@ const BankInfo = () => {
                   onBlur={handleBlur}
                   maxLength={9}
                   placeholder="XXX-XX-XXXX-XXX"
-                  class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-gray-50 border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40 transition-colors duration-300 ${
+                  class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-gray-100 border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40 transition-colors duration-300 ${
                     errors.routingNumber && touched.routingNumber
                       ? "border-red-600 shake"
                       : null
