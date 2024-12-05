@@ -1,29 +1,39 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import InvoiceModal from "../../components/app/paymentsandinvoice/InvoiceModal";
 import api from "../../api/apiInterceptor";
 import { useEffect } from "react";
 import { NoData } from "../../assets/export";
 import axios from "axios";
+import { AppContext } from "../../context/AppContext";
 
 const PaymentsInvoice = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { setError } = useContext(AppContext);
 
   // Invoices:
-  const [invoices, setInvoices] = useState(null);
+  const [invoices, setInvoices] = useState([]);
   const [filter, setFilter] = useState("paid");
+  const [loading, setLoading] = useState(false);
 
   const getInvoices = async () => {
-    const headers = {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    };
-    const invoices = await axios.post(
-      `https://backend.faresharellc.com/broker/invoice`,
-      {
-        status: filter == "paid" ? "completed" : "pending",
-      },
-      { headers }
-    );
-    setInvoices(invoices?.data?.data);
+    try {
+      setLoading(true);
+      const headers = {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      };
+      const invoices = await axios.post(
+        `https://backend.faresharellc.com/broker/invoice`,
+        {
+          status: filter == "paid" ? "completed" : "pending",
+        },
+        { headers }
+      );
+      setInvoices(invoices?.data?.data);
+    } catch (error) {
+      setError(error?.response?.data?.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -69,6 +79,22 @@ const PaymentsInvoice = () => {
     return monthNames[date.getMonth()];
   }
 
+  // pagination related data:
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  const totalPages = Math.ceil(invoices?.length / itemsPerPage);
+
+  const currentData = invoices?.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const goToPage = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
   const [invoice, setInvoice] = useState(null);
   return (
     <div className="w-full h-auto flex flex-col justify-start items-start gap-2">
@@ -80,7 +106,7 @@ const PaymentsInvoice = () => {
         date, the account associated with the outstanding balance will be
         temporarily suspended or deactivated until the full payment is received.
       </div>
-      <div className="w-full overflow-x-auto rounded-2xl border  border-gray-300 bg-gray-50   ">
+      <div className="w-full overflow-x-auto rounded-3xl border  border-gray-300 bg-gray-50   ">
         <div class="w-full h-14 px-4 flex justify-between items-center">
           <span class="text-lg  text-[#c00000] font-semibold">
             Payments & Invoices
@@ -144,7 +170,7 @@ const PaymentsInvoice = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-300 border-t border-[#c00000]">
-              {invoices?.map((invoice, key) => {
+              {currentData?.map((invoice, key) => {
                 console.log(invoice);
                 return (
                   <tr key={key} className="">
@@ -190,6 +216,76 @@ const PaymentsInvoice = () => {
 
         <InvoiceModal setIsOpen={setIsOpen} isOpen={isOpen} invoice={invoice} />
       </div>
+      {!loading && invoices?.length > 0 && (
+        <nav
+          class="flex w-full items-center  justify-end  -space-x-px"
+          aria-label="Pagination"
+        >
+          <button
+            type="button"
+            onClick={() =>
+              goToPage(currentPage > 1 ? currentPage - 1 : currentPage)
+            }
+            class="min-h-[38px] min-w-[38px] py-2 bg-gray-50 px-2.5 inline-flex justify-center items-center gap-x-1.5 text-sm first:rounded-s-xl last:rounded-e-xl border border-gray-200 text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none "
+            aria-label="Previous"
+          >
+            <svg
+              class="shrink-0 size-3.5"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="m15 18-6-6 6-6"></path>
+            </svg>
+            <span class="hidden sm:block">Previous</span>
+          </button>
+          {Array.from({ length: totalPages }, (_, i) => (
+            <button
+              type="button"
+              key={i}
+              onClick={() => goToPage(i + 1)}
+              class={`min-h-[38px] min-w-[38px]  flex hover:bg-gray-100 justify-center items-center  text-gray-800 ${
+                currentPage === i + 1
+                  ? " border bg-[#c00000] text-white hover:bg-[#c00000] "
+                  : "border bg-gray-50"
+              }    py-2 px-3 text-sm first:rounded-s-lg last:rounded-e-lg focus:outline-none  disabled:opacity-50 disabled:pointer-events-none `}
+              aria-current="page"
+            >
+              {i + 1}
+            </button>
+          ))}
+          <button
+            type="button"
+            onClick={() =>
+              goToPage(currentPage < totalPages ? currentPage + 1 : currentPage)
+            }
+            class="min-h-[38px] min-w-[38px] py-2 bg-gray-50 px-2.5 inline-flex justify-center items-center gap-x-1.5 text-sm first:rounded-s-xl last:rounded-e-xl border border-gray-200 text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none "
+            aria-label="Next"
+          >
+            <span class="hidden sm:block">Next</span>
+            <svg
+              class="shrink-0 size-3.5"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="m9 18 6-6-6-6"></path>
+            </svg>
+          </button>
+        </nav>
+      )}
     </div>
   );
 };

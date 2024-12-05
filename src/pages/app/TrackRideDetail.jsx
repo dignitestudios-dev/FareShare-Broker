@@ -157,23 +157,23 @@ const TrackRideDetail = () => {
                 : 0,
             });
 
-        response?.data?.driverId !== null
-          ? setOrigin({
-              lat: response?.data?.driverId?.currentLocation?.coordinates[1]
-                ? response?.data?.driverId?.currentLocation?.coordinates[1]
-                : 0,
-              lng: response?.data?.driverId?.currentLocation?.coordinates[0]
-                ? response?.data?.driverId?.currentLocation?.coordinates[0]
-                : 0,
-            })
-          : setOrigin({
-              lat: response?.data?.origin?.coordinates[1]
-                ? response?.data?.origin?.coordinates[1]
-                : 0,
-              lng: response?.data?.origin?.coordinates[0]
-                ? response?.data?.origin?.coordinates[0]
-                : 0,
-            });
+        // response?.data?.driverId !== null
+        //   ? setOrigin({
+        //       lat: response?.data?.driverId?.currentLocation?.coordinates[1]
+        //         ? response?.data?.driverId?.currentLocation?.coordinates[1]
+        //         : 0,
+        //       lng: response?.data?.driverId?.currentLocation?.coordinates[0]
+        //         ? response?.data?.driverId?.currentLocation?.coordinates[0]
+        //         : 0,
+        //     })
+        //   : setOrigin({
+        //       lat: response?.data?.origin?.coordinates[1]
+        //         ? response?.data?.origin?.coordinates[1]
+        //         : 0,
+        //       lng: response?.data?.origin?.coordinates[0]
+        //         ? response?.data?.origin?.coordinates[0]
+        //         : 0,
+        //     });
 
         if (response?.status == "ReachedLocation") {
           setSuccess("Driver has reached the pickup point.");
@@ -201,11 +201,6 @@ const TrackRideDetail = () => {
       socket.disconnect();
     };
   }, []);
-
-  useEffect(() => {
-    console.log(origin);
-    console.log(dest);
-  }, [origin, dest]);
 
   useEffect(() => {
     if (

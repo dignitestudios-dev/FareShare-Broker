@@ -65,6 +65,7 @@ const Profile = () => {
           setLoading(false);
           localStorage.setItem("broker", JSON.stringify(response?.data?.data));
           setUpdate((prev) => !prev);
+          setIsEdit(false);
         }
       })
       .catch((error) => {
@@ -151,7 +152,7 @@ const Profile = () => {
                   disabled={!isEdit}
                   value={companyName}
                   onChange={(e) => setCompanyName(e.target.value)}
-                  class="w-full h-[52px] bg-gray-100 border disabled:text-gray-500 outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
+                  class="w-full h-[52px] bg-gray-100 border disabled:text-gray-500 disabled:bg-gray-200 outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
                   placeholder="Mike"
                 />
               </div>
@@ -164,7 +165,7 @@ const Profile = () => {
                   disabled={!isEdit}
                   value={accountHandlerName}
                   onChange={(e) => setAccountHandlerName(e.target.value)}
-                  class="w-full h-[52px] bg-gray-100 border disabled:text-gray-500 outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
+                  class="w-full h-[52px] bg-gray-100 border disabled:text-gray-500 disabled:bg-gray-200 outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
                   placeholder="Smith"
                 />
               </div>
@@ -179,7 +180,7 @@ const Profile = () => {
                   value={email}
                   disabled={true}
                   onChange={(e) => setEmail(e.target.value)}
-                  class="w-full h-[52px] bg-gray-100 border disabled:text-gray-500 outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
+                  class="w-full h-[52px] bg-gray-100 border disabled:text-gray-500 disabled:bg-gray-200 outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
                   placeholder="mikesmith@gmail.com"
                 />
               </div>
@@ -192,7 +193,7 @@ const Profile = () => {
                   disabled={!isEdit}
                   value={companyTaxIdentification}
                   onChange={(e) => setCompanyTaxIdentification(e.target.value)}
-                  class="w-full h-[52px] bg-gray-100 border disabled:text-gray-500 outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
+                  class="w-full h-[52px] bg-gray-100 border disabled:text-gray-500 disabled:bg-gray-200 outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
                   placeholder="000 000 0000"
                 />
               </div>
@@ -222,7 +223,7 @@ const Profile = () => {
                 <input
                   type="text"
                  
-                  class="w-full h-[52px] bg-gray-100 border disabled:text-gray-500 outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
+                  class="w-full h-[52px] bg-gray-100 border disabled:text-gray-500 disabled:bg-gray-200 outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
                   placeholder="3505 Lake Lynda Dr. Orlando, FL"
                 />
               </div>

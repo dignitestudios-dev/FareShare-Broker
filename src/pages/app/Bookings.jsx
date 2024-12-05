@@ -91,8 +91,24 @@ const Bookings = () => {
     return status.replace(/([a-z])([A-Z])/g, "$1 $2").toLowerCase();
   };
 
+  // pagination related data:
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 12;
+
+  const totalPages = Math.ceil(bookings?.length / itemsPerPage);
+
+  const currentData = bookings?.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const goToPage = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
   return (
-    <div className="w-full h-auto flex flex-col gap-4  justify-start items-start">
+    <div className="w-full flex flex-col justify-start items-start gap-5">
       <div className="w-full h-12 gap-2 flex justify-end items-center">
         <div className="w-full lg:w-[40%] h-12 flex justify-start items-center gap-2  relative">
           <input
@@ -109,180 +125,253 @@ const Bookings = () => {
           </button>
         </div>
 
-        <button
+        {/* <button
           onClick={() => setOpenFilter(true)}
           className="mt-2 w-10 h-10 rounded-full border text-xl bg-gray-50 flex items-center justify-center"
         >
           <CiFilter />
-        </button>
+        </button> */}
       </div>
-      {loading && (
-        <div className="w-full h-auto grid grid-cols-2 gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {loadingArr?.map((item) => {
-            return (
-              <div
-                key={item}
-                className="w-full h-[167px] rounded-3xl p-4 flex flex-col justify-between items-start gap-2 border bg-gray-50 animate-pulse"
-              >
-                {/* Skeleton for Name */}
-                <div className="w-full h-10 flex justify-between items-center">
-                  <div className="h-6 bg-gray-300 rounded w-2/3"></div>
-                  <div className="w-8 h-8 rounded-full bg-gray-300"></div>
-                </div>
-
-                {/* Skeleton for Preferrability */}
-                <div className="flex flex-col w-full h-auto mt-auto mb-auto items-end justify-center">
-                  <div className="flex justify-end items-end gap-2 w-full h-auto">
-                    <div className="h-5 bg-gray-300 rounded w-1/3"></div>
-                    <div className="h-5 bg-gray-300 rounded w-1/4"></div>
-                  </div>
-                  <div className="w-full bg-gray-300 h-[2px] rounded-full mt-2">
-                    <div className="w-1/2 bg-gray-400 h-[2px] rounded-full"></div>
-                  </div>
-                </div>
-
-                {/* Skeleton for Date and Time */}
-                <div className="w-full flex justify-start items-end gap-2 h-10">
-                  <div className="w-1/2 h-auto flex gap-2 items-center justify-center">
-                    <div className="w-4 h-4 bg-gray-300 rounded-full"></div>
-                    <div className="h-4 bg-gray-300 rounded w-1/2"></div>
-                  </div>
-                  <div className="w-1/2 h-auto flex gap-2 items-center justify-center">
-                    <div className="w-4 h-4 bg-gray-300 rounded-full"></div>
-                    <div className="h-4 bg-gray-300 rounded w-1/2"></div>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
-      {bookings?.length > 0 ? (
-        <div className="w-full h-auto grid grid-cols-2 gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {!loading &&
-            bookings?.map((booking, key) => {
+      <div className="w-full h-auto flex flex-col gap-4 p-4 rounded-3xl border  border-gray-300 bg-gray-50  justify-start items-start">
+        {loading && (
+          <div className="w-full h-auto grid grid-cols-2 gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {loadingArr?.map((item) => {
               return (
                 <div
-                  key={key}
-                  class="w-full h-[167px] rounded-3xl p-4  flex flex-col justify-between items-start gap-2 border bg-gray-50"
+                  key={item}
+                  className="w-full h-[167px] rounded-3xl p-4 flex flex-col justify-between items-start gap-2 border bg-gray-50 animate-pulse"
                 >
-                  <div class="w-full h-10 flex justify-between items-center">
-                    <span class="text-2xl font-semibold text-[#c00000]">
-                      {booking?.patientFirstName} {booking?.patientLastName}
-                    </span>
-                    <button
-                      onClick={() =>
-                        navigate(
-                          "Bookings",
-                          `/ride/ride-detail/${booking?.rideId?.id}`
-                        )
-                      }
-                      class="w-8 h-8 rounded-full bg-[#c00000] flex items-center justify-center"
-                    >
-                      <svg
-                        stroke="currentColor"
-                        fill="currentColor"
-                        stroke-width="0"
-                        viewBox="0 0 24 24"
-                        class="text-white text-lg"
-                        height="1em"
-                        width="1em"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path fill="none" d="M0 0h24v24H0z"></path>
-                        <path d="M6.41 6L5 7.41 9.58 12 5 16.59 6.41 18l6-6z"></path>
-                        <path d="M13 6l-1.41 1.41L16.17 12l-4.58 4.59L13 18l6-6z"></path>
-                      </svg>
-                    </button>
+                  {/* Skeleton for Name */}
+                  <div className="w-full h-10 flex justify-between items-center">
+                    <div className="h-6 bg-gray-300 rounded w-2/3"></div>
+                    <div className="w-8 h-8 rounded-full bg-gray-300"></div>
                   </div>
-                  <div class="flex flex-col w-full h-auto mt-auto mb-auto items-end justify-center">
-                    <div class="flex justify-end items-end gap-2 w-full h-auto">
-                      <span class="text-gray-500 text-md md:text-lg font-semibold">
-                        Preferrability
-                      </span>
-                      <span class="text-[#c00000] text-md md:text-xl font-semibold">
-                        {booking?.rideId?.driverId == null
-                          ? "N/A"
-                          : `${parseInt(
-                              booking?.rideId?.driverId?.preferrability * 100
-                            )}` + "%"}
-                      </span>
+
+                  {/* Skeleton for Preferrability */}
+                  <div className="flex flex-col w-full h-auto mt-auto mb-auto items-end justify-center">
+                    <div className="flex justify-end items-end gap-2 w-full h-auto">
+                      <div className="h-5 bg-gray-300 rounded w-1/3"></div>
+                      <div className="h-5 bg-gray-300 rounded w-1/4"></div>
                     </div>
-                    <div class="w-full bg-gray-300 relative h-[2px] rounded-full">
-                      <span
-                        style={{
-                          width:
-                            booking?.rideId?.driverId == null
-                              ? "0%"
-                              : `${
-                                  booking?.rideId?.driverId?.preferrability *
-                                  100
-                                }%`,
-                        }}
-                        class="bg-[#c00000] z-10 absolute top-0 left-0 h-[2px] rounded-full"
-                      ></span>
+                    <div className="w-full bg-gray-300 h-[2px] rounded-full mt-2">
+                      <div className="w-1/2 bg-gray-400 h-[2px] rounded-full"></div>
                     </div>
                   </div>
-                  <div class="w-full flex justify-start items-end gap-2 h-10">
-                    <div class="w-1/2 h-auto flex gap-2 items-center justify-center">
-                      <svg
-                        stroke="currentColor"
-                        fill="currentColor"
-                        stroke-width="0"
-                        viewBox="0 0 1024 1024"
-                        class="text-[12px] sm:text-[14px] md:text-[14px] xl:text-[15px] text-[#c00000]"
-                        height="1em"
-                        width="1em"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path d="M960 95.888l-256.224.001V32.113c0-17.68-14.32-32-32-32s-32 14.32-32 32v63.76h-256v-63.76c0-17.68-14.32-32-32-32s-32 14.32-32 32v63.76H64c-35.344 0-64 28.656-64 64v800c0 35.343 28.656 64 64 64h896c35.344 0 64-28.657 64-64v-800c0-35.329-28.656-63.985-64-63.985zm0 863.985H64v-800h255.776v32.24c0 17.679 14.32 32 32 32s32-14.321 32-32v-32.224h256v32.24c0 17.68 14.32 32 32 32s32-14.32 32-32v-32.24H960v799.984zM736 511.888h64c17.664 0 32-14.336 32-32v-64c0-17.664-14.336-32-32-32h-64c-17.664 0-32 14.336-32 32v64c0 17.664 14.336 32 32 32zm0 255.984h64c17.664 0 32-14.32 32-32v-64c0-17.664-14.336-32-32-32h-64c-17.664 0-32 14.336-32 32v64c0 17.696 14.336 32 32 32zm-192-128h-64c-17.664 0-32 14.336-32 32v64c0 17.68 14.336 32 32 32h64c17.664 0 32-14.32 32-32v-64c0-17.648-14.336-32-32-32zm0-255.984h-64c-17.664 0-32 14.336-32 32v64c0 17.664 14.336 32 32 32h64c17.664 0 32-14.336 32-32v-64c0-17.68-14.336-32-32-32zm-256 0h-64c-17.664 0-32 14.336-32 32v64c0 17.664 14.336 32 32 32h64c17.664 0 32-14.336 32-32v-64c0-17.68-14.336-32-32-32zm0 255.984h-64c-17.664 0-32 14.336-32 32v64c0 17.68 14.336 32 32 32h64c17.664 0 32-14.32 32-32v-64c0-17.648-14.336-32-32-32z"></path>
-                      </svg>
-                      <span class="text-gray-800 text-[9px] sm:text-[14px] md:text-[12px] xl:text-[15px] font-[600]">
-                        {formatDateToDayMonth(booking?.createdAt)}
-                      </span>
+
+                  {/* Skeleton for Date and Time */}
+                  <div className="w-full flex justify-start items-end gap-2 h-10">
+                    <div className="w-1/2 h-auto flex gap-2 items-center justify-center">
+                      <div className="w-4 h-4 bg-gray-300 rounded-full"></div>
+                      <div className="h-4 bg-gray-300 rounded w-1/2"></div>
                     </div>
-                    <div class="w-1/2 h-auto flex gap-2 items-center justify-center">
-                      <svg
-                        stroke="currentColor"
-                        fill="currentColor"
-                        stroke-width="0"
-                        viewBox="0 0 512 512"
-                        class="text-[12px] sm:text-[14px] md:text-[14px] xl:text-[15px] text-[#c00000]"
-                        height="1em"
-                        width="1em"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z"></path>
-                      </svg>
-                      <span class="text-gray-800 text-[9px] sm:text-[14px] md:text-[12px] xl:text-[15px] font-[600]">
-                        {formatTimeTo12Hour(booking?.createdAt)}
-                      </span>
+                    <div className="w-1/2 h-auto flex gap-2 items-center justify-center">
+                      <div className="w-4 h-4 bg-gray-300 rounded-full"></div>
+                      <div className="h-4 bg-gray-300 rounded w-1/2"></div>
                     </div>
                   </div>
                 </div>
               );
             })}
-        </div>
-      ) : (
-        !loading && (
-          <div className="w-full border-collapse h-auto flex items-center justify-center">
-            <div className="w-full h-[75vh] py-6 flex flex-col  items-center border-collapse justify-center">
-              <img src={"/no-data.png"} alt="no-data" className="w-48" />
-              <span className="text-gray-700 text-xl font-bold">
-                No Data Available
-              </span>
-            </div>
           </div>
-        )
+        )}
+        {bookings?.length > 0 ? (
+          <div className="w-full h-auto grid grid-cols-2 gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {!loading &&
+              currentData?.map((booking, key) => {
+                return (
+                  <div
+                    key={key}
+                    class="w-full h-[167px] rounded-2xl p-4  flex flex-col justify-between items-start gap-2 border border-gray-300 bg-gray-100"
+                  >
+                    <div class="w-full h-10 flex justify-between items-center">
+                      <span class="text-2xl font-semibold text-[#c00000]">
+                        {booking?.patientFirstName} {booking?.patientLastName}
+                      </span>
+                      <button
+                        onClick={() =>
+                          navigate(
+                            "Bookings",
+                            `/ride/ride-detail/${booking?.rideId?.id}`
+                          )
+                        }
+                        class="w-8 h-8 rounded-full bg-[#c00000] flex items-center justify-center"
+                      >
+                        <svg
+                          stroke="currentColor"
+                          fill="currentColor"
+                          stroke-width="0"
+                          viewBox="0 0 24 24"
+                          class="text-white text-lg"
+                          height="1em"
+                          width="1em"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path fill="none" d="M0 0h24v24H0z"></path>
+                          <path d="M6.41 6L5 7.41 9.58 12 5 16.59 6.41 18l6-6z"></path>
+                          <path d="M13 6l-1.41 1.41L16.17 12l-4.58 4.59L13 18l6-6z"></path>
+                        </svg>
+                      </button>
+                    </div>
+                    <div class="flex flex-col w-full h-auto mt-auto mb-auto items-end justify-center">
+                      <div class="flex justify-end items-end gap-2 w-full h-auto">
+                        <span class="text-gray-500 text-md md:text-lg font-semibold">
+                          Preferrability
+                        </span>
+                        <span class="text-[#c00000] text-md md:text-xl font-semibold">
+                          {booking?.rideId?.driverId == null
+                            ? "N/A"
+                            : `${parseInt(
+                                booking?.rideId?.driverId?.preferrability * 100
+                              )}` + "%"}
+                        </span>
+                      </div>
+                      <div class="w-full bg-gray-300 relative h-[2px] rounded-full">
+                        <span
+                          style={{
+                            width:
+                              booking?.rideId?.driverId == null
+                                ? "0%"
+                                : `${
+                                    booking?.rideId?.driverId?.preferrability *
+                                    100
+                                  }%`,
+                          }}
+                          class="bg-[#c00000] z-10 absolute top-0 left-0 h-[2px] rounded-full"
+                        ></span>
+                      </div>
+                    </div>
+                    <div class="w-full flex justify-start items-end gap-2 h-10">
+                      <div class="w-1/2 h-auto flex gap-2 items-center justify-center">
+                        <svg
+                          stroke="currentColor"
+                          fill="currentColor"
+                          stroke-width="0"
+                          viewBox="0 0 1024 1024"
+                          class="text-[12px] sm:text-[14px] md:text-[14px] xl:text-[15px] text-[#c00000]"
+                          height="1em"
+                          width="1em"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path d="M960 95.888l-256.224.001V32.113c0-17.68-14.32-32-32-32s-32 14.32-32 32v63.76h-256v-63.76c0-17.68-14.32-32-32-32s-32 14.32-32 32v63.76H64c-35.344 0-64 28.656-64 64v800c0 35.343 28.656 64 64 64h896c35.344 0 64-28.657 64-64v-800c0-35.329-28.656-63.985-64-63.985zm0 863.985H64v-800h255.776v32.24c0 17.679 14.32 32 32 32s32-14.321 32-32v-32.224h256v32.24c0 17.68 14.32 32 32 32s32-14.32 32-32v-32.24H960v799.984zM736 511.888h64c17.664 0 32-14.336 32-32v-64c0-17.664-14.336-32-32-32h-64c-17.664 0-32 14.336-32 32v64c0 17.664 14.336 32 32 32zm0 255.984h64c17.664 0 32-14.32 32-32v-64c0-17.664-14.336-32-32-32h-64c-17.664 0-32 14.336-32 32v64c0 17.696 14.336 32 32 32zm-192-128h-64c-17.664 0-32 14.336-32 32v64c0 17.68 14.336 32 32 32h64c17.664 0 32-14.32 32-32v-64c0-17.648-14.336-32-32-32zm0-255.984h-64c-17.664 0-32 14.336-32 32v64c0 17.664 14.336 32 32 32h64c17.664 0 32-14.336 32-32v-64c0-17.68-14.336-32-32-32zm-256 0h-64c-17.664 0-32 14.336-32 32v64c0 17.664 14.336 32 32 32h64c17.664 0 32-14.336 32-32v-64c0-17.68-14.336-32-32-32zm0 255.984h-64c-17.664 0-32 14.336-32 32v64c0 17.68 14.336 32 32 32h64c17.664 0 32-14.32 32-32v-64c0-17.648-14.336-32-32-32z"></path>
+                        </svg>
+                        <span class="text-gray-800 text-[9px] sm:text-[14px] md:text-[12px] xl:text-[15px] font-[600]">
+                          {formatDateToDayMonth(booking?.createdAt)}
+                        </span>
+                      </div>
+                      <div class="w-1/2 h-auto flex gap-2 items-center justify-center">
+                        <svg
+                          stroke="currentColor"
+                          fill="currentColor"
+                          stroke-width="0"
+                          viewBox="0 0 512 512"
+                          class="text-[12px] sm:text-[14px] md:text-[14px] xl:text-[15px] text-[#c00000]"
+                          height="1em"
+                          width="1em"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z"></path>
+                        </svg>
+                        <span class="text-gray-800 text-[9px] sm:text-[14px] md:text-[12px] xl:text-[15px] font-[600]">
+                          {formatTimeTo12Hour(booking?.createdAt)}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+          </div>
+        ) : (
+          !loading && (
+            <div className="w-full border-collapse h-auto flex items-center justify-center">
+              <div className="w-full h-[75vh] py-6 flex flex-col  items-center border-collapse justify-center">
+                <img src={"/no-data.png"} alt="no-data" className="w-48" />
+                <span className="text-gray-700 text-xl font-bold">
+                  No Data Available
+                </span>
+              </div>
+            </div>
+          )
+        )}
+
+        <DateFilterModal
+          isOpen={openFilter}
+          setIsOpen={setOpenFilter}
+          initialDate={initialDate}
+          setInitialDate={setInitialDate}
+          finalDate={finalDate}
+          setFinalDate={setFinalDate}
+        />
+      </div>
+      {!loading && bookings?.length > 0 && (
+        <nav
+          class="flex w-full items-center  justify-end  -space-x-px"
+          aria-label="Pagination"
+        >
+          <button
+            type="button"
+            onClick={() =>
+              goToPage(currentPage > 1 ? currentPage - 1 : currentPage)
+            }
+            class="min-h-[38px] min-w-[38px] py-2 bg-gray-50 px-2.5 inline-flex justify-center items-center gap-x-1.5 text-sm first:rounded-s-xl last:rounded-e-xl border border-gray-200 text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none "
+            aria-label="Previous"
+          >
+            <svg
+              class="shrink-0 size-3.5"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="m15 18-6-6 6-6"></path>
+            </svg>
+            <span class="hidden sm:block">Previous</span>
+          </button>
+          {Array.from({ length: totalPages }, (_, i) => (
+            <button
+              type="button"
+              key={i}
+              onClick={() => goToPage(i + 1)}
+              class={`min-h-[38px] min-w-[38px]  flex hover:bg-gray-100 justify-center items-center  text-gray-800 ${
+                currentPage === i + 1
+                  ? " border bg-[#c00000] text-white hover:bg-[#c00000] "
+                  : "border bg-gray-50"
+              }    py-2 px-3 text-sm first:rounded-s-lg last:rounded-e-lg focus:outline-none  disabled:opacity-50 disabled:pointer-events-none `}
+              aria-current="page"
+            >
+              {i + 1}
+            </button>
+          ))}
+          <button
+            type="button"
+            onClick={() =>
+              goToPage(currentPage < totalPages ? currentPage + 1 : currentPage)
+            }
+            class="min-h-[38px] min-w-[38px] py-2 bg-gray-50 px-2.5 inline-flex justify-center items-center gap-x-1.5 text-sm first:rounded-s-xl last:rounded-e-xl border border-gray-200 text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none "
+            aria-label="Next"
+          >
+            <span class="hidden sm:block">Next</span>
+            <svg
+              class="shrink-0 size-3.5"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="m9 18 6-6-6-6"></path>
+            </svg>
+          </button>
+        </nav>
       )}
-      <DateFilterModal
-        isOpen={openFilter}
-        setIsOpen={setOpenFilter}
-        initialDate={initialDate}
-        setInitialDate={setInitialDate}
-        finalDate={finalDate}
-        setFinalDate={setFinalDate}
-      />
     </div>
   );
 };
