@@ -39,8 +39,6 @@ const Bookings = () => {
       "getRidesBroker",
       JSON.stringify({
         brokerId: JSON.parse(localStorage.getItem("broker"))?._id,
-        page: 1,
-        limit: 50,
         startDate: initialDate,
         endDate: finalDate,
         search: search,

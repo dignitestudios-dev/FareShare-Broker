@@ -4,7 +4,7 @@ import { AppContext } from "../../context/AppContext";
 
 const SOCKET_SERVER_URL = "https://backend.faresharellc.com";
 
-const CompletedRides = () => {
+const CancelledRides = () => {
   const { navigate } = useContext(AppContext);
   const [isCancelOpen, setIsCancelOpen] = useState(false);
   const [rides, setRides] = useState([]);
@@ -27,15 +27,15 @@ const CompletedRides = () => {
     });
 
     socket.emit(
-      "getRidesCompletedBroker",
+      "getRidesCancelledBroker",
       JSON.stringify({
         brokerId: JSON.parse(localStorage.getItem("broker"))?._id,
-        status: "Completed",
+        status: "Cancelled",
       })
     );
 
     // Listen for the response from the server
-    socket.on("getRidesCompletedBrokerResponse", (response) => {
+    socket.on("getRidesCancelledBrokerResponse", (response) => {
       console.log(response);
       // Store the response in state
       setLoading(false);
@@ -101,7 +101,7 @@ const CompletedRides = () => {
       <div className="w-full overflow-x-auto rounded-2xl border  border-gray-300 bg-gray-50   ">
         <div class="w-full h-14 px-4 flex justify-between items-center">
           <span class="text-lg  text-[#c00000] font-semibold">
-            Completed Rides
+            Cancelled Rides
           </span>
         </div>
         {!loading && rides?.length == 0 && (
@@ -328,4 +328,4 @@ const CompletedRides = () => {
   );
 };
 
-export default CompletedRides;
+export default CancelledRides;

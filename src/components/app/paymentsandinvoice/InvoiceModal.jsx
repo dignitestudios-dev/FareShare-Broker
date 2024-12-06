@@ -58,15 +58,15 @@ const InvoiceModal = ({ isOpen, setIsOpen, invoice }) => {
     >
       <div
         ref={modalRef}
-        className="w-auto  h-auto lg:max-h-[85vh] relative rounded-3xl bg-white  p-8 flex flex-col gap-8"
+        className="w-auto  h-auto lg:max-h-[85vh] relative  bg-white  p-8 flex flex-col gap-8"
       >
         <div className="w-full h-[5%] flex items-center justify-start">
           <span className="text-3xl font-extrabold text-black">Invoice</span>
         </div>
         <div className="w-full h-auto flex flex-col gap-4 justify-start items-start">
-          <div className=" w-full flex items-center justify-start">
+          {/* <div className=" w-full flex items-center justify-start">
             <span className="text-lg font-semibold">Billed To</span>
-          </div>
+          </div> */}
           <div className="w-full flex justify-start items-start h-auto">
             {/* <div className="w-1/2 h-auto flex flex-col gap-1">
               <span className="text-sm text-left  font-medium text-gray-600">

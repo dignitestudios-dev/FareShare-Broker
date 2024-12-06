@@ -276,16 +276,33 @@ const TrackRideDetail = () => {
             {JSON.parse(localStorage.getItem("broker"))?.accountHandlerName}
           </span>
         </div>
+
         <div className="w-auto flex flex-col justify-start items-start">
-          <span className="flex text-lg text-gray-900 font-semibold justify-start items-center gap-2">
+          <span className="flex text-sm text-gray-900 font-semibold justify-start items-center gap-2">
             <span className="">Estimated Fare:</span>
             <span className="text-[#c00000]">${ride?.estimatedFare}</span>
+          </span>
+          <span className="flex text-sm text-gray-900 font-semibold justify-start items-center gap-2">
+            <span className="">Base Rate:</span>
+            <span className="text-[#c00000]">${ride?.baseRate}</span>
+          </span>
+          <span className="flex text-sm text-gray-900 font-semibold justify-start items-center gap-2">
+            <span className="">Cost Per Mile:</span>
+            <span className="text-[#c00000]">${ride?.costPerMile}</span>
+          </span>
+          <span className="flex text-sm text-gray-900 font-semibold justify-start items-center gap-2">
+            <span className="">Miles Travelled:</span>
+            <span className="text-[#c00000]">${ride?.miles}</span>
+          </span>
+          <span className="flex text-sm text-gray-900 font-semibold justify-start items-center gap-2">
+            <span className="">Total:</span>
+            <span className="text-[#c00000]">${ride?.fareToPay || "N/A"}</span>
           </span>
         </div>
       </div>
 
       <div className="w-full border-y grid grid-cols-3 justify-start items-start">
-        <div className="w-full h-full  px-6 py-4 lg:col-span-1 border-r flex flex-col gap-4 justify-start items-start ">
+        <div className="w-full h-full  px-6 py-4 lg:col-span-1 border-r flex flex-col gap-1 justify-start items-start ">
           <span className="text-xl font-bold text-gray-900">Timeline</span>
           <span
             className={`w-full h-12 rounded-full ${
@@ -327,6 +344,16 @@ const TrackRideDetail = () => {
             }  font-semibold flex items-center justify-center`}
           >
             Reached Destination
+          </span>
+
+          <span
+            className={`w-full h-12 rounded-full ${
+              status == "completed"
+                ? "bg-[#c00000] text-white"
+                : "bg-[#c00000]/[0.1] text-[#c00000]"
+            }  font-semibold flex items-center justify-center`}
+          >
+            Ride Completed
           </span>
 
           <span
@@ -479,6 +506,15 @@ const TrackRideDetail = () => {
                 <span className="w-1/2 text-gray-700 text-sm font-medium">
                   {ride?.userId?.firstName && ride?.userId?.firstName}{" "}
                   {ride?.userId?.lastName && ride?.userId?.lastName}
+                </span>
+              </div>
+
+              <div className="w-full flex justify-between items-start">
+                <span className="w-1/2 text-[#c00000] text-sm font-semibold">
+                  Contact:
+                </span>
+                <span className="w-1/2 text-gray-700 text-sm font-medium">
+                  {ride?.userId?.phoneNo && ride?.userId?.phoneNo}
                 </span>
               </div>
               <div className="w-full flex justify-between items-start">

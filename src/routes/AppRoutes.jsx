@@ -2,10 +2,12 @@ import AppLayout from "../layouts/AppLayout";
 import SettingsLayout from "../layouts/SettingsLayout";
 import BankInfo from "../pages/app/BankInfo";
 import Bookings from "../pages/app/Bookings";
+import CancelledRides from "../pages/app/CancelledRides";
 import { Chats } from "../pages/app/Chats";
 import CompletedRides from "../pages/app/CompletedRides";
 import ContactUs from "../pages/app/ContactUs";
 import Home from "../pages/app/Home";
+import InvoiceDetails from "../pages/app/InvoiceDetails";
 import OngoingRides from "../pages/app/OngoingRides";
 import PaymentsInvoice from "../pages/app/PaymentsInvoice";
 import PrivacyPolicyPage from "../pages/app/PrivacyPolicyPage";
@@ -35,6 +37,11 @@ export const AppRoutes = [
     title: "Payments And Invoice",
     url: "/payments-and-invoices",
     page: <AppLayout page={<PaymentsInvoice />} />,
+  },
+  {
+    title: "Payments And Invoice",
+    url: "/payments-and-invoices/:id",
+    page: <AppLayout page={<InvoiceDetails />} />,
   },
   {
     title: "Contact Us",
@@ -80,6 +87,11 @@ export const AppRoutes = [
     title: "Home",
     url: "/ride/completed-rides",
     page: <AppLayout page={<CompletedRides />} />,
+  },
+  {
+    title: "Home",
+    url: "/ride/cancelled-rides",
+    page: <AppLayout page={<CancelledRides />} />,
   },
   {
     title: "Request a ride",

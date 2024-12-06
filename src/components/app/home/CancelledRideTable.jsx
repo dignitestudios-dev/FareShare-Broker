@@ -3,7 +3,7 @@ import { AppContext } from "../../../context/AppContext";
 import io from "socket.io-client";
 
 const SOCKET_SERVER_URL = "https://backend.faresharellc.com";
-const CompletedRideTable = () => {
+const CancelledRideTable = () => {
   const { navigate } = useContext(AppContext);
   const [rides, setRides] = useState([]);
 
@@ -26,15 +26,15 @@ const CompletedRideTable = () => {
     });
 
     socket.emit(
-      "getRidesCompletedBroker",
+      "getRidesCancelledBroker",
       JSON.stringify({
         brokerId: JSON.parse(localStorage.getItem("broker"))?._id,
-        status: "Completed",
+        status: "Cancelled",
       })
     );
 
     // Listen for the response from the server
-    socket.on("getRidesCompletedBrokerResponse", (response) => {
+    socket.on("getRidesCancelledBrokerResponse", (response) => {
       console.log(response);
       // Store the response in state
       setLoading(false);
@@ -83,10 +83,10 @@ const CompletedRideTable = () => {
     <div className="w-full overflow-x-auto rounded-2xl border  border-gray-300 bg-gray-50   ">
       <div class="w-full h-14 px-4 flex justify-between items-center">
         <span class="text-lg  text-[#c00000] font-semibold">
-          Completed Rides
+          Cancelled Rides
         </span>
         <button
-          onClick={() => navigate("Home", "/ride/completed-rides")}
+          onClick={() => navigate("Home", "/ride/cancelled-rides")}
           class="w-24 h-8 rounded-full bg-[#c00000] text-white text-xs font-semibold flex items-center justify-center"
         >
           View All
@@ -239,4 +239,4 @@ const CompletedRideTable = () => {
   );
 };
 
-export default CompletedRideTable;
+export default CancelledRideTable;

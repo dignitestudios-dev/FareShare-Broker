@@ -2,6 +2,7 @@ import React from "react";
 import RideRequestTable from "../../components/app/home/RideRequestTable";
 import OngoingRideTable from "../../components/app/home/OngoingRideTable";
 import CompletedRideTable from "../../components/app/home/CompletedRideTable";
+import CancelledRideTable from "../../components/app/home/CancelledRideTable";
 
 const Home = () => {
   return (
@@ -9,6 +10,7 @@ const Home = () => {
       <RideRequestTable />
       <OngoingRideTable />
       <CompletedRideTable />
+      <CancelledRideTable />
     </div>
   );
 };

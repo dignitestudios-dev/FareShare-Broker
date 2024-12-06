@@ -4,9 +4,12 @@ import api from "../../api/apiInterceptor";
 import { useEffect } from "react";
 import { NoData } from "../../assets/export";
 import axios from "axios";
+import Cookies from "js-cookie";
 import { AppContext } from "../../context/AppContext";
+import { useNavigate } from "react-router-dom";
 
 const PaymentsInvoice = () => {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const { setError } = useContext(AppContext);
 
@@ -24,11 +27,11 @@ const PaymentsInvoice = () => {
       const invoices = await axios.post(
         `https://backend.faresharellc.com/broker/invoice`,
         {
-          status: filter == "paid" ? "completed" : "pending",
+          status: filter == "paid" ? "paid" : "unpaid",
         },
         { headers }
       );
-      setInvoices(invoices?.data?.data);
+      setInvoices(invoices?.data?.data?.invoices);
     } catch (error) {
       setError(error?.response?.data?.message);
     } finally {
@@ -96,6 +99,11 @@ const PaymentsInvoice = () => {
   };
 
   const [invoice, setInvoice] = useState(null);
+
+  const handleView = (invoice) => {
+    Cookies.set("invoice", JSON.stringify(invoice));
+    navigate(`/payments-and-invoices/${invoice?._id}`, { state: invoice }); // Pass the entire driver object as state
+  };
   return (
     <div className="w-full h-auto flex flex-col justify-start items-start gap-2">
       <div className="w-full h-auto p-4 text-left text-xs text-[#c00000] rounded-3xl font-normal bg-[#c00000]/[0.1] ">
@@ -160,6 +168,27 @@ const PaymentsInvoice = () => {
                   scope="col"
                   className="px-6 lg:px-4  py-4 font-medium text-white"
                 >
+                  Days Over
+                </th>
+
+                <th
+                  scope="col"
+                  className="px-6 lg:px-4  py-4 font-medium text-white"
+                >
+                  Percent Over
+                </th>
+
+                <th
+                  scope="col"
+                  className="px-6 lg:px-4  py-4 font-medium text-white"
+                >
+                  Status
+                </th>
+
+                <th
+                  scope="col"
+                  className="px-6 lg:px-4  py-4 font-medium text-white"
+                >
                   Invoice Amount
                 </th>
 
@@ -175,14 +204,34 @@ const PaymentsInvoice = () => {
                 return (
                   <tr key={key} className="">
                     <td className="px-6 lg:px-4  py-4 text-gray-600 font-normal ">
-                      {formatDate(invoice?.generatedOn)}
+                      {formatDate(invoice?.createdAt)}
                     </td>
                     <td className="px-6 lg:px-4  py-4 text-gray-600 font-normal ">
-                      {formatDate(invoice?.dueOn)}
+                      {formatDate(invoice?.dueDate)}
                     </td>
 
                     <td className="px-6 lg:px-4 text-gray-600  py-4 capitalize">
-                      {getMonthNameFromISOString(invoice?.dueOn)}
+                      {getMonthNameFromISOString(invoice?.dueDate)}
+                    </td>
+                    <td className="px-6 lg:px-4 text-gray-600  py-4 capitalize">
+                      {invoice?.daysOver}
+                    </td>
+                    <td className="px-6 lg:px-4 text-gray-600  py-4 capitalize">
+                      {invoice?.percentOver}%
+                    </td>
+
+                    <td className="px-6 lg:px-4 text-gray-600  py-4 capitalize">
+                      <span className={`py-1 px-2 capitalize  `}>
+                        {invoice?.daysOver > 0 ? (
+                          <span className="text-[#f73e3e] border border-[#f73e3e] bg-[#f73e3e]/[0.1]  px-2 py-1 rounded-full">
+                            Overdue
+                          </span>
+                        ) : (
+                          <span className="text-[#7aba26] border border-[#7aba26]  bg-[#7aba26]/[0.1]  px-2 py-1 rounded-full">
+                            On Time
+                          </span>
+                        )}
+                      </span>
                     </td>
                     <td className="px-6 lg:px-4 text-gray-600 py-4 capitalize">
                       $
@@ -192,8 +241,7 @@ const PaymentsInvoice = () => {
                     <td className="px-6 lg:px-4  py-4 capitalize">
                       <button
                         onClick={() => {
-                          setIsOpen(true);
-                          setInvoice(invoice);
+                          handleView(invoice);
                         }}
                         className="text-[#c00000] text-xs font-semibold"
                       >
