@@ -24,9 +24,16 @@ import {
 import Error from "../../components/app/global/Error";
 import { useEffect } from "react";
 import axios from "axios";
+import { getFCM } from "../../firebase/getFcmToken";
+import CryptoJS from "crypto-js";
 
 const Signup = () => {
   const { navigate, error, setError, prodUrl } = useContext(AppContext);
+
+  const generateDeviceId = () => {
+    const rawId = `${navigator.userAgent}-${navigator.platform}-${navigator.language}`;
+    return CryptoJS.MD5(rawId).toString();
+  };
   const [loading, setLoading] = useState(false);
   const [idToken, setIdToken] = useState(null);
   const { values, handleBlur, handleChange, handleSubmit, errors, touched } =
@@ -38,6 +45,7 @@ const Signup = () => {
 
       onSubmit: async (values, action) => {
         setLoading(true);
+        const id = generateDeviceId();
         try {
           const newUser = await createUserWithEmailAndPassword(
             auth,
@@ -47,6 +55,7 @@ const Signup = () => {
           const user = newUser.user;
           // Get the ID token
           const token = await getIdToken(user);
+          const fcm = await getFCM();
           if (token) {
             setIdToken(token);
             setLoading(true);
@@ -64,6 +73,8 @@ const Signup = () => {
                   department: values.department,
                   idToken: token,
                   ip: ip.data.ip,
+                  fcmToken: fcm,
+                  deviceIdentity: id,
                 })
                 .then((response) => {
                   // Handle the response (e.g., save token, redirect)

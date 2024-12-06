@@ -12,41 +12,46 @@ const OngoingRideTable = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setLoading(true);
-    const socket = io(SOCKET_SERVER_URL);
-    socket.on("connect", () => {
-      console.log("Socket connected:", socket.id);
-    });
+    const token = localStorage.getItem("token");
+    if (token) {
+      setLoading(true);
+      const socket = io(SOCKET_SERVER_URL);
+      socket.on("connect", () => {
+        console.log("Socket connected:", socket.id);
+      });
 
-    socket.on("connect_error", (err) => {
-      console.error("Connection error:", err);
-    });
+      socket.on("connect_error", (err) => {
+        console.error("Connection error:", err);
+      });
 
-    socket.on("disconnect", (reason) => {
-      console.warn("Socket disconnected:", reason);
-    });
+      socket.on("disconnect", (reason) => {
+        console.warn("Socket disconnected:", reason);
+      });
 
-    socket.emit(
-      "getRidesInProgressBroker",
-      JSON.stringify({
-        brokerId: JSON.parse(localStorage.getItem("broker"))?._id,
-        status: "InProgress",
-      })
-    );
+      socket.emit(
+        "getRidesInProgressBroker",
+        JSON.stringify({
+          brokerId: JSON.parse(localStorage.getItem("broker"))?._id,
+          status: "InProgress",
+        })
+      );
 
-    // Listen for the response from the server
-    socket.on("getRidesInProgressBrokerResponse", (response) => {
-      console.log(response);
+      // Listen for the response from the server
+      socket.on("getRidesInProgressBrokerResponse", (response) => {
+        console.log(response);
 
-      // Store the response in state
-      setLoading(false);
-      setRides(response?.data);
-    });
+        // Store the response in state
+        setLoading(false);
+        setRides(response?.data);
+      });
 
-    // Cleanup: Disconnect socket when component unmounts
-    return () => {
-      socket.disconnect();
-    };
+      // Cleanup: Disconnect socket when component unmounts
+      return () => {
+        socket.disconnect();
+      };
+    } else {
+      navigate("Login", "/login");
+    }
   }, []);
 
   const formatDate = (isoDateString) => {

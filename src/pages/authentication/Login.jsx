@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import {
   FaApple,
   FaFacebook,
@@ -17,12 +17,19 @@ import authentication from "../../api/authenticationInterceptor";
 import { useState } from "react";
 import Error from "../../components/app/global/Error";
 import SocialLogin from "../../components/authentication/SocialLogin";
+import CryptoJS from "crypto-js";
 import axios from "axios";
+import { getFCM } from "../../firebase/getFcmToken";
 
 const Login = () => {
   const { navigate, error, setError } = useContext(AppContext);
   const [loading, setLoading] = useState(false);
   const [isShow, setIsShow] = useState(false);
+
+  const generateDeviceId = () => {
+    const rawId = `${navigator.userAgent}-${navigator.platform}-${navigator.language}`;
+    return CryptoJS.MD5(rawId).toString();
+  };
   const { values, handleBlur, handleChange, handleSubmit, errors, touched } =
     useFormik({
       initialValues: loginValues,
@@ -33,10 +40,14 @@ const Login = () => {
       onSubmit: async (values, action) => {
         setLoading(true);
         try {
+          const id = generateDeviceId();
+          const token = await getFCM();
           // API call to login using Axios interceptor
           const response = await authentication.post("/auth/brokerSignIn", {
             email: values.email,
             password: values.password,
+            deviceIdentity: id,
+            fcmToken: token,
           });
 
           if (response?.status == 200 && response?.data?.token !== null) {
@@ -57,6 +68,13 @@ const Login = () => {
         }
       },
     });
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      navigate("Home", "/home");
+    }
+  }, []);
   return (
     <section class="bg-white ">
       <div class="flex justify-center items-start min-h-screen">

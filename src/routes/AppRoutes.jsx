@@ -8,6 +8,7 @@ import CompletedRides from "../pages/app/CompletedRides";
 import ContactUs from "../pages/app/ContactUs";
 import Home from "../pages/app/Home";
 import InvoiceDetails from "../pages/app/InvoiceDetails";
+import Notifications from "../pages/app/Notifications";
 import OngoingRides from "../pages/app/OngoingRides";
 import PaymentsInvoice from "../pages/app/PaymentsInvoice";
 import PrivacyPolicyPage from "../pages/app/PrivacyPolicyPage";
@@ -47,6 +48,11 @@ export const AppRoutes = [
     title: "Contact Us",
     url: "/contact-us",
     page: <AppLayout page={<ContactUs />} />,
+  },
+  {
+    title: "Notifications",
+    url: "/notifications",
+    page: <AppLayout page={<Notifications />} />,
   },
   {
     title: "Bookings",

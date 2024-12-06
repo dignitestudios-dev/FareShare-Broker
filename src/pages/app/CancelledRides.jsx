@@ -12,40 +12,45 @@ const CancelledRides = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setLoading(true);
-    const socket = io(SOCKET_SERVER_URL);
-    socket.on("connect", () => {
-      console.log("Socket connected:", socket.id);
-    });
+    const token = localStorage.getItem("token");
+    if (token) {
+      setLoading(true);
+      const socket = io(SOCKET_SERVER_URL);
+      socket.on("connect", () => {
+        console.log("Socket connected:", socket.id);
+      });
 
-    socket.on("connect_error", (err) => {
-      console.error("Connection error:", err);
-    });
+      socket.on("connect_error", (err) => {
+        console.error("Connection error:", err);
+      });
 
-    socket.on("disconnect", (reason) => {
-      console.warn("Socket disconnected:", reason);
-    });
+      socket.on("disconnect", (reason) => {
+        console.warn("Socket disconnected:", reason);
+      });
 
-    socket.emit(
-      "getRidesCancelledBroker",
-      JSON.stringify({
-        brokerId: JSON.parse(localStorage.getItem("broker"))?._id,
-        status: "Cancelled",
-      })
-    );
+      socket.emit(
+        "getRidesCancelledBroker",
+        JSON.stringify({
+          brokerId: JSON.parse(localStorage.getItem("broker"))?._id,
+          status: "Cancelled",
+        })
+      );
 
-    // Listen for the response from the server
-    socket.on("getRidesCancelledBrokerResponse", (response) => {
-      console.log(response);
-      // Store the response in state
-      setLoading(false);
-      setRides(response?.data);
-    });
+      // Listen for the response from the server
+      socket.on("getRidesCancelledBrokerResponse", (response) => {
+        console.log(response);
+        // Store the response in state
+        setLoading(false);
+        setRides(response?.data);
+      });
 
-    // Cleanup: Disconnect socket when component unmounts
-    return () => {
-      socket.disconnect();
-    };
+      // Cleanup: Disconnect socket when component unmounts
+      return () => {
+        socket.disconnect();
+      };
+    } else {
+      navigate("Login", "/login");
+    }
   }, []);
 
   // pagination related data:

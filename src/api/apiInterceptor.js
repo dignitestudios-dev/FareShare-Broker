@@ -29,14 +29,6 @@ api.interceptors.request.use(
       return Promise.reject(error);
     }
 
-    if (
-      error.response.status === 401 &&
-      originalRequest.url === baseUrl + "token/refresh/"
-    ) {
-      window.location.href = "/login/";
-      return Promise.reject(error);
-    }
-
     // specific error handling done elsewhere
     return Promise.reject(error);
   }
@@ -51,9 +43,13 @@ api.interceptors.response.use(
   },
   function (error) {
     // *For unAuthorized
-    // if (error.response.status === 401) {
-    //   localStorage.clear()
-    // }
+
+    if (error.response?.status === 401) {
+      // Handle unauthorized access
+      sessionStorage.clear();
+      localStorage.removeItem("token");
+      window.location.href = "/";
+    }
     return Promise.reject(error);
   }
 );

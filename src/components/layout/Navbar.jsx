@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { RxCaretDown } from "react-icons/rx";
-import { IoMenuOutline } from "react-icons/io5";
+import { IoMenuOutline, IoNotificationsOutline } from "react-icons/io5";
 import { useContext } from "react";
 import { AppContext } from "../../context/AppContext";
 import Cookies from "js-cookie";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
-  const { navigate } = useContext(AppContext);
+  const { navigate, setActiveLink, activeLink } = useContext(AppContext);
   const [isOpen, setIsOpen] = useState(false);
   return (
     <div className="w-full h-14 bg-gray-50 border-b flex justify-between lg:justify-end items-center px-4">
@@ -14,6 +15,16 @@ const Navbar = () => {
         <IoMenuOutline />
       </button>
       <div className="w-auto flex gap-3 justify-start items-center">
+        <button
+          onClick={() => navigate("Notifications", "/notifications")}
+          className={`w-[32px] h-[32px] group  rounded-lg transition-all duration-300 flex items-center justify-center ${
+            activeLink == "Notifications"
+              ? "bg-[#c00000] text-white"
+              : "bg-gray-200 text-gray-700"
+          } hover:bg-[#c00000]  p-1 relative`}
+        >
+          <IoNotificationsOutline className=" group-hover:text-white  text-xs w-full h-full" />
+        </button>
         <div className="w-auto h-auto flex flex-col justify-start items-start relative">
           <h3 className="text-md leading-tight font-semibold text-[#191919]">
             {JSON.parse(localStorage?.getItem("broker")).accountHandlerName}
