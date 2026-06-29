@@ -17,20 +17,19 @@ const Navbar = () => {
       <div className="w-auto flex gap-3 justify-start items-center">
         <button
           onClick={() => navigate("Notifications", "/notifications")}
-          className={`w-[32px] h-[32px] group  rounded-lg transition-all duration-300 flex items-center justify-center ${
-            activeLink == "Notifications"
-              ? "bg-[#c00000] text-white"
-              : "bg-gray-200 text-gray-700"
-          } hover:bg-[#c00000]  p-1 relative`}
+          className={`w-[32px] h-[32px] group  rounded-lg transition-all duration-300 flex items-center justify-center ${activeLink == "Notifications"
+            ? "bg-[#c00000] text-white"
+            : "bg-gray-200 text-gray-700"
+            } hover:bg-[#c00000]  p-1 relative`}
         >
           <IoNotificationsOutline className=" group-hover:text-white  text-xs w-full h-full" />
         </button>
         <div className="w-auto h-auto flex flex-col justify-start items-start relative">
           <h3 className="text-md leading-tight font-semibold text-[#191919]">
-            {JSON.parse(localStorage?.getItem("broker")).accountHandlerName}
+            {JSON.parse(localStorage?.getItem("broker"))?.accountHandlerName}
           </h3>
           <h3 className="text-xs font-medium text-[#191919]">
-            {JSON.parse(localStorage?.getItem("broker")).email}
+            {JSON.parse(localStorage?.getItem("broker"))?.email}
           </h3>
         </div>
         <button
@@ -40,9 +39,8 @@ const Navbar = () => {
           <RxCaretDown />
         </button>
         <div
-          class={`w-32 z-10 ${
-            isOpen ? "block" : "hidden"
-          } absolute top-16 right-2 bg-white border divide-y divide-gray-100 rounded-lg shadow `}
+          class={`w-32 z-10 ${isOpen ? "block" : "hidden"
+            } absolute top-16 right-2 bg-white border divide-y divide-gray-100 rounded-lg shadow `}
         >
           <ul
             class="py-2 w-full text-sm  text-gray-700 "

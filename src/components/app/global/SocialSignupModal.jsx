@@ -77,9 +77,8 @@ const SocialSignupModal = ({ isOpen, setIsOpen, idToken }) => {
 
   return (
     <div
-      className={`w-screen h-screen p-2 fixed top-0 left-0  ${
-        isOpen ? "flex" : "hidden"
-      } items-center justify-center `}
+      className={`w-screen h-screen p-2 fixed top-0 left-0  ${isOpen ? "flex" : "hidden"
+        } items-center justify-center `}
     >
       <div
         ref={modalRef}
@@ -115,11 +114,10 @@ const SocialSignupModal = ({ isOpen, setIsOpen, idToken }) => {
               value={values.companyName}
               onChange={handleChange}
               onBlur={handleBlur}
-              class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40 transition-colors duration-300 ${
-                errors.companyName && touched.companyName
-                  ? "border-red-600 shake"
-                  : null
-              }`}
+              class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40 transition-colors duration-300 ${errors.companyName && touched.companyName
+                ? "border-red-600 shake"
+                : null
+                }`}
             />
             {errors.companyName && touched.companyName ? (
               <p className="text-red-700 text-sm font-medium">
@@ -140,11 +138,10 @@ const SocialSignupModal = ({ isOpen, setIsOpen, idToken }) => {
               value={values.accountHandlerName}
               onChange={handleChange}
               onBlur={handleBlur}
-              class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40 transition-colors duration-300 ${
-                errors.accountHandlerName && touched.accountHandlerName
-                  ? "border-red-600 shake"
-                  : null
-              }`}
+              class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40 transition-colors duration-300 ${errors.accountHandlerName && touched.accountHandlerName
+                ? "border-red-600 shake"
+                : null
+                }`}
             />
             {errors.accountHandlerName && touched.accountHandlerName ? (
               <p className="text-red-700 text-sm font-medium">
@@ -165,15 +162,14 @@ const SocialSignupModal = ({ isOpen, setIsOpen, idToken }) => {
               value={values.companyTaxIdentification}
               onChange={handleChange}
               onBlur={handleBlur}
-              class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40 transition-colors duration-300 ${
-                errors.companyTaxIdentification &&
+              class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40 transition-colors duration-300 ${errors.companyTaxIdentification &&
                 touched.companyTaxIdentification
-                  ? "border-red-600 shake"
-                  : null
-              }`}
+                ? "border-red-600 shake"
+                : null
+                }`}
             />
             {errors.companyTaxIdentification &&
-            touched.companyTaxIdentification ? (
+              touched.companyTaxIdentification ? (
               <p className="text-red-700 text-sm font-medium">
                 {errors.companyTaxIdentification}
               </p>
@@ -192,9 +188,8 @@ const SocialSignupModal = ({ isOpen, setIsOpen, idToken }) => {
               onChange={handleChange}
               onBlur={handleBlur}
               placeholder="johnsnow@example.com"
-              class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40 transition-colors duration-300 ${
-                errors.email && touched.email ? "border-red-600 shake" : null
-              }`}
+              class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40 transition-colors duration-300 ${errors.email && touched.email ? "border-red-600 shake" : null
+                }`}
             />
             {errors.email && touched.email ? (
               <p className="text-red-700 text-sm font-medium">{errors.email}</p>

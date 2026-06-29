@@ -48,9 +48,8 @@ const ChatSidebar = ({ chatRoom, setChatRoom }) => {
               type="button"
               key={key}
               onClick={() => setChatRoom(room?.chatId)}
-              className={`w-full h-20 hover:bg-[#c00000]/[0.05] ${
-                chatRoom == room?.chatId && "bg-[#c00000]/[0.05]"
-              } cursor-pointer border-b px-3 hidden lg:flex justify-start items-center gap-2`}
+              className={`w-full h-20 hover:bg-[#c00000]/[0.05] ${chatRoom == room?.chatId && "bg-[#c00000]/[0.05]"
+                } cursor-pointer border-b px-3 hidden lg:flex justify-start items-center gap-2`}
             >
               <span className="w-auto h-auto bg-gray-200 p-1 rounded-full relative">
                 <img
@@ -74,11 +73,10 @@ const ChatSidebar = ({ chatRoom, setChatRoom }) => {
                 </h3>
               </div>
               <button
-                className={`w-6 h-6 rounded-full ${
-                  chatRoom == room?.chatId
+                className={`w-6 h-6 rounded-full ${chatRoom == room?.chatId
                     ? "border-2 border-[#c00000] text-[#c00000]"
                     : "border-2 border-gray-300 text-gray-300"
-                }  flex items-center justify-center  text-xs ml-auto font-normal`}
+                  }  flex items-center justify-center  text-xs ml-auto font-normal`}
               >
                 <FaArrowRight />
               </button>
