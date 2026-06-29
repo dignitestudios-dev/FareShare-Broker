@@ -1,15 +1,12 @@
 import axios from "axios";
 
-// Create axios instance
 const api = axios.create({
   baseURL: "https://backend.faresharellc.com",
   timeout: 30000,
 });
 
-// Request Interceptor
 api.interceptors.request.use(
   (config) => {
-    // Get latest token every request
     const token = localStorage.getItem("token");
 
     if (token) {
@@ -18,16 +15,11 @@ api.interceptors.request.use(
       delete config.headers.Authorization;
     }
 
-    // Debug (Remove in production)
-    console.log("Request URL:", config.url);
-    console.log("Token:", token);
-
     return config;
   },
   (error) => Promise.reject(error),
 );
 
-// Response Interceptor
 api.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -41,7 +33,6 @@ api.interceptors.response.use(
 
       localStorage.removeItem("token");
 
-      // Redirect to login page
       window.location.href = "/";
     }
 
