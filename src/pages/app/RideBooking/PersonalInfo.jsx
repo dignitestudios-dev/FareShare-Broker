@@ -6,38 +6,59 @@ import { personalInfoSchema } from "../../../schema/personalInformation";
 import { personalInfoValues } from "../../../data/personalInfo";
 import { RideBookingContext } from "../../../context/RideBookingContext";
 
+const formatUSPhone = (value) => {
+  const digits = value.replace(/\D/g, "").replace(/^1/, "");
+  const limited = digits.slice(0, 10);
+  const area = limited.slice(0, 3);
+  const central = limited.slice(3, 6);
+  const line = limited.slice(6, 10);
+
+  let formatted = "+1 ";
+  if (area) formatted += area;
+  if (central) formatted += `-${central}`;
+  if (line) formatted += `-${line}`;
+  return formatted;
+};
+
 const PersonalInfo = () => {
   const { navigate, tab, setTab, error, setError } = useContext(AppContext);
   const { setPersonalInfo, setCreated } = useContext(RideBookingContext);
 
   const [loading, setLoading] = useState(false);
-  const { values, handleBlur, handleChange, handleSubmit, errors, touched } =
-    useFormik({
-      initialValues: personalInfoValues,
-      validationSchema: personalInfoSchema,
-      validateOnChange: true,
-      validateOnBlur: false,
+  const {
+    values,
+    handleBlur,
+    handleChange,
+    handleSubmit,
+    setFieldValue,
+    errors,
+    touched,
+  } = useFormik({
+    initialValues: personalInfoValues,
+    validationSchema: personalInfoSchema,
+    validateOnChange: true,
+    validateOnBlur: false,
 
-      onSubmit: async (values, action) => {
-        setPersonalInfo({
-          requesterFirstName: values.requesterFirstName,
-          requesterLastName: values.requesterLastName,
-          requesterEmail: values.requesterEmail,
-          requesterContact: values.requesterContact,
-          fareshareUserId: values.fareshareUserId,
-          patientFirstName: values.patientFirstName,
-          patientLastName: values.patientLastName,
-          patientMI: values.patientMI,
-          additionalRequests: values.additionalRequests,
-        });
-        setLoading(true);
-        setTimeout(() => {
-          setLoading(false);
-          setCreated("Created");
-          navigate("Request a ride", "/ride/new-request/where-to");
-        }, 2000);
-      },
-    });
+    onSubmit: async (values, action) => {
+      setPersonalInfo({
+        requesterFirstName: values.requesterFirstName,
+        requesterLastName: values.requesterLastName,
+        requesterEmail: values.requesterEmail,
+        requesterContact: values.requesterContact,
+        fareshareUserId: values.fareshareUserId,
+        patientFirstName: values.patientFirstName,
+        patientLastName: values.patientLastName,
+        patientMI: values.patientMI,
+        additionalRequests: values.additionalRequests,
+      });
+      setLoading(true);
+      setTimeout(() => {
+        setLoading(false);
+        setCreated("Created");
+        navigate("Request a ride", "/ride/new-request/where-to");
+      }, 2000);
+    },
+  });
   return (
     <form
       onSubmit={handleSubmit}
@@ -47,22 +68,20 @@ const PersonalInfo = () => {
         <button
           type="button"
           onClick={() => setTab("corporate")}
-          class={`w-36 h-9 rounded-full ${
-            tab == "corporate"
-              ? "bg-[#c00000] text-white"
-              : "bg-[#c00000]/[0.10] text-[#c00000]"
-          } transition-all duration-150 text-sm font-medium flex justify-center items-center hover:bg-[#c00000] hover:text-white`}
+          class={`w-36 h-9 rounded-full ${tab == "corporate"
+            ? "bg-[#c00000] text-white"
+            : "bg-[#c00000]/[0.10] text-[#c00000]"
+            } transition-all duration-150 text-sm font-medium flex justify-center items-center hover:bg-[#c00000] hover:text-white`}
         >
           Corporate Ride
         </button>
         <button
           type="button"
           onClick={() => setTab("medical")}
-          class={`w-36 h-9 rounded-full ${
-            tab == "medical"
-              ? "bg-[#c00000] text-white"
-              : "bg-[#c00000]/[0.10] text-[#c00000]"
-          } transition-all duration-150 text-sm font-medium flex justify-center items-center hover:bg-[#c00000] hover:text-white`}
+          class={`w-36 h-9 rounded-full ${tab == "medical"
+            ? "bg-[#c00000] text-white"
+            : "bg-[#c00000]/[0.10] text-[#c00000]"
+            } transition-all duration-150 text-sm font-medium flex justify-center items-center hover:bg-[#c00000] hover:text-white`}
         >
           Medical Ride
         </button>
@@ -87,11 +106,11 @@ const PersonalInfo = () => {
                       value={values.requesterFirstName}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      class={`h-10 border mt-1 rounded px-4 w-full bg-gray-50 transition-colors duration-300 ${
-                        errors.requesterFirstName && touched.requesterFirstName
-                          ? "border-red-600 shake"
-                          : null
-                      }`}
+                      maxLength={100}
+                      class={`h-10 border mt-1 rounded px-4 w-full bg-gray-50 transition-colors duration-300 ${errors.requesterFirstName && touched.requesterFirstName
+                        ? "border-red-600 shake"
+                        : null
+                        }`}
                     />
                     {errors.requesterFirstName && touched.requesterFirstName ? (
                       <p className="text-red-700 text-sm font-medium">
@@ -108,11 +127,11 @@ const PersonalInfo = () => {
                       value={values.requesterLastName}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      class={`h-10 border mt-1 rounded px-4 w-full bg-gray-50 transition-colors duration-300 ${
-                        errors.requesterLastName && touched.requesterLastName
-                          ? "border-red-600 shake"
-                          : null
-                      }`}
+                      maxLength={100}
+                      class={`h-10 border mt-1 rounded px-4 w-full bg-gray-50 transition-colors duration-300 ${errors.requesterLastName && touched.requesterLastName
+                        ? "border-red-600 shake"
+                        : null
+                        }`}
                     />
                     {errors.requesterLastName && touched.requesterLastName ? (
                       <p className="text-red-700 text-sm font-medium">
@@ -131,11 +150,10 @@ const PersonalInfo = () => {
                       value={values.requesterEmail}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      class={`h-10 border mt-1 rounded px-4 w-full bg-gray-50 transition-colors duration-300 ${
-                        errors.requesterEmail && touched.requesterEmail
-                          ? "border-red-600 shake"
-                          : null
-                      }`}
+                      class={`h-10 border mt-1 rounded px-4 w-full bg-gray-50 transition-colors duration-300 ${errors.requesterEmail && touched.requesterEmail
+                        ? "border-red-600 shake"
+                        : null
+                        }`}
                       placeholder="email@domain.com"
                     />
                     {errors.requesterEmail && touched.requesterEmail ? (
@@ -147,18 +165,23 @@ const PersonalInfo = () => {
                   <div class="">
                     <label for="requesterContact">Contact Number</label>
                     <input
-                      type="text"
+                      type="tel"
                       name="requesterContact"
                       id="requesterContact"
                       value={values.requesterContact}
-                      onChange={handleChange}
+                      onChange={(e) => {
+                        setFieldValue(
+                          "requesterContact",
+                          formatUSPhone(e.target.value)
+                        );
+                      }}
                       onBlur={handleBlur}
-                      class={`h-10 border mt-1 rounded px-4 w-full bg-gray-50 transition-colors duration-300 ${
-                        errors.requesterContact && touched.requesterContact
-                          ? "border-red-600 shake"
-                          : null
-                      }`}
-                      placeholder="(886)-8191-920"
+                      inputMode="tel"
+                      class={`h-10 border mt-1 rounded px-4 w-full bg-gray-50 transition-colors duration-300 ${errors.requesterContact && touched.requesterContact
+                        ? "border-red-600 shake"
+                        : null
+                        }`}
+                      placeholder="+1 123-456-7890"
                     />
                     {errors.requesterContact && touched.requesterContact ? (
                       <p className="text-red-700 text-sm font-medium">
@@ -336,11 +359,10 @@ const PersonalInfo = () => {
                       value={values.patientFirstName}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      class={`h-10 border mt-1 rounded px-4 w-full bg-gray-50 transition-colors duration-300 ${
-                        errors.patientFirstName && touched.patientFirstName
-                          ? "border-red-600 shake"
-                          : null
-                      }`}
+                      class={`h-10 border mt-1 rounded px-4 w-full bg-gray-50 transition-colors duration-300 ${errors.patientFirstName && touched.patientFirstName
+                        ? "border-red-600 shake"
+                        : null
+                        }`}
                     />
                     {errors.patientFirstName && touched.patientFirstName ? (
                       <p className="text-red-700 text-sm font-medium">
@@ -357,11 +379,10 @@ const PersonalInfo = () => {
                       value={values.patientLastName}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      class={`h-10 border mt-1 rounded px-4 w-full bg-gray-50 transition-colors duration-300 ${
-                        errors.patientLastName && touched.patientLastName
-                          ? "border-red-600 shake"
-                          : null
-                      }`}
+                      class={`h-10 border mt-1 rounded px-4 w-full bg-gray-50 transition-colors duration-300 ${errors.patientLastName && touched.patientLastName
+                        ? "border-red-600 shake"
+                        : null
+                        }`}
                     />
                     {errors.patientLastName && touched.patientLastName ? (
                       <p className="text-red-700 text-sm font-medium">
@@ -380,11 +401,10 @@ const PersonalInfo = () => {
                       value={values.patientMI}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      class={`h-10 border mt-1 rounded px-4 w-full bg-gray-50 transition-colors duration-300 ${
-                        errors.patientMI && touched.patientMI
-                          ? "border-red-600 shake"
-                          : null
-                      }`}
+                      class={`h-10 border mt-1 rounded px-4 w-full bg-gray-50 transition-colors duration-300 ${errors.patientMI && touched.patientMI
+                        ? "border-red-600 shake"
+                        : null
+                        }`}
                     />
                     {errors.patientMI && touched.patientMI ? (
                       <p className="text-red-700 text-sm font-medium">
@@ -401,11 +421,10 @@ const PersonalInfo = () => {
                       value={values.fareshareUserId}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      class={`h-10 border mt-1 rounded px-4 w-full bg-gray-50 transition-colors duration-300 ${
-                        errors.fareshareUserId && touched.fareshareUserId
-                          ? "border-red-600 shake"
-                          : null
-                      }`}
+                      class={`h-10 border mt-1 rounded px-4 w-full bg-gray-50 transition-colors duration-300 ${errors.fareshareUserId && touched.fareshareUserId
+                        ? "border-red-600 shake"
+                        : null
+                        }`}
                     />
                     {errors.fareshareUserId && touched.fareshareUserId ? (
                       <p className="text-red-700 text-sm font-medium">
@@ -434,14 +453,15 @@ const PersonalInfo = () => {
                     type="text"
                     name="additionalRequests"
                     id="additionalRequests"
+                    placeholder="Enter any additional information"
                     value={values.additionalRequests}
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    class={`h-44  resize-none border mt-1 rounded p-3 w-full bg-gray-50 transition-colors duration-300 ${
-                      errors.additionalRequests && touched.additionalRequests
-                        ? "border-red-600 shake"
-                        : null
-                    }`}
+                    maxLength={500}
+                    class={`h-44  resize-none border mt-1 rounded p-3 w-full bg-gray-50 transition-colors duration-300 ${errors.additionalRequests && touched.additionalRequests
+                      ? "border-red-600 shake"
+                      : null
+                      }`}
                   ></textarea>
                   {errors.additionalRequests && touched.additionalRequests ? (
                     <p className="text-red-700 text-sm font-medium">

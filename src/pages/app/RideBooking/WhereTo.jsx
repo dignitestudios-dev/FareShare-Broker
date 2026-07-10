@@ -221,7 +221,10 @@ const WhereTo = () => {
       <div className="w-full h-12 flex items-end gap-4 justify-start">
         <button
           type="button"
-          onClick={() => navigate("Request a ride", -1)}
+          onClick={() => {
+            
+            navigate("Request a ride", -1)
+          }}
           className="w-10 h-10 rounded-full border-2 border-[#c00000] text-[#c00000] flex items-center justify-center"
         >
           <IoArrowBackOutline />
@@ -253,9 +256,8 @@ const WhereTo = () => {
                 type="text"
                 name="from"
                 id="from"
-                className={`h-12 border mt-1 rounded px-4 w-full bg-gray-50 transition-colors duration-300 ${
-                  startError ? "border-red-600 shake" : null
-                }`}
+                className={`h-12 border mt-1 rounded px-4 w-full bg-gray-50 transition-colors duration-300 ${startError ? "border-red-600 shake" : null
+                  }`}
                 value={startAddress}
                 onChange={(e) => setStartAddress(e.target.value)}
                 placeholder="Select pickup location"
@@ -290,9 +292,8 @@ const WhereTo = () => {
                 type="text"
                 name="to"
                 id="to"
-                className={`h-12 border mt-1 rounded px-4 w-full bg-gray-50 transition-colors duration-300 ${
-                  endError ? "border-red-600 shake" : null
-                }`}
+                className={`h-12 border mt-1 rounded px-4 w-full bg-gray-50 transition-colors duration-300 ${endError ? "border-red-600 shake" : null
+                  }`}
                 value={endAddress}
                 onChange={(e) => setEndAddress(e.target.value)}
                 placeholder="Select destination location"
@@ -317,25 +318,25 @@ const WhereTo = () => {
           {typesLoading ||
             (types == null
               ? Array(5)
-                  .fill()
-                  .map((_, index) => (
-                    <div
-                      key={index}
-                      className="w-[calc(25%-0.5rem)] h-[120px] bg-gray-100 rounded-xl"
-                    ></div>
-                  ))
+                .fill()
+                .map((_, index) => (
+                  <div
+                    key={index}
+                    className="w-[calc(25%-0.5rem)] h-[120px] bg-gray-100 rounded-xl"
+                  ></div>
+                ))
               : types?.map((type, key) => {
-                  return (
-                    <OptionsCard
-                      setIsWheelChairAccessible={setIsWheelChairAccessible}
-                      setVehicleType={setVehicleType}
-                      vehicleType={vehicleType}
-                      title={type.vehicleType}
-                      price={type.fare}
-                      key={key}
-                    />
-                  );
-                }))}
+                return (
+                  <OptionsCard
+                    setIsWheelChairAccessible={setIsWheelChairAccessible}
+                    setVehicleType={setVehicleType}
+                    vehicleType={vehicleType}
+                    title={type.vehicleType}
+                    price={type.fare}
+                    key={key}
+                  />
+                );
+              }))}
           {/* {tab === "corporate"
             ? corporate.map((item, key) => (
                 <OptionsCard

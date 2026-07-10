@@ -50,14 +50,25 @@ const Login = () => {
             fcmToken: token,
           });
 
-          if (response?.status == 200 && response?.data?.token !== null) {
-            localStorage.setItem("token", response?.data?.token);
-            localStorage.setItem(
-              "broker",
-              JSON.stringify(response?.data?.data)
-            );
-            navigate("Home", "/home");
-          }
+            if (response?.status == 200) {
+              const brokerData = response?.data?.data;
+              const tokenVal = response?.data?.token ?? null;
+              const isVerified = brokerData?.isVerified ?? response?.data?.isVerified;
+
+              // store broker object so VerifyOtp or other screens can access it
+              localStorage.setItem("broker", JSON.stringify(brokerData));
+
+              // If user is not verified, don't store auth token and send to OTP screen
+              if (isVerified === false) {
+                localStorage.setItem("email", values.email);
+                navigate("Verify Otp", "/verify-otp");
+              } else {
+                if (tokenVal !== null) {
+                  localStorage.setItem("token", tokenVal);
+                }
+                navigate("Home", "/home");
+              }
+            }
         } catch (error) {
           console.log(error);
           // Handle errors (e.g., show error message)
@@ -69,12 +80,17 @@ const Login = () => {
       },
     });
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      navigate("Home", "/home");
-    }
-  }, []);
+  // useEffect(() => {
+  //   const token = localStorage.getItem("token");
+  //   const brokerData = JSON.parse(localStorage.getItem("broker") || "null");
+  //   if (token && brokerData?.isVerified === false) {
+  //     navigate("Verify Otp", "/verify-otp");
+  //     return;
+  //   }
+  //   if (token) {
+  //     navigate("Home", "/home");
+  //   }
+  // }, []);
   return (
     <section class="bg-white ">
       <div class="flex justify-center items-start min-h-screen">
@@ -131,11 +147,10 @@ const Login = () => {
                   onChange={handleChange}
                   onBlur={handleBlur}
                   placeholder="johnsnow@example.com"
-                  class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40 transition-colors duration-300 ${
-                    errors.email && touched.email
-                      ? "border-red-600 shake"
-                      : null
-                  }`}
+                  class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40 transition-colors duration-300 ${errors.email && touched.email
+                    ? "border-red-600 shake"
+                    : null
+                    }`}
                 />
                 {errors.email && touched.email ? (
                   <p className="text-red-700 text-sm font-medium">
@@ -168,11 +183,10 @@ const Login = () => {
                     onChange={handleChange}
                     onBlur={handleBlur}
                     placeholder="Your Password"
-                    class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40  transition-colors duration-300 ${
-                      errors.password && touched.password
-                        ? "border-red-600 shake"
-                        : null
-                    }`}
+                    class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40  transition-colors duration-300 ${errors.password && touched.password
+                      ? "border-red-600 shake"
+                      : null
+                      }`}
                   />
                   {
                     <button

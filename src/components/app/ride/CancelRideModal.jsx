@@ -1,12 +1,14 @@
 import React, { useContext, useRef } from "react";
 import { AppContext } from "../../../context/AppContext";
 import io from "socket.io-client";
+import { RideBookingContext } from "../../../context/RideBookingContext";
 
 const SOCKET_SERVER_URL = "https://backend.faresharellc.com";
 
-const CancelRideModal = ({ isOpen, setIsOpen, id, rideID, setUpdate }) => {
+const CancelRideModal = ({ isOpen, setIsOpen, id, rideID, setUpdate, setRides }) => {
   const cancelRef = useRef();
-
+  const { data, message, status, find, setFind, cancelLoading, setCancelModal, cancelModal } =
+    useContext(RideBookingContext);
   const closeModal = (e) => {
     if (cancelRef.current && !cancelRef.current.contains(e.target)) {
       setIsOpen(false);
@@ -16,21 +18,68 @@ const CancelRideModal = ({ isOpen, setIsOpen, id, rideID, setUpdate }) => {
   const { setError } = useContext(AppContext);
 
   const cancelRide = (e, id, rideID) => {
+    console.log("Cancel function called");
     e.preventDefault();
-    console.log(rideID, id);
-    if (id && rideID) {
-      const socket = io(SOCKET_SERVER_URL);
-      socket.on("connect", () => {
-        console.log("Socket connected:", socket.id);
-      });
 
-      socket.on("connect_error", (err) => {
-        console.error("Connection error:", err);
-      });
+    if (!id || !rideID) return;
 
-      socket.on("disconnect", (reason) => {
-        console.warn("Socket disconnected:", reason);
-      });
+    const socket = io(SOCKET_SERVER_URL, {
+      transports: ["websocket"],
+    });
+
+    // Response listener pehle register karo
+    socket.once("preRideRequestResponse", (response) => {
+      
+
+      if (response?.success) {
+        setCancelModal(false);
+        setIsOpen(false);
+
+        if (setRides) {
+          setRides((prev) =>
+            prev?.filter(
+              (ride) => ride?._id !== rideID && ride?.rideId?.id !== rideID
+            )
+          );
+        }
+
+        if (setUpdate) {
+          setUpdate((prev) => !prev);
+        }
+      } else {
+        setError(response?.message);
+      }
+
+      socket.disconnect();
+    });
+    socket.once("cancelRideBrokerResponse", (response) => {
+      console.log("cancelRideBrokerResponse:", response);
+
+      if (response?.success) {
+        setCancelModal(false);
+        setIsOpen(false);
+
+        if (setUpdate) {
+          setUpdate((prev) => !prev);
+        }
+      } else {
+        setError(response?.message);
+      }
+
+      socket.disconnect();
+    });
+
+    socket.on("connect_error", (err) => {
+      console.error("Connection error:", err);
+      socket.disconnect();
+    });
+
+    socket.on("disconnect", (reason) => {
+      console.log("Socket disconnected:", reason);
+    });
+
+    socket.once("connect", () => {
+      console.log("Socket connected:", socket.id);
 
       socket.emit(
         "cancelRideBroker",
@@ -40,23 +89,7 @@ const CancelRideModal = ({ isOpen, setIsOpen, id, rideID, setUpdate }) => {
           rideId: rideID,
         })
       );
-
-      // Listen for the response from the server
-      socket.on("cancelRideBrokerResponse", (response) => {
-        // Store the response in state
-        console.log("cancel", response);
-        if (response?.success == true) {
-          // setUpdate((prev) => !prev);
-        } else {
-          setError(response?.message);
-        }
-      });
-
-      // Cleanup: Disconnect socket when component unmounts
-      return () => {
-        socket.disconnect();
-      };
-    }
+    });
   };
 
   const { navigate } = useContext(AppContext);
@@ -64,9 +97,8 @@ const CancelRideModal = ({ isOpen, setIsOpen, id, rideID, setUpdate }) => {
     <div
       id="cancel-ride"
       onClick={closeModal}
-      className={`fixed top-0 left-0 z-[1000] ${
-        isOpen ? "flex" : "hidden"
-      } w-screen h-screen justify-center items-center px-2 md:px-0 bg-[#000]/[0.46]`}
+      className={`fixed top-0 left-0 z-[1000] ${isOpen ? "flex" : "hidden"
+        } w-screen h-screen justify-center items-center px-2 md:px-0 bg-[#000]/[0.46]`}
     >
       <div
         ref={cancelRef}
@@ -81,6 +113,8 @@ const CancelRideModal = ({ isOpen, setIsOpen, id, rideID, setUpdate }) => {
         <div className="w-full h-8 flex items-center justify-end gap-1 mt-2 px-2">
           <button
             onClick={(e) => {
+              console.log("Button Click");
+
               cancelRide(e, id, rideID);
             }}
             className="text-white bg-[#c00000] hover:bg-[#c00000d7] w-auto px-4 py-1 rounded-full text-sm font-medium"

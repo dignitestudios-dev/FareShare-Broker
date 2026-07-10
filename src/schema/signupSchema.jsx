@@ -1,14 +1,19 @@
 import * as Yup from "yup";
 
 export const signupSchema = Yup.object({
-  companyName: Yup.string().required("Please enter the company name"),
-  accountHandlerName: Yup.string().required(
-    "Please enter the account handler name"
-  ),
-
+  companyName: Yup.string()
+    .max(100, "Company Name cannot exceed 100 characters")
+    .required("Company Name is required"),
+  accountHandlerName: Yup.string()
+    .matches(
+      /^[A-Za-z\s]+$/,
+      "Special characters are not allowed"
+    )
+    .max(50, "Maximum 50 characters allowed")
+    .required("Account Handler Name is required"),
   companyTaxIdentification: Yup.string()
-    .required("Please enter the tax identification number.")
-    .matches(/^\d+$/, "Tax Identification number must be a numeric value."),
+    .matches(/^\d{9}$/, "Tax Identification Number must be exactly 9 digits")
+    .required("Tax Identification Number is required"),
 
   department: Yup.string().required(
     "You must select a department i.e medical or corporate."

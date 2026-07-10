@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import io from "socket.io-client";
 import { AppContext } from "../../context/AppContext";
+import { formatToUSDate } from "../../utils/dateUtils";
 
 const SOCKET_SERVER_URL = "https://backend.faresharellc.com";
 
@@ -64,15 +65,7 @@ const CompletedRides = () => {
     setCurrentPage(pageNumber);
   };
 
-  const formatDate = (isoDateString) => {
-    const date = new Date(isoDateString);
-
-    const day = String(date.getUTCDate()).padStart(2, "0");
-    const month = String(date.getUTCMonth() + 1).padStart(2, "0"); // Months are 0-indexed
-    const year = date.getUTCFullYear();
-
-    return `${day}/${month}/${year}`;
-  };
+  const formatDate = (isoDateString) => formatToUSDate(isoDateString);
 
   const getStatusStyles = (status) => {
     switch (status) {
@@ -288,11 +281,10 @@ const CompletedRides = () => {
               type="button"
               key={i}
               onClick={() => goToPage(i + 1)}
-              class={`min-h-[38px] min-w-[38px]  flex hover:bg-gray-100 justify-center items-center  text-gray-800 ${
-                currentPage === i + 1
+              class={`min-h-[38px] min-w-[38px]  flex hover:bg-gray-100 justify-center items-center  text-gray-800 ${currentPage === i + 1
                   ? " border bg-[#c00000] text-white hover:bg-[#c00000] "
                   : "border bg-gray-50"
-              }    py-2 px-3 text-sm first:rounded-s-lg last:rounded-e-lg focus:outline-none  disabled:opacity-50 disabled:pointer-events-none `}
+                }    py-2 px-3 text-sm first:rounded-s-lg last:rounded-e-lg focus:outline-none  disabled:opacity-50 disabled:pointer-events-none `}
               aria-current="page"
             >
               {i + 1}

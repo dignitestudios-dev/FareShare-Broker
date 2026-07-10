@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useContext } from "react";
+import React, { createContext, useState, useEffect, useContext, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/apiInterceptor";
 import io from "socket.io-client";
@@ -10,6 +10,7 @@ export const RideBookingContextProvider = ({ children }) => {
   // Global Error State
   const [personalInfo, setPersonalInfo] = useState(null);
   const [find, setFind] = useState(false);
+  const [cancelModal, setCancelModal] = useState(false);
   const [originCoords, setOriginCoords] = useState(null);
   const [destCoords, setDestCoords] = useState(null);
   const [data, setData] = useState(null);
@@ -41,32 +42,46 @@ export const RideBookingContextProvider = ({ children }) => {
   const [rideLoading, setRideLoading] = useState(false);
   const [timer, setTimer] = useState(180);
 
-  let timerInterval = null;
-
+  const timerRef = useRef(null);
   const startTimer = (socket) => {
-    timerInterval = setInterval(() => {
+    // Pehle agar koi timer chal raha hai to usko band karo
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+    }
+
+    setTimer(180);
+
+    timerRef.current = setInterval(() => {
       setTimer((prev) => {
         if (prev <= 1) {
-          clearInterval(timerInterval);
+          clearInterval(timerRef.current);
+          timerRef.current = null;
+
           setFind(false);
-          setError(
-            "Unfortunately, there is no driver available in your region."
-          );
-          socket.disconnect(); // No ride found
+          setCancelModal(false)
+          setRideLoading(false);
+
+          setError("Unfortunately, there is no driver available in your region.");
+
+          socket.disconnect();
+
           return 0;
         }
+
         return prev - 1;
       });
-    }, 1000); // Update every second
+    }, 1000);
   };
 
   const endTimer = () => {
-    if (timerInterval) {
-      clearInterval(timerInterval);
-      timerInterval = null; // Reset timerInterval
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
     }
+
     setFind(false);
-    setTimer(180); // Optionally reset the timer
+    setCancelModal(false)
+    setTimer(180);
   };
 
   const handleSubmit = (e) => {
@@ -95,12 +110,14 @@ export const RideBookingContextProvider = ({ children }) => {
       socket.on("connect_error", (err) => {
         setFind(false);
         setRideLoading(false);
+        setCancelModal(false)
         console.error("Connection error:", err);
       });
 
       socket.on("disconnect", (reason) => {
         setRideLoading(false);
         setFind(false);
+        setCancelModal(false)
         console.warn("Socket disconnected:", reason);
       });
 
@@ -157,7 +174,7 @@ export const RideBookingContextProvider = ({ children }) => {
           startTimer(socket);
           setRideLoading(false);
           setFind(true);
-
+          setCancelModal(false)
           setDestCoords({
             lat: response?.data?.origin.coordinates[1],
             lng: response?.data?.origin.coordinates[0],
@@ -165,15 +182,12 @@ export const RideBookingContextProvider = ({ children }) => {
         }
 
         if (response?.status == "driverAssigned") {
-          if (timerInterval) {
-            clearInterval(timerInterval);
-            timerInterval = null; // Reset timerInterval
-          }
-          setTimer(180);
+          endTimer();
           setSuccess("Driver is assigned and is on the way.");
           setRideOrder("pickup");
           navigate("Request a ride", "/ride/driver-arriving");
           setFind(false);
+          setCancelModal(false)
           console.log({
             lat: response?.data?.driverId?.currentLocation?.coordinates[1],
             lng: response?.data?.driverId?.currentLocation?.coordinates[0],
@@ -193,6 +207,7 @@ export const RideBookingContextProvider = ({ children }) => {
           setSuccess("Driver has reached the pickup point.");
           setRideOrder("destination");
           setFind(false);
+          setCancelModal(false)
           setDestCoords({
             lat: response?.data?.destination?.coordinates[1],
             lng: response?.data?.destination?.coordinates[0],
@@ -201,6 +216,7 @@ export const RideBookingContextProvider = ({ children }) => {
         }
         if (response?.status == "inProgress") {
           setFind(false);
+          setCancelModal(false)
           setSuccess(
             "Ride has been started. The driver will take the customer to the destination."
           );
@@ -211,12 +227,14 @@ export const RideBookingContextProvider = ({ children }) => {
           setSuccess("Congratulation! Customer reached destination.");
           setCompleteSuccess("Congratulation! Customer reached destination.");
           setFind(false);
+          setCancelModal(false)
         }
         if (response?.status == "cancel") {
           endTimer();
           socket.disconnect();
           setError("Unfortunately! the ride was cancelled.");
           setFind(false);
+          setCancelModal(false)
           navigate("Home", "/home");
         }
       });
@@ -224,7 +242,11 @@ export const RideBookingContextProvider = ({ children }) => {
       // Cleanup: Disconnect socket when component unmounts
       return () => {
         socket.disconnect();
-        clearInterval(startTimer);
+
+        if (timerRef.current) {
+          clearInterval(timerRef.current);
+          timerRef.current = null;
+        }
       };
     }
   };
@@ -243,7 +265,7 @@ export const RideBookingContextProvider = ({ children }) => {
       );
       const socket = io(SOCKET_SERVER_URL);
       socket.on("connect", () => {
-        setCancelLoading(true);
+        // setCancelLoading(true);
 
         console.log("Socket connected:", socket.id);
       });
@@ -280,6 +302,7 @@ export const RideBookingContextProvider = ({ children }) => {
         if (response?.success == true) {
           setCancelLoading(false);
           setFind(false);
+          setCancelModal(false)
           setSuccess("Ride Cancelled Successfully.");
           navigate("Home", "/home");
           // setUpdate((prev) => !prev);
@@ -424,6 +447,9 @@ export const RideBookingContextProvider = ({ children }) => {
         setTypes,
         typesLoading,
         setTypesLoading,
+
+        cancelModal,
+        setCancelModal
       }}
     >
       {children}

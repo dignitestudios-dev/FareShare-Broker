@@ -8,6 +8,7 @@ import SuccessToast from "../../components/app/global/SuccessToast";
 const Success = () => {
   const { navigate, error, setError, prodUrl, setSuccess, success } =
     useContext(AppContext);
+
   const { subId } = useParams();
   const [loading, setLoading] = useState(false);
   const validateAchBank = async () => {

@@ -25,6 +25,7 @@ const ForgotPassword = () => {
           // API call to login using Axios interceptor
           const response = await authentication.post("/auth/sendPassOTP", {
             email: values.email,
+            isBroker: true,
           });
 
           // Handle the response (e.g., save token, redirect)

@@ -1,5 +1,6 @@
 import React, { useRef } from "react";
 import { IoMdClose } from "react-icons/io";
+import { formatToUSDate } from "../../../utils/dateUtils";
 
 const InvoiceModal = ({ isOpen, setIsOpen, invoice }) => {
   const dummyArr = [1, 2];
@@ -10,15 +11,7 @@ const InvoiceModal = ({ isOpen, setIsOpen, invoice }) => {
     }
   };
 
-  const formatDate = (isoDateString) => {
-    const date = new Date(isoDateString);
-
-    const day = String(date.getUTCDate()).padStart(2, "0");
-    const month = String(date.getUTCMonth() + 1).padStart(2, "0"); // Months are 0-indexed
-    const year = date.getUTCFullYear();
-
-    return `${day}/${month}/${year}`;
-  };
+  const formatDate = (isoDateString) => formatToUSDate(isoDateString);
 
   function getMonthNameFromISOString(isoString) {
     // Create a Date object from the ISO 8601 string
@@ -52,9 +45,8 @@ const InvoiceModal = ({ isOpen, setIsOpen, invoice }) => {
   return (
     <div
       onClick={toggleModal}
-      className={`w-screen ${
-        isOpen ? "flex" : "hidden"
-      } h-screen fixed top-0 left-0 z-[1000]  justify-center items-center bg-black/[0.46]`}
+      className={`w-screen ${isOpen ? "flex" : "hidden"
+        } h-screen fixed top-0 left-0 z-[1000]  justify-center items-center bg-black/[0.46]`}
     >
       <div
         ref={modalRef}

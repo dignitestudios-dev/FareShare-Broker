@@ -262,7 +262,7 @@ const TrackRideDetail = () => {
         socket.disconnect();
       };
     }
-    console.log(status);
+    
   }, [status, ride]);
 
   return (
@@ -292,7 +292,7 @@ const TrackRideDetail = () => {
           </span>
           <span className="flex text-sm text-gray-900 font-semibold justify-start items-center gap-2">
             <span className="">Miles Travelled:</span>
-            <span className="text-[#c00000]">${ride?.miles}</span>
+            <span className="text-[#c00000]">{ride?.miles}</span>
           </span>
           <span className="flex text-sm text-gray-900 font-semibold justify-start items-center gap-2">
             <span className="">Total:</span>
@@ -584,7 +584,7 @@ const TrackRideDetail = () => {
               </div>
               <div className="w-full flex justify-between items-start">
                 <span className="w-1/2 text-[#c00000] text-sm font-semibold">
-                  Car License Plate No.:
+                  Plate No:
                 </span>
                 <span className="w-1/2 text-gray-700 text-sm font-medium">
                   {ride?.vehicleId?.plateNumber

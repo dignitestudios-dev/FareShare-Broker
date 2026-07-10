@@ -189,7 +189,8 @@ const Signup = () => {
             </div>
 
             <h1 class="text-2xl font-semibold tracking-wider text-gray-800 capitalize ">
-              Create an Account
+
+
             </h1>
 
             <p class="mt-4 text-gray-500 ">
@@ -203,7 +204,7 @@ const Signup = () => {
             >
               <div>
                 <label class="block mb-2 text-sm text-gray-600 ">
-                  Comapny Name
+                  Company Name
                 </label>
                 <input
                   type="text"
@@ -213,11 +214,11 @@ const Signup = () => {
                   value={values.companyName}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40 transition-colors duration-300 ${
-                    errors.companyName && touched.companyName
-                      ? "border-red-600 shake"
-                      : null
-                  }`}
+                  maxLength={100}
+                  class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40 transition-colors duration-300 ${errors.companyName && touched.companyName
+                    ? "border-red-600 shake"
+                    : null
+                    }`}
                 />
 
                 {errors.companyName && touched.companyName ? (
@@ -239,11 +240,11 @@ const Signup = () => {
                   value={values.accountHandlerName}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40 transition-colors duration-300 ${
-                    errors.accountHandlerName && touched.accountHandlerName
-                      ? "border-red-600 shake"
-                      : null
-                  }`}
+                  maxLength={50}
+                  class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40 transition-colors duration-300 ${errors.accountHandlerName && touched.accountHandlerName
+                    ? "border-red-600 shake"
+                    : null
+                    }`}
                 />
                 {errors.accountHandlerName && touched.accountHandlerName ? (
                   <p className="text-red-700 text-sm font-medium">
@@ -265,15 +266,14 @@ const Signup = () => {
                   value={values.companyTaxIdentification}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40 transition-colors duration-300 ${
-                    errors.companyTaxIdentification &&
+                  class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40 transition-colors duration-300 ${errors.companyTaxIdentification &&
                     touched.companyTaxIdentification
-                      ? "border-red-600 shake"
-                      : null
-                  }`}
+                    ? "border-red-600 shake"
+                    : null
+                    }`}
                 />
                 {errors.companyTaxIdentification &&
-                touched.companyTaxIdentification ? (
+                  touched.companyTaxIdentification ? (
                   <p className="text-red-700 text-sm font-medium">
                     {errors.companyTaxIdentification}
                   </p>
@@ -292,11 +292,10 @@ const Signup = () => {
                   onChange={handleChange}
                   onBlur={handleBlur}
                   placeholder="johnsnow@example.com"
-                  class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40 transition-colors duration-300 ${
-                    errors.email && touched.email
-                      ? "border-red-600 shake"
-                      : null
-                  }`}
+                  class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40 transition-colors duration-300 ${errors.email && touched.email
+                    ? "border-red-600 shake"
+                    : null
+                    }`}
                 />
                 {errors.email && touched.email ? (
                   <p className="text-red-700 text-sm font-medium">
@@ -318,18 +317,17 @@ const Signup = () => {
                     onChange={handleChange}
                     onBlur={handleBlur}
                     placeholder="Enter your password"
-                    class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40 transition-colors duration-300 ${
-                      errors.password && touched.password
-                        ? "border-red-600 shake"
-                        : null
-                    }`}
+                    class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40 transition-colors duration-300 ${errors.password && touched.password
+                      ? "border-red-600 shake"
+                      : null
+                      }`}
                   />
                   {
                     <span
                       onClick={() => setIsShow((prev) => !prev)}
                       className="absolute cursor-pointer top-[32%] text-gray-500 text-lg right-3"
                     >
-                      {isShow ? <FaRegEyeSlash /> : <FaRegEye />}
+                      {isShow ? <FaRegEye /> : <FaRegEyeSlash />}
                     </span>
                   }
                 </div>
@@ -354,18 +352,17 @@ const Signup = () => {
                     onChange={handleChange}
                     onBlur={handleBlur}
                     placeholder="Enter your password"
-                    class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40 transition-colors duration-300 ${
-                      errors.confirmPassword && touched.confirmPassword
-                        ? "border-red-600 shake"
-                        : null
-                    }`}
+                    class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40 transition-colors duration-300 ${errors.confirmPassword && touched.confirmPassword
+                      ? "border-red-600 shake"
+                      : null
+                      }`}
                   />
                   {
                     <span
                       onClick={() => setIsConfShow((prev) => !prev)}
                       className="absolute cursor-pointer top-[32%] text-gray-500 text-lg right-3"
                     >
-                      {isConfShow ? <FaRegEyeSlash /> : <FaRegEye />}
+                      {isConfShow ? <FaRegEye /> : <FaRegEyeSlash />}
                     </span>
                   }
                 </div>

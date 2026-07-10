@@ -92,11 +92,10 @@ const ChangePassword = () => {
                     onChange={handleChange}
                     onBlur={handleBlur}
                     placeholder="Your Password"
-                    class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40  transition-colors duration-300 ${
-                      errors.email && touched.email
+                    class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40  transition-colors duration-300 ${errors.email && touched.email
                         ? "border-red-600 shake"
                         : null
-                    }`}
+                      }`}
                   />
                   {
                     <button
@@ -104,7 +103,7 @@ const ChangePassword = () => {
                       onClick={() => setIsShow((prev) => !prev)}
                       className="absolute top-[35%] text-gray-500 text-lg right-3"
                     >
-                      {isShow ? <FaRegEyeSlash /> : <FaRegEye />}
+                      {isShow ? <FaRegEye /> : <FaRegEyeSlash />}
                     </button>
                   }
                 </div>
@@ -129,11 +128,10 @@ const ChangePassword = () => {
                     onChange={handleChange}
                     onBlur={handleBlur}
                     placeholder="Confirm Password"
-                    class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40  transition-colors duration-300 ${
-                      errors.confirmPassword && touched.confirmPassword
+                    class={`block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg   focus:border-[#c00000]  focus:ring-[#c00000] focus:outline-none focus:ring focus:ring-opacity-40  transition-colors duration-300 ${errors.confirmPassword && touched.confirmPassword
                         ? "border-red-600 shake"
                         : null
-                    }`}
+                      }`}
                   />
                   {
                     <button
@@ -141,7 +139,7 @@ const ChangePassword = () => {
                       onClick={() => setIsConfShow((prev) => !prev)}
                       className="absolute top-[35%] text-gray-500 text-lg right-3"
                     >
-                      {isConfShow ? <FaRegEyeSlash /> : <FaRegEye />}
+                      {isConfShow ? <FaRegEye /> : <FaRegEyeSlash />}
                     </button>
                   }
                 </div>

@@ -2,7 +2,7 @@ export const personalInfoValues = {
   requesterFirstName: "",
   requesterLastName: "",
   requesterEmail: "",
-  requesterContact: "",
+  requesterContact: "+1 ",
   fareshareUserId: "",
   patientFirstName: "",
   patientLastName: "",

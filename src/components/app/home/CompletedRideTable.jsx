@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../../context/AppContext";
+import { formatToUSDate } from "../../../utils/dateUtils";
 import io from "socket.io-client";
 
 const SOCKET_SERVER_URL = "https://backend.faresharellc.com";
@@ -52,15 +53,7 @@ const CompletedRideTable = () => {
     }
   }, []);
 
-  const formatDate = (isoDateString) => {
-    const date = new Date(isoDateString);
-
-    const day = String(date.getUTCDate()).padStart(2, "0");
-    const month = String(date.getUTCMonth() + 1).padStart(2, "0"); // Months are 0-indexed
-    const year = date.getUTCFullYear();
-
-    return `${day}/${month}/${year}`;
-  };
+  const formatDate = (isoDateString) => formatToUSDate(isoDateString);
 
   const getStatusStyles = (status) => {
     switch (status) {

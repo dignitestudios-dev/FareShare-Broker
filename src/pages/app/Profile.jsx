@@ -4,13 +4,15 @@ import authentication from "../../api/authenticationInterceptor";
 import api from "../../api/apiInterceptor";
 import { AppContext } from "../../context/AppContext";
 import axios from "axios";
+import { useFormik } from "formik";
+import { profileSchema } from "../../schema/profieschema";
 
 const Profile = () => {
   const [isEdit, setIsEdit] = useState(false);
 
   const { setError, setSuccess, prodUrl } = useContext(AppContext);
   const [update, setUpdate] = useState(false);
-
+  const [errors, setErrors] = useState({});
   const [broker, setBroker] = useState(
     JSON.parse(localStorage.getItem("broker"))
   );
@@ -49,7 +51,6 @@ const Profile = () => {
   }, []);
 
   const sendDataToBackend = async (e) => {
-    e.preventDefault();
     setLoading(true);
 
     // API call to login using Axios interceptor
@@ -66,6 +67,7 @@ const Profile = () => {
           localStorage.setItem("broker", JSON.stringify(response?.data?.data));
           setUpdate((prev) => !prev);
           setIsEdit(false);
+          setSuccess("Profile updated successfully!");
         }
       })
       .catch((error) => {
@@ -73,6 +75,45 @@ const Profile = () => {
         setLoading(false);
       });
   };
+  const formik = useFormik({
+    enableReinitialize: true,
+
+    initialValues: {
+      companyName: broker?.companyName || "",
+      accountHandlerName: broker?.accountHandlerName || "",
+      companyTaxIdentification: broker?.companyTaxIdenfication || "",
+      email: broker?.email || "",
+    },
+
+    validationSchema: profileSchema,
+
+    onSubmit: async (values) => {
+      setLoading(true);
+
+      api
+        .put("/broker", {
+          companyName: values.companyName,
+          accountHandlerName: values.accountHandlerName,
+          companyTaxIdenfication: values.companyTaxIdentification,
+        })
+        .then((response) => {
+          if (response?.data?.success) {
+            setLoading(false);
+            localStorage.setItem(
+              "broker",
+              JSON.stringify(response?.data?.data)
+            );
+            setUpdate((prev) => !prev);
+            setIsEdit(false);
+            setSuccess("Profile updated successfully!");
+          }
+        })
+        .catch((error) => {
+          setError(error?.response?.data?.message);
+          setLoading(false);
+        });
+    },
+  });
 
   const [isChecked, setIsChecked] = useState(false);
 
@@ -114,6 +155,7 @@ const Profile = () => {
 
   return (
     <div class="flex flex-col overflow-y-auto lg:px-4 justify-start items-start w-full lg:h-full">
+
       <div class="w-full flex flex-col gap-6 lg:px-5 pb-5 md:px-0">
         <div class="w-full flex flex-col  gap-8 justify-between items-start">
           <div class="w-full flex justify-between items-start">
@@ -132,7 +174,7 @@ const Profile = () => {
             </button> */}
           </div>
           <form
-            onSubmit={(e) => sendDataToBackend(e)}
+            onSubmit={formik.handleSubmit}
             class="w-full flex flex-col justify-start items-start gap-4"
           >
             {/* <div class="w-[120px] h-[120px] rounded-full bg-gray-100 border flex justify-center items-center relative">
@@ -149,12 +191,23 @@ const Profile = () => {
                 </label>
                 <input
                   type="text"
+                  name="companyName"
                   disabled={!isEdit}
-                  value={companyName}
-                  onChange={(e) => setCompanyName(e.target.value)}
-                  class="w-full h-[52px] bg-gray-100 border disabled:text-gray-500 disabled:bg-gray-200 outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
-                  placeholder="Mike"
+                  maxLength={100}
+                  value={formik.values.companyName}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  className={`w-full h-[52px] bg-gray-100 border px-3 rounded-xl ${formik.errors.companyName && formik.touched.companyName
+                    ? "border-red-500"
+                    : ""
+                    }`}
                 />
+
+                {formik.errors.companyName && formik.touched.companyName && (
+                  <p className="text-red-600 text-sm">
+                    {formik.errors.companyName}
+                  </p>
+                )}
               </div>
               <div class="w-full h-auto flex flex-col gap-1 justify-start items-start">
                 <label class="text-[16px] font-medium leading-[21.6px]">
@@ -162,12 +215,24 @@ const Profile = () => {
                 </label>
                 <input
                   type="text"
+                  name="accountHandlerName"
                   disabled={!isEdit}
-                  value={accountHandlerName}
-                  onChange={(e) => setAccountHandlerName(e.target.value)}
-                  class="w-full h-[52px] bg-gray-100 border disabled:text-gray-500 disabled:bg-gray-200 outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
-                  placeholder="Smith"
+                  value={formik.values.accountHandlerName}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  maxlength={50}
+                  className={`w-full h-[52px] bg-gray-100 border px-3 rounded-xl ${formik.errors.companyName && formik.touched.companyName
+                    ? "border-red-500"
+                    : ""
+                    }`}
                 />
+
+                {formik.errors.accountHandlerName &&
+                  formik.touched.accountHandlerName && (
+                    <p className="text-red-600 text-sm">
+                      {formik.errors.accountHandlerName}
+                    </p>
+                  )}
               </div>
             </div>
             <div class="w-full h-auto flex justify-start items-start gap-4">
@@ -177,11 +242,10 @@ const Profile = () => {
                 </label>
                 <input
                   type="text"
-                  value={email}
-                  disabled={true}
-                  onChange={(e) => setEmail(e.target.value)}
-                  class="w-full h-[52px] bg-gray-100 border disabled:text-gray-500 disabled:bg-gray-200 outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
-                  placeholder="mikesmith@gmail.com"
+                  name="email"
+                  value={formik.values.email}
+                  disabled
+                  className={`w-full h-[52px] bg-gray-100 border px-3 rounded-xl $`}
                 />
               </div>
               <div class="w-full h-auto flex flex-col gap-1 justify-start items-start">
@@ -190,12 +254,24 @@ const Profile = () => {
                 </label>
                 <input
                   type="text"
+                  name="companyTaxIdentification"
                   disabled={!isEdit}
-                  value={companyTaxIdentification}
-                  onChange={(e) => setCompanyTaxIdentification(e.target.value)}
-                  class="w-full h-[52px] bg-gray-100 border disabled:text-gray-500 disabled:bg-gray-200 outline-none  px-3 focus:border-[1px] focus:border-[#c00000] rounded-xl"
-                  placeholder="000 000 0000"
+                  maxLength={9}
+                  value={formik.values.companyTaxIdentification}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  className={`w-full h-[52px] bg-gray-100 border px-3 rounded-xl ${formik.errors.companyName && formik.touched.companyName
+                    ? "border-red-500"
+                    : ""
+                    }`}
                 />
+
+                {formik.errors.companyTaxIdentification &&
+                  formik.touched.companyTaxIdentification && (
+                    <p className="text-red-600 text-sm">
+                      {formik.errors.companyTaxIdentification}
+                    </p>
+                  )}
               </div>
             </div>
             {!isEdit && (

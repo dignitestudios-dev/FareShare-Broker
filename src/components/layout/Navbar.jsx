@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { RxCaretDown } from "react-icons/rx";
 import { IoMenuOutline, IoNotificationsOutline } from "react-icons/io5";
 import { useContext } from "react";
@@ -9,12 +9,29 @@ import { Link } from "react-router-dom";
 const Navbar = () => {
   const { navigate, setActiveLink, activeLink } = useContext(AppContext);
   const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
   return (
     <div className="w-full h-14 bg-gray-50 border-b flex justify-between lg:justify-end items-center px-4">
       <button className="text-2xl block lg:hidden">
         <IoMenuOutline />
       </button>
-      <div className="w-auto flex gap-3 justify-start items-center">
+      <div ref={dropdownRef} className="w-auto flex gap-3 justify-start items-center">
         <button
           onClick={() => navigate("Notifications", "/notifications")}
           className={`w-[32px] h-[32px] group  rounded-lg transition-all duration-300 flex items-center justify-center ${activeLink == "Notifications"

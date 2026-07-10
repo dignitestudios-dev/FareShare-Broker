@@ -83,6 +83,9 @@ const ContactUs = () => {
               onChange={handleChange}
               onBlur={handleBlur}
               placeholder="Name"
+              maxLength={30}
+
+               
               class={`w-full rounded-md py-3 px-4 bg-gray-100 border text-gray-800 text-sm outline-[#c00000] focus:bg-transparent transition-colors duration-300 ${
                 errors.name && touched.name
                   ? "border border-red-600 shake"
@@ -122,6 +125,8 @@ const ContactUs = () => {
               value={values.subject}
               onChange={handleChange}
               onBlur={handleBlur}
+              maxLength={100}
+            
               class={`w-full rounded-md py-3 px-4 bg-gray-100 border text-gray-800 text-sm outline-[#c00000] focus:bg-transparent transition-colors duration-300 ${
                 errors.subject && touched.subject
                   ? "border border-red-600 shake"
@@ -143,6 +148,7 @@ const ContactUs = () => {
               value={values.message}
               onChange={handleChange}
               onBlur={handleBlur}
+              maxlength={350}
               rows="6"
               class={`w-full resize-none rounded-md py-3 px-4 bg-gray-100 border text-gray-800 text-sm outline-[#c00000] focus:bg-transparent transition-colors duration-300 ${
                 errors.message && touched.message
@@ -209,7 +215,7 @@ const ContactUs = () => {
           >
             <path d="M497.39 361.8l-112-48a24 24 0 0 0-28 6.9l-49.6 60.6A370.66 370.66 0 0 1 130.6 204.11l60.6-49.6a23.94 23.94 0 0 0 6.9-28l-48-112A24.16 24.16 0 0 0 122.6.61l-104 24A24 24 0 0 0 0 48c0 256.5 207.9 464 464 464a24 24 0 0 0 23.4-18.6l24-104a24.29 24.29 0 0 0-14.01-27.6z"></path>
           </svg>
-          <span class="text-gray-600 text-md">214-664-7058</span>
+          <span className="text-gray-600 text-md">+1 (214) 664-7058</span>
         </a>
       </div>
     </div>

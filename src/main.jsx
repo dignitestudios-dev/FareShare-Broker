@@ -22,6 +22,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <BrowserRouter>
       <AppContextProvider>
         <RideBookingContextProvider>
+          
           <App />
         </RideBookingContextProvider>
       </AppContextProvider>

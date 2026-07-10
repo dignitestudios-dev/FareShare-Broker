@@ -1,8 +1,8 @@
 import * as Yup from "yup";
 
 export const contactUsSchema = Yup.object({
-  name: Yup.string().max(12).required("Please provide your name."),
-  email: Yup.string().email().required("Please enter your email"),
-  subject: Yup.string().required("Please provide a subject."),
-  message: Yup.string().required("Please add a message."),
+  name: Yup.string().max(30).required("Name is required."),
+  email: Yup.string().email().required("Email is required."),
+  subject: Yup.string().required("Subject is required."),
+  message: Yup.string().required("Message is required."),
 });

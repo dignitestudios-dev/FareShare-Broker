@@ -3,6 +3,7 @@ import { IoMdClose } from "react-icons/io";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+import { formatToUSDate } from "../../utils/dateUtils";
 
 const InvoiceDetails = () => {
   const navigate = useNavigate();
@@ -16,15 +17,7 @@ const InvoiceDetails = () => {
 
   const data = location.state;
 
-  const formatDate = (isoDateString) => {
-    const date = new Date(isoDateString);
-
-    const day = String(date.getUTCDate()).padStart(2, "0");
-    const month = String(date.getUTCMonth() + 1).padStart(2, "0"); // Months are 0-indexed
-    const year = date.getUTCFullYear();
-
-    return `${day}/${month}/${year}`;
-  };
+  const formatDate = (isoDateString) => formatToUSDate(isoDateString);
 
   function getMonthNameFromISOString(isoString) {
     // Create a Date object from the ISO 8601 string
@@ -56,15 +49,7 @@ const InvoiceDetails = () => {
   }
 
   function convertToMMDDYYYY(dateString) {
-    if (dateString == null) return "Invalid Date";
-    const date = new Date(dateString);
-
-    // Get the month, day, and year
-    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-based
-    const day = String(date.getDate()).padStart(2, "0");
-    const year = date.getFullYear();
-
-    return `${month}-${day}-${year}`;
+    return formatToUSDate(dateString);
   }
 
   const handleDownload = async (e, elementId, filename) => {
@@ -194,11 +179,10 @@ const InvoiceDetails = () => {
                   data.rides.map((item, index) => (
                     <div
                       key={index} // Added key prop
-                      className={`w-full grid grid-cols-11  items-center text-xs font-semibold  bg-gray-50 text-left rtl:text-right ${
-                        data?.rides?.length == index + 1
+                      className={`w-full grid grid-cols-11  items-center text-xs font-semibold  bg-gray-50 text-left rtl:text-right ${data?.rides?.length == index + 1
                           ? "rounded-b-xl"
                           : " border-b border-gray-300"
-                      } text-gray-500`}
+                        } text-gray-500`}
                     >
                       <button
                         onClick={() =>

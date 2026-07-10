@@ -1,7 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../../context/AppContext";
 import CancelRideModal from "../ride/CancelRideModal";
+import { formatToUSDate } from "../../../utils/dateUtils";
 import io from "socket.io-client";
+import { RideBookingContext } from "../../../context/RideBookingContext";
 
 const SOCKET_SERVER_URL = "https://backend.faresharellc.com";
 
@@ -13,6 +15,8 @@ const RideRequestTable = () => {
   const [id, setId] = useState(null);
   const [rideId, setRideId] = useState(null);
   const [update, setUpdate] = useState(false);
+  const { data, message, status, find, setFind, cancelLoading, cancelRide, cancelModal, setCancelModal } =
+    useContext(RideBookingContext);
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -37,10 +41,12 @@ const RideRequestTable = () => {
           status: "Pending",
         })
       );
+      console.log("Emit Sent");
 
       // Listen for the response from the server
       socket.on("getRidesPendingBrokerResponse", (response) => {
-        console.log(response);
+        console.log("Response:", response);
+
 
         // Store the response in state
         setLoading(false);
@@ -56,15 +62,7 @@ const RideRequestTable = () => {
     }
   }, [update]);
 
-  const formatDate = (isoDateString) => {
-    const date = new Date(isoDateString);
-
-    const day = String(date.getUTCDate()).padStart(2, "0");
-    const month = String(date.getUTCMonth() + 1).padStart(2, "0"); // Months are 0-indexed
-    const year = date.getUTCFullYear();
-
-    return `${day}/${month}/${year}`;
-  };
+  const formatDate = (isoDateString) => formatToUSDate(isoDateString);
 
   const getStatusStyles = (status) => {
     switch (status) {
@@ -231,7 +229,7 @@ const RideRequestTable = () => {
                     <td className="px-6 lg:px-4  py-4 capitalize">
                       <button
                         onClick={() => {
-                          setIsCancelOpen(true);
+                          setCancelModal(true);
                           setRideId(ride?.rideId?.id);
                           setId(ride?.fareshareUserId?.id);
                         }}
@@ -245,11 +243,12 @@ const RideRequestTable = () => {
               })}
           </tbody>
           <CancelRideModal
-            isOpen={isCancelOpen}
-            setIsOpen={setIsCancelOpen}
+            isOpen={cancelModal}
+            setIsOpen={setCancelModal}
             id={id}
             rideID={rideId}
             setUpdate={setUpdate}
+            setRides={setRides}
           />
         </table>
       )}

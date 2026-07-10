@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../context/AppContext";
+import { formatToUSDate } from "../../utils/dateUtils";
 import io from "socket.io-client";
 import CancelRideModal from "../../components/app/ride/CancelRideModal";
 
@@ -72,15 +73,7 @@ const RideRequests = () => {
   const [id, setId] = useState(null);
   const [rideId, setRideId] = useState(null);
 
-  const formatDate = (isoDateString) => {
-    const date = new Date(isoDateString);
-
-    const day = String(date.getUTCDate()).padStart(2, "0");
-    const month = String(date.getUTCMonth() + 1).padStart(2, "0"); // Months are 0-indexed
-    const year = date.getUTCFullYear();
-
-    return `${day}/${month}/${year}`;
-  };
+  const formatDate = (isoDateString) => formatToUSDate(isoDateString);
 
   const getStatusStyles = (status) => {
     switch (status) {
@@ -103,6 +96,7 @@ const RideRequests = () => {
       ? status.replace(/([a-z])([A-Z])/g, "$1 $2").toLowerCase()
       : status;
   };
+  console.log(rides, "rides");
   return (
     <div>
       <div className="w-full overflow-x-auto rounded-2xl border  border-gray-300 bg-gray-50   ">
@@ -111,16 +105,16 @@ const RideRequests = () => {
             Ride Requests
           </span>
         </div>
-        {!loading && rides?.length == 0 && (
-          <div className="w-full border-t border-collapse h-auto flex items-center justify-center">
-            <div className="w-full h-[80vh] py-6 flex flex-col  border-t items-center border-collapse justify-center">
-              <img src={"/no-data.png"} alt="no-data" className="w-48" />
-              <span className="text-gray-700 text-xl font-bold">
-                No Data Available
-              </span>
-            </div>
-          </div>
-        )}
+      {!loading && (!rides || rides.length === 0) && (
+  <div className="w-full border-t border-collapse h-auto flex items-center justify-center">
+    <div className="w-full h-[80vh] py-6 flex flex-col items-center justify-center">
+      <img src="/no-data.png" alt="no-data" className="w-48" />
+      <span className="text-gray-700 text-xl font-bold">
+        No Rides Available
+      </span>
+    </div>
+  </div>
+)}
         {loading && (
           <table className="w-full border-collapse  text-left text-sm text-gray-500">
             <tbody className="divide-y divide-gray-300 border-t border-[#c00000]">
@@ -303,11 +297,10 @@ const RideRequests = () => {
               type="button"
               key={i}
               onClick={() => goToPage(i + 1)}
-              class={`min-h-[38px] min-w-[38px]  flex hover:bg-gray-100 justify-center items-center  text-gray-800 ${
-                currentPage === i + 1
+              class={`min-h-[38px] min-w-[38px]  flex hover:bg-gray-100 justify-center items-center  text-gray-800 ${currentPage === i + 1
                   ? " border bg-[#c00000] text-white hover:bg-[#c00000] "
                   : "border bg-gray-50"
-              }    py-2 px-3 text-sm first:rounded-s-lg last:rounded-e-lg focus:outline-none  disabled:opacity-50 disabled:pointer-events-none `}
+                }    py-2 px-3 text-sm first:rounded-s-lg last:rounded-e-lg focus:outline-none  disabled:opacity-50 disabled:pointer-events-none `}
               aria-current="page"
             >
               {i + 1}

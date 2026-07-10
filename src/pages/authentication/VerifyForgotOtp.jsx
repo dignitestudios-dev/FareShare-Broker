@@ -16,7 +16,7 @@ const VerifyForgotOtp = () => {
   const { navigate, error, setError, prodUrl, setSuccess, success } =
     useContext(AppContext);
   const [loading, setLoading] = useState(false);
-  const { values, handleBlur, handleChange, handleSubmit, errors, touched } =
+  const { values, handleBlur, handleChange, handleSubmit, errors, touched, setFieldValue } =
     useFormik({
       initialValues: verifyOtpValues,
       validationSchema: verifyOtpSchema,
@@ -75,14 +75,14 @@ const VerifyForgotOtp = () => {
   };
 
   const handleInputChange = (e, inputNumber) => {
-    const value = e.target.value;
+    const value = e.target.value.replace(/\D/g, ""); // Only digits
 
-    if (value.length > 0 && inputNumber < 4) {
-      const nextInputRef = eval("otpRef" + (inputNumber + 1));
-      if (nextInputRef && nextInputRef.current) {
-        nextInputRef.current.focus();
-      }
-    }
+    // if (value.length > 0 && inputNumber < 4) {
+    //   const nextInputRef = eval("otpRef" + (inputNumber + 1));
+    //   if (nextInputRef && nextInputRef.current) {
+    //     nextInputRef.current.focus();
+    //   }
+    // }
 
     switch (inputNumber) {
       case 1:
@@ -99,6 +99,12 @@ const VerifyForgotOtp = () => {
         break;
       default:
         break;
+    }
+    e.target.value = value;
+
+    if (value && inputNumber < 4) {
+      const nextInputRef = eval("otpRef" + (inputNumber + 1));
+      nextInputRef?.current?.focus();
     }
   };
 
@@ -127,10 +133,23 @@ const VerifyForgotOtp = () => {
     try {
       const response = await axios.post(`${prodUrl}/auth/sendPassOTP`, {
         email: localStorage.getItem("email"),
+        isBroker: true,
       });
       if (response?.data?.success) {
         setResendLoading(false);
         setSuccess("OTP Resend Successfully.");
+        setFieldValue("otp1", "");
+        setFieldValue("otp2", "");
+        setFieldValue("otp3", "");
+        setFieldValue("otp4", "");
+
+        // Agar local states rakhni hain to ye bhi clear kar dein
+        setOtp1("");
+        setOtp2("");
+        setOtp3("");
+        setOtp4("");
+        otpRef1.current?.focus();
+
       }
     } catch (error) {
       // Handle errors (e.g., show error message)
@@ -140,7 +159,35 @@ const VerifyForgotOtp = () => {
       setResendLoading(false);
     }
   };
+  const handlePaste = (e) => {
+    e.preventDefault();
 
+    const pastedData = e.clipboardData
+      .getData("text")
+      .replace(/\D/g, "")
+      .slice(0, 4);
+
+    if (!pastedData) return;
+
+    const otp = pastedData.split("");
+
+    setFieldValue("otp1", otp[0] || "");
+    setFieldValue("otp2", otp[1] || "");
+    setFieldValue("otp3", otp[2] || "");
+    setFieldValue("otp4", otp[3] || "");
+
+    setOtp1(otp[0] || "");
+    setOtp2(otp[1] || "");
+    setOtp3(otp[2] || "");
+    setOtp4(otp[3] || "");
+
+    if (otp.length === 4) {
+      otpRef4.current?.focus();
+    } else {
+      const nextRef = [otpRef1, otpRef2, otpRef3, otpRef4][otp.length];
+      nextRef?.current?.focus();
+    }
+  };
   return (
     <section className="bg-white">
       {error && <Error error={error} setError={setError} />}
@@ -183,12 +230,14 @@ const VerifyForgotOtp = () => {
                         <div class="w-16 h-16 ">
                           <input
                             maxlength="1"
-                            class={`w-full h-full flex flex-col items-center justify-center text-center px-5 outline-none  border-b border-gray-500 text-lg bg-white focus:bg-gray-50 focus:border-gray-800  transition-colors duration-300 ${
-                              errors.otp1 && touched.otp1
-                                ? "focus:bg-red-50 border-red-600 shake"
-                                : null
-                            }`}
+                            class={`w-full h-full flex flex-col items-center justify-center text-center px-5 outline-none  border-b border-gray-500 text-lg bg-white focus:bg-gray-50 focus:border-gray-800  transition-colors duration-300 ${errors.otp1 && touched.otp1
+                              ? "focus:bg-red-50 border-red-600 shake"
+                              : null
+                              }`}
                             type="text"
+                            inputMode="numeric"
+                            pattern="[0-9]*"
+                            maxLength={1}
                             name="otp1"
                             placeholder="-"
                             maxLength="1"
@@ -202,17 +251,21 @@ const VerifyForgotOtp = () => {
                             ref={otpRef1}
                             id=""
                             autocomplete="off"
+                            onPaste={handlePaste}
+
                           />
                         </div>
                         <div class="w-16 h-16 ">
                           <input
                             maxlength="1"
-                            class={`w-full h-full flex flex-col items-center justify-center text-center px-5 outline-none  border-b border-gray-500 text-lg bg-white focus:bg-gray-50 focus:border-gray-800  transition-colors duration-300 ${
-                              errors.otp2 && touched.otp2
-                                ? "focus:bg-red-50 border-red-600 shake"
-                                : null
-                            }`}
+                            class={`w-full h-full flex flex-col items-center justify-center text-center px-5 outline-none  border-b border-gray-500 text-lg bg-white focus:bg-gray-50 focus:border-gray-800  transition-colors duration-300 ${errors.otp2 && touched.otp2
+                              ? "focus:bg-red-50 border-red-600 shake"
+                              : null
+                              }`}
                             type="text"
+                            inputMode="numeric"
+                            pattern="[0-9]*"
+                            maxLength={1}
                             name="otp2"
                             placeholder="-"
                             maxLength="1"
@@ -226,17 +279,21 @@ const VerifyForgotOtp = () => {
                             ref={otpRef2}
                             id=""
                             autocomplete="off"
+                            onPaste={handlePaste}
+
                           />
                         </div>
                         <div class="w-16 h-16 ">
                           <input
                             maxlength="1"
-                            class={`w-full h-full flex flex-col items-center justify-center text-center px-5 outline-none  border-b border-gray-500 text-lg bg-white focus:bg-gray-50 focus:border-gray-800  transition-colors duration-300 ${
-                              errors.otp3 && touched.otp3
-                                ? "focus:bg-red-50 border-red-600 shake"
-                                : null
-                            }`}
+                            class={`w-full h-full flex flex-col items-center justify-center text-center px-5 outline-none  border-b border-gray-500 text-lg bg-white focus:bg-gray-50 focus:border-gray-800  transition-colors duration-300 ${errors.otp3 && touched.otp3
+                              ? "focus:bg-red-50 border-red-600 shake"
+                              : null
+                              }`}
                             type="text"
+                            inputMode="numeric"
+                            pattern="[0-9]*"
+                            maxLength={1}
                             name="otp3"
                             placeholder="-"
                             maxLength="1"
@@ -250,17 +307,21 @@ const VerifyForgotOtp = () => {
                             ref={otpRef3}
                             id=""
                             autocomplete="off"
+                            onPaste={handlePaste}
+
                           />
                         </div>
                         <div class="w-16 h-16 ">
                           <input
                             maxlength="1"
-                            class={`w-full h-full flex flex-col items-center justify-center text-center px-5 outline-none  border-b border-gray-500 text-lg bg-white focus:bg-gray-50 focus:border-gray-800  transition-colors duration-300 ${
-                              errors.otp4 && touched.otp4
-                                ? "focus:bg-red-50 border-red-600 shake"
-                                : null
-                            }`}
+                            class={`w-full h-full flex flex-col items-center justify-center text-center px-5 outline-none  border-b border-gray-500 text-lg bg-white focus:bg-gray-50 focus:border-gray-800  transition-colors duration-300 ${errors.otp4 && touched.otp4
+                              ? "focus:bg-red-50 border-red-600 shake"
+                              : null
+                              }`}
                             type="text"
+                            inputMode="numeric"
+                            pattern="[0-9]*"
+                            maxLength={1}
                             name="otp4"
                             placeholder="-"
                             maxLength="1"
@@ -274,13 +335,15 @@ const VerifyForgotOtp = () => {
                             ref={otpRef4}
                             id=""
                             autocomplete="off"
+                            onPaste={handlePaste}
+
                           />
                         </div>
                       </div>
                       {(errors.otp1 && touched.otp1) ||
-                      (errors.otp2 && touched.otp2) ||
-                      (errors.otp3 && touched.otp3) ||
-                      (errors.otp4 && touched.otp4) ? (
+                        (errors.otp2 && touched.otp2) ||
+                        (errors.otp3 && touched.otp3) ||
+                        (errors.otp4 && touched.otp4) ? (
                         <p className="text-red-700 text-sm font-medium">
                           OTP is required
                         </p>

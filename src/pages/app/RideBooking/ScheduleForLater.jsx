@@ -21,6 +21,8 @@ const SchdeuleForLater = () => {
     openConfirm,
     setOpenConfirm,
     rideLoading,
+    setIsScheduled
+
   } = useContext(RideBookingContext);
   const { navigate } = useContext(AppContext);
   const today = moment();
@@ -56,7 +58,10 @@ const SchdeuleForLater = () => {
     <div className="w-full h-auto flex flex-col p-4  justify-start items-start gap-4">
       <button
         className=" text-lg  text-[#c00000] font-medium flex gap-1 justify-start items-center"
-        onClick={() => navigate("Home", "/home")}
+        onClick={() => {
+          setIsScheduled(false)
+          navigate("Home", "/home")
+        }}
       >
         <IoChevronBack />
         <span>Back to Home</span>
