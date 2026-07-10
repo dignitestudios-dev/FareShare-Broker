@@ -14,8 +14,17 @@ const Success = () => {
   const validateAchBank = async () => {
     setLoading(true);
     try {
+      const token = localStorage.getItem("token");
+      console.log("Success validate token:", token);
+      if (!token) {
+        setError("You are not authenticated. Please login.");
+        navigate("Login", "/login");
+        setLoading(false);
+        return;
+      }
+
       const headers = {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${token}`,
       };
       const response = await axios.post(
         `${prodUrl}/finance/broker/rideBilling/verify`,
@@ -37,7 +46,14 @@ const Success = () => {
       }
     } catch (error) {
       // Handle errors (e.g., show error message)
-      setError(error?.response?.data?.message);
+      const status = error?.response?.status;
+      const msg = error?.response?.data?.message || error.message;
+      setError(msg);
+      if (status === 401) {
+        // unauthorized: clear token and redirect to login
+        localStorage.removeItem("token");
+        navigate("Login", "/login");
+      }
       // console.error("Login failed:", error.response?.data);
     } finally {
       setLoading(false);
