@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
+import axios from "../../../axios";
 import { AppContext } from "../../context/AppContext";
 import { GiCancel } from "react-icons/gi";
 import Error from "../../components/app/global/Error";
@@ -23,15 +23,13 @@ const Success = () => {
         return;
       }
 
-      const headers = {
-        Authorization: `Bearer ${token}`,
-      };
+
       const response = await axios.post(
         `${prodUrl}/finance/broker/rideBilling/verify`,
         {
           stripeSubscriptionId: subId,
         },
-        { headers }
+
       );
       if (response?.data?.success) {
         setLoading(false);
@@ -51,7 +49,7 @@ const Success = () => {
       setError(msg);
       if (status === 401) {
         // unauthorized: clear token and redirect to login
-        localStorage.removeItem("token");
+        // localStorage.removeItem("token");
         navigate("Login", "/login");
       }
       // console.error("Login failed:", error.response?.data);
