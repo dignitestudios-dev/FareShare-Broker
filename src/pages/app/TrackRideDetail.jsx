@@ -282,10 +282,10 @@ const TrackRideDetail = () => {
             <span className="">Estimated Fare:</span>
             <span className="text-[#c00000]">${ride?.estimatedFare}</span>
           </span>
-          <span className="flex text-sm text-gray-900 font-semibold justify-start items-center gap-2">
+          {/* <span className="flex text-sm text-gray-900 font-semibold justify-start items-center gap-2">
             <span className="">Base Rate:</span>
             <span className="text-[#c00000]">${ride?.baseRate}</span>
-          </span>
+          </span> */}
           <span className="flex text-sm text-gray-900 font-semibold justify-start items-center gap-2">
             <span className="">Cost Per Mile:</span>
             <span className="text-[#c00000]">${ride?.costPerMile}</span>
@@ -294,10 +294,10 @@ const TrackRideDetail = () => {
             <span className="">Miles Travelled:</span>
             <span className="text-[#c00000]">{ride?.miles}</span>
           </span>
-          <span className="flex text-sm text-gray-900 font-semibold justify-start items-center gap-2">
+          {/* <span className="flex text-sm text-gray-900 font-semibold justify-start items-center gap-2">
             <span className="">Total:</span>
-            <span className="text-[#c00000]">${ride?.fareToPay || "N/A"}</span>
-          </span>
+            <span className="text-[#c00000]">${ride?.fareToPay ||0}</span>
+          </span> */}
         </div>
       </div>
 

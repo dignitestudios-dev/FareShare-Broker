@@ -53,7 +53,7 @@ const Login = () => {
             if (response?.status == 200) {
               const brokerData = response?.data?.data;
               const tokenVal = response?.data?.token ?? null;
-              const isVerified = brokerData?.isVerified ?? response?.data?.isVerified;
+              const isVerified = response?.data?.isVerified ?? response?.data?.isVerified;
 
               // store broker object so VerifyOtp or other screens can access it
               localStorage.setItem("broker", JSON.stringify(brokerData));
