@@ -1,17 +1,19 @@
 import * as Yup from "yup";
 
+const nameRegex = /^[A-Za-z]+$/;
+
 export const personalInfoSchema = Yup.object({
   requesterFirstName: Yup.string()
     .trim()
-    .matches(/^[A-Za-z]+$/, "Special characters are not allowed.")
-    .max(50, "Maximum 50 characters allowed.")
-    .required("Please enter your first name."),
+    .required("Please enter your first name.")
+    .matches(nameRegex, "Numbers and special characters are not allowed.")
+    .max(50, "Maximum 50 characters allowed."),
 
   requesterLastName: Yup.string()
     .trim()
-    .matches(/^[A-Za-z]+$/, "Special characters are not allowed.")
-    .max(50, "Maximum 50 characters allowed.")
-    .required("Please enter your last name."),
+    .required("Please enter your last name.")
+    .matches(nameRegex, "Numbers and special characters are not allowed.")
+    .max(50, "Maximum 50 characters allowed."),
 
   requesterEmail: Yup.string()
     .trim()
@@ -20,22 +22,22 @@ export const personalInfoSchema = Yup.object({
 
   requesterContact: Yup.string()
     .matches(
-      /^\+1\s?\(?\d{3}\)?[-\s.]?\d{3}[-\s.]?\d{4}$/, 
-      "Contact number must be a valid US phone number starting with +1."
+      /^\+1\s?\d{3}-\d{3}-\d{4}$/,
+      "Contact number must be a valid US phone number."
     )
     .required("Please enter your contact number."),
 
   patientFirstName: Yup.string()
     .trim()
-    .matches(/^[A-Za-z]+$/, "Special characters are not allowed.")
-    .max(50, "Maximum 50 characters allowed.")
-    .required("Please enter client's first name."),
+    .required("Please enter client's first name.")
+    .matches(nameRegex, "Numbers and special characters are not allowed.")
+    .max(50, "Maximum 50 characters allowed."),
 
   patientLastName: Yup.string()
     .trim()
-    .matches(/^[A-Za-z]+$/, "Special characters are not allowed.")
-    .max(50, "Maximum 50 characters allowed.")
-    .required("Please enter client's last name."),
+    .required("Please enter client's last name.")
+    .matches(nameRegex, "Numbers and special characters are not allowed.")
+    .max(50, "Maximum 50 characters allowed."),
 
   patientMI: Yup.string()
     .trim()
