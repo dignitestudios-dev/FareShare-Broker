@@ -254,7 +254,7 @@ export const RideBookingContextProvider = ({ children }) => {
   const [cancelLoading, setCancelLoading] = useState(false);
   const cancelRide = (e) => {
     e.preventDefault();
-    console.log(cancelRides?.id, cancelRides?.rideID);
+    console.log(cancelRides?.id, cancelRides?.rideID,"TEsting Cancel");
     if (cancelRides?.id && cancelRides?.rideID) {
       console.log(
         JSON.stringify({

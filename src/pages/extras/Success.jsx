@@ -39,7 +39,7 @@ const Success = () => {
             JSON.stringify(response?.data?.data?.broker)
           );
           setSuccess("Bank Information Verified Successfully.");
-          navigate("Home", "/home");
+          // navigate("Home", "/home");
         }
       }
     } catch (error) {
@@ -61,7 +61,8 @@ const Success = () => {
   useEffect(() => {
     if (subId) {
       validateAchBank();
-    } else {
+    } 
+    else {
       setError("You don't have a valid subscription id. Please re-signup.");
       localStorage.removeItem("token");
       navigate("Signup", "/signup");

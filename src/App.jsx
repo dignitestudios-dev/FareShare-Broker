@@ -39,7 +39,7 @@ function App() {
         return (
           <Route
             path={route?.url}
-            element={<UnauthRoute>{route?.page}</UnauthRoute>}
+            element={route?.page}
             key={route?.title}
           />
         );
