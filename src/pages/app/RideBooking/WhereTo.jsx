@@ -291,25 +291,25 @@ const WhereTo = () => {
           </div>
           <Autocomplete
             className="w-full lg:w-[48%]"
-           onLoad={(autocomplete) => {
-  endLocationRef.current = autocomplete;
+            onLoad={(autocomplete) => {
+              endLocationRef.current = autocomplete;
 
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition((position) => {
-      const center = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude,
-      };
+              if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                  const center = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude,
+                  };
 
-      const circle = new window.google.maps.Circle({
-        center,
-        radius: 50000,
-      });
+                  const circle = new window.google.maps.Circle({
+                    center,
+                    radius: 50000,
+                  });
 
-      autocomplete.setBounds(circle.getBounds());
-    });
-  }
-}}
+                  autocomplete.setBounds(circle.getBounds());
+                });
+              }
+            }}
             onPlaceChanged={handleEndPlaceChanged}
           >
             <div className="w-full">
