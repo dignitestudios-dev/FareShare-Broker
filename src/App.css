@@ -167,6 +167,15 @@ body {
   background-color: #c00000 !important;
 }
 
+.rainbow-datepicker-wrapper .rainbow-date-picker_container,
+.rainbow-datepicker-wrapper .rainbow-date-picker_calendar-container {
+  width: 100% !important;
+}
+
+.rainbow-datepicker-wrapper .rainbow-date-picker_calendar-details-header {
+  background-color: #c00000 !important;
+}
+
 .shake {
   animation: horizontal-shaking 0.5s linear;
 }

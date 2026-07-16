@@ -222,7 +222,7 @@ const WhereTo = () => {
         <button
           type="button"
           onClick={() => {
-            
+
             navigate("Request a ride", -1)
           }}
           className="w-10 h-10 rounded-full border-2 border-[#c00000] text-[#c00000] flex items-center justify-center"
@@ -237,7 +237,25 @@ const WhereTo = () => {
         <div className="w-full h-full bg-white flex flex-col lg:flex-row items-end justify-center gap-2 lg:gap-3">
           <Autocomplete
             className="w-full lg:w-[48%]"
-            onLoad={(autocomplete) => (startLocationRef.current = autocomplete)}
+            onLoad={(autocomplete) => {
+              startLocationRef.current = autocomplete;
+
+              if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                  const center = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude,
+                  };
+
+                  const circle = new window.google.maps.Circle({
+                    center,
+                    radius: 50000, // 50 KM
+                  });
+
+                  autocomplete.setBounds(circle.getBounds());
+                });
+              }
+            }}
             onPlaceChanged={handleStartPlaceChanged}
           >
             <div className="w-full ">
@@ -273,7 +291,25 @@ const WhereTo = () => {
           </div>
           <Autocomplete
             className="w-full lg:w-[48%]"
-            onLoad={(autocomplete) => (endLocationRef.current = autocomplete)}
+           onLoad={(autocomplete) => {
+  endLocationRef.current = autocomplete;
+
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition((position) => {
+      const center = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+      };
+
+      const circle = new window.google.maps.Circle({
+        center,
+        radius: 50000,
+      });
+
+      autocomplete.setBounds(circle.getBounds());
+    });
+  }
+}}
             onPlaceChanged={handleEndPlaceChanged}
           >
             <div className="w-full">
@@ -352,7 +388,7 @@ const WhereTo = () => {
             : medical.map((item, key) => (
                 <OptionsCard
                   setIsWheelChairAccessible={setIsWheelChairAccessible}
-                  setVehicleType={setVehicleType}
+                  setVehicleType={setVehicleType} 
                   vehicleType={vehicleType}
                   title={item.title}
                   label={item.label}

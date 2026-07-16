@@ -22,20 +22,25 @@ export const Chats = () => {
   const messagesEndRef = useRef(null);
 
   async function sendMessage(chatRoomId, messageText, e) {
-    e.preventDefault();
+    if (e?.preventDefault) {
+      e.preventDefault();
+    }
+
+    const trimmedText = messageText?.trim();
+    if (!chatRoomId || !trimmedText) {
+      return;
+    }
+
     try {
-      // Reference to the messages collection inside the specific chat room
       const docRef = collection(db, "chats", chatRoomId, "messages");
 
-      // Add a new message to the collection
       await addDoc(docRef, {
-        text: messageText,
+        text: trimmedText,
         createdAt: Timestamp.now(),
-        // Add other fields such as senderId, recipientId, etc. if needed
       });
       setMessage("");
-    } catch (e) {
-      console.error("Error adding message: ", e);
+    } catch (error) {
+      console.error("Error adding message: ", error);
     }
   }
 
