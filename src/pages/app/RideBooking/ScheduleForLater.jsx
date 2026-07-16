@@ -87,11 +87,7 @@ const ScheduleForLater = () => {
   const onConfirm = async (e) => {
     const scheduled = getScheduledDate();
 
-    // if (!scheduled) {
-    //   setError("Please select a future date and time.");
-    //   return;
-    // }
-
+   
 
 
     setScheduledDate(scheduled);
