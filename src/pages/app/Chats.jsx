@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { BsSend } from "react-icons/bs";
 import { FaSearch } from "react-icons/fa";
 import { FiSearch } from "react-icons/fi";
@@ -19,6 +19,7 @@ export const Chats = () => {
   const [messages, setMessages] = useState([]);
   const [messageLoading, setMessageLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const messagesEndRef = useRef(null);
 
   async function sendMessage(chatRoomId, messageText, e) {
     e.preventDefault();
@@ -69,9 +70,13 @@ export const Chats = () => {
     }
   }, [chatRoom]);
 
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, chatRoom]);
+
   return (
-    <div className="w-full  h-full grid grid-cols-4 justify-between bg-white">
-      <div className="w-full h-full col-span-3 grid grid-cols-3 justify-start items-start">
+    <div className="w-full h-full min-h-0 grid grid-cols-4 justify-between bg-white">
+      <div className="w-full h-full min-h-0 col-span-3 grid grid-cols-3 justify-start items-start">
         {chatRoom == null && (
           <div className="w-full  col-span-3 border-collapse h-full flex items-center justify-center">
             <div className="w-full h-full py-6 flex flex-col   items-center border-collapse justify-center">
@@ -83,8 +88,8 @@ export const Chats = () => {
           </div>
         )}
         {chatRoom && messages?.length == 0 && (
-          <div className="w-full h-full col-span-3 flex flex-col justify-between">
-            <div className="w-full border-t border-collapse h-full flex items-center justify-center">
+          <div className="w-full h-full min-h-0 col-span-3 flex flex-col justify-between">
+            <div className="w-full flex-1 min-h-0 border-t border-collapse flex items-center justify-center">
               <div className="w-full h-full py-6 flex flex-col  border-t items-center border-collapse justify-center">
                 <img src={"/no-data.png"} alt="no-data" className="w-48" />
                 <span className="text-gray-700 text-xl font-bold">
@@ -94,7 +99,7 @@ export const Chats = () => {
             </div>
             <form
               onSubmit={(e) => sendMessage(chatRoom, message, e)}
-              className=" w-full flex px-4 justify-center items-center gap-2"
+              className="w-full shrink-0 flex px-4 py-3 justify-center items-center gap-2 border-t bg-white"
             >
               <input
                 className="w-full  shadow-md py-3 px-4 border outline-none focus:border-[#c00000] rounded-full"
@@ -115,8 +120,8 @@ export const Chats = () => {
           </div>
         )}
         {!messageLoading && messages?.length > 0 && (
-          <div className="w-full h-full col-span-3 flex flex-col justify-between">
-            <div className="flex flex-col  h-full overflow-y-auto">
+          <div className="w-full h-full min-h-0 col-span-3 flex flex-col justify-between">
+            <div className="flex-1 min-h-0 overflow-y-auto px-2 py-2">
               {messages?.map((message) => {
                 if (
                   message?.uid !==
@@ -145,10 +150,11 @@ export const Chats = () => {
                   );
                 }
               })}
+              <div ref={messagesEndRef} />
             </div>
             <form
               onSubmit={(e) => sendMessage(chatRoom, message, e)}
-              className="px-4 w-full flex justify-center items-center gap-2"
+              className="shrink-0 px-4 py-3 w-full flex justify-center items-center gap-2 border-t bg-white"
             >
               <input
                 className="w-full shadow-md py-3 px-4 border outline-none focus:border-[#c00000] rounded-full"
