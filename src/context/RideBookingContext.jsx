@@ -121,6 +121,10 @@ export const RideBookingContextProvider = ({ children }) => {
         console.warn("Socket disconnected:", reason);
       });
 
+      const finalScheduledDate = isScheduled
+        ? scheduledDate || new Date().toISOString()
+        : new Date().toISOString();
+
       socket.emit(
         "preRideRequest",
         JSON.stringify({
@@ -144,10 +148,11 @@ export const RideBookingContextProvider = ({ children }) => {
           category: tab,
           isWheelChairAccessible: isWheelChairAccessible,
           isScheduled: isScheduled,
-          scheduledDate: isScheduled ? scheduledDate : new Date().toISOString(),
+          scheduledDate: scheduledDate,
           rideDate: new Date().toISOString(),
         })
       );
+      console.log(scheduledDate, "scheduledDate==")
 
       // Listen for the response from the server
       socket.on("preRideRequestResponse", (response) => {
@@ -254,7 +259,7 @@ export const RideBookingContextProvider = ({ children }) => {
   const [cancelLoading, setCancelLoading] = useState(false);
   const cancelRide = (e) => {
     e.preventDefault();
-    console.log(cancelRides?.id, cancelRides?.rideID,"TEsting Cancel");
+    console.log(cancelRides?.id, cancelRides?.rideID, "TEsting Cancel");
     if (cancelRides?.id && cancelRides?.rideID) {
       console.log(
         JSON.stringify({
@@ -447,7 +452,7 @@ export const RideBookingContextProvider = ({ children }) => {
         setTypes,
         typesLoading,
         setTypesLoading,
-
+        setError,
         cancelModal,
         setCancelModal
       }}

@@ -1,164 +1,206 @@
-import React, { useContext, useState } from "react";
-import {
-  Card,
-  Calendar,
-  Application,
-  TimePicker,
-  DatePicker,
-} from "react-rainbow-components";
-import { IoChevronBack } from "react-icons/io5";
-import { useEffect } from "react";
-import moment from "moment";
-import RideConfirmedModal from "../../../components/app/ride/RideConfirmedModal";
-import { RideBookingContext } from "../../../context/RideBookingContext";
-import { useNavigate } from "react-router-dom";
-import { AppContext } from "../../../context/AppContext";
+import React, { useContext, useState, useEffect, useCallback } from 'react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { IoChevronBack, IoChevronForward } from 'react-icons/io5';
+import moment from 'moment';
+import RideConfirmedModal from '../../../components/app/ride/RideConfirmedModal';
+import { RideBookingContext } from '../../../context/RideBookingContext';
+import CustomTimePicker from '../../../components/app/global/CustomTimePicker';
+import { useNavigate } from 'react-router-dom';
 
-const SchdeuleForLater = () => {
+const ScheduleForLater = () => {
   const {
     handleSubmit,
     setScheduledDate,
     openConfirm,
     setOpenConfirm,
     rideLoading,
-    setIsScheduled
-
+    setIsScheduled,
+    setError
   } = useContext(RideBookingContext);
-  const { navigate } = useContext(AppContext);
-  const today = moment().startOf("day"); 
-  const theme = {
-    rainbow: {
-      palette: {
-        brand: "#c00000",
-      },
-    },
-  };
+
+  const navigate = useNavigate();
 
   const [date, setDate] = useState(new Date());
-  const [time, setTime] = useState();
+  const [time, setTime] = useState(null);
 
-  // Helper function to combine date and time into an ISO string
-  // Helper function to combine date and time into an ISO string
-  const getScheduledDate = () => {
-    if (date && time) {
-      // pehle check karo time 12-hour (AM/PM) format mein hai ya 24-hour
-      const is12Hour = /am|pm/i.test(time);
-      const timeFormat = is12Hour ? "hh:mm A" : "HH:mm";
+  // Convert any supported time value to a moment object
+  const parseTime = useCallback((value) => {
+    if (!value) return null;
 
-      const dateString = moment(date).format("YYYY-MM-DD");
-      const combined = moment(
-        `${dateString} ${time}`,
-        `YYYY-MM-DD ${timeFormat}`
-      );
+    // If CustomTimePicker returns Date
+    if (value instanceof Date) {
+      return moment(value);
+    }
 
-      if (!combined.isValid()) {
-        console.warn("Invalid date/time combination:", dateString, time);
-        return null;
+    // If it returns a moment object
+    if (moment.isMoment(value)) {
+      return value;
+    }
+
+    // If it returns a string
+    if (typeof value === 'string') {
+      const formats = ['h:mm A', 'hh:mm A', 'H:mm', 'HH:mm'];
+
+      for (const format of formats) {
+        const parsed = moment(value.trim(), format, true);
+        if (parsed.isValid()) return parsed;
       }
+    }
 
-      // toISOString() ye local wall-clock time ko sahi UTC mein convert karega
-      return combined.toDate().toISOString();
-    }
     return null;
-  };
-  useEffect(() => {
-    if (date && time) {
-      setScheduledDate(getScheduledDate());
+  }, []);
+
+  const getScheduledDate = useCallback(() => {
+    if (!date || !time) return null;
+
+    const parsedTime = parseTime(time);
+    if (!parsedTime) return null;
+
+    const now = moment();
+
+    const selectedDateTime = moment(date)
+      .hour(parsedTime.hour())
+      .minute(parsedTime.minute())
+      .second(0)
+      .millisecond(0);
+
+
+    if (selectedDateTime.isSameOrBefore(now)) {
+      return null;
     }
-  }, [date, time]);
+
+    return selectedDateTime.format("YYYY-MM-DDTHH:mm:ss");
+  }, [date, time, parseTime]);
+
+  useEffect(() => {
+    const scheduled = getScheduledDate();
+
+    setScheduledDate(scheduled);
+    if (!scheduled && time) {
+      setError("Please select a future date and time.");
+    } else {
+      setError("");
+    }
+  }, [getScheduledDate, date, time, setScheduledDate]);
+
+  const onConfirm = async (e) => {
+    const scheduled = getScheduledDate();
+
+    // if (!scheduled) {
+    //   setError("Please select a future date and time.");
+    //   return;
+    // }
+
+
+
+    setScheduledDate(scheduled);
+
+    // If handleSubmit already prevents default, this is harmless
+    if (e?.preventDefault) e.preventDefault();
+
+    await handleSubmit(e);
+  };
+
+  const currentYear = new Date().getFullYear();
 
   return (
-    <div className="w-full h-auto flex flex-col p-4  justify-start items-start gap-4">
+    <div className='w-full h-auto flex flex-col p-4 gap-4'>
       <button
-        className=" text-lg  text-[#c00000] font-medium flex gap-1 justify-start items-center"
+        type='button'
+        className='text-lg text-[#c00000] font-medium flex gap-1 items-center'
         onClick={() => {
-          setIsScheduled(false)
-          navigate("Home", "/home")
+          setIsScheduled(false);
+          navigate('/ride/new-request/where-to');
         }}
       >
         <IoChevronBack />
         <span>Back to Home</span>
       </button>
 
-      <div className="w-full xl:w-2/3 flex flex-col gap-8 h-auto p-4">
-        <div className="flex flex-col gap-1 w-full h-auto">
-          <Application
-            theme={theme}
-            className="w-full h-[40%]  flex gap-4 flex-col items-center justify-start"
-          >
-            <Card className="rainbow-p-around_large w-full">
-              <Calendar
-                id="calendar-1"
-                value={date}
-                minDate={today.toDate()}
-                onChange={(value) => setDate(value)}
-              />
-            </Card>
-            <TimePicker
-              value={time}
-              onChange={(time) => setTime(time)}
-              className="rainbow-m-vertical_x-large  rainbow-m_auto "
-              borderRadius="semi-rounded"
-            />
-          </Application>
+      <div className='w-full xl:w-2/3 flex flex-col gap-6 p-4'>
+        <div className='w-full border border-gray-200 rounded-xl shadow-sm p-4 schedule-datepicker-wrapper'>
+          <DatePicker
+            selected={date}
+            onChange={(value) => setDate(value)}
+            minDate={new Date()}
+            inline
+            renderCustomHeader={({
+              date,
+              decreaseMonth,
+              increaseMonth,
+              changeYear,
+            }) => (
+              <div className='flex items-center justify-between px-2 pb-3 gap-2'>
+                <button
+                  onClick={decreaseMonth}
+                  type='button'
+                  className='text-[#c00000] text-xl'
+                >
+                  <IoChevronBack />
+                </button>
 
-          {/* <Application
-            theme={theme}
-            className="w-full h-[40%]  flex flex-col items-center justify-start"
-          >
-            
-          </Application> */}
-          {/* 
-          <Application
-            theme={theme}
-            className="w-full h-[40%] flex gap-4 items-center justify-start"
-          >
-            <div
-              className="w-[49%] h-full flex items-center"
-              style={{ width: "49%", height: "50%" }}
-            >
-              <DatePicker
-                value={date}
-                borderRadius="semi-rounded"
-                className="w-full h-full"
-                disabled
-              />
-            </div>
+                <span className='text-lg font-medium text-gray-800'>
+                  {moment(date).format('MMMM YYYY')}
+                </span>
 
-            <div
-              className="w-[49%] h-full flex items-center"
-              style={{ width: "49%", height: "50%" }}
-            >
-              <TimePicker
-                value={time}
-                borderRadius="semi-rounded"
-                className="w-full h-full"
-                disabled
-              />
-            </div>
-          </Application> */}
+                <button
+                  onClick={increaseMonth}
+                  type='button'
+                  className='text-[#c00000] text-xl'
+                >
+                  <IoChevronForward />
+                </button>
+
+                <select
+                  value={moment(date).year()}
+                  onChange={(e) => changeYear(Number(e.target.value))}
+                  className='border border-gray-300 rounded-full px-3 py-1 text-sm'
+                >
+                  {Array.from({ length: 6 }, (_, i) => currentYear + i).map(
+                    (y) => (
+                      <option key={y} value={y}>
+                        {y}
+                      </option>
+                    )
+                  )}
+                </select>
+              </div>
+            )}
+          />
         </div>
+
+        <CustomTimePicker
+          value={time}
+          onChange={setTime}
+        />
+
         <button
-          onClick={(e) => handleSubmit(e)}
-          className="w-full h-12 rounded-full bg-[#c00000] text-white flex justify-center gap-2 items-center text-lg font-medium"
+          type='button'
+          onClick={onConfirm}
+          disabled={rideLoading}
+          className='w-full h-12 rounded-full bg-[#c00000] disabled:opacity-50 disabled:cursor-not-allowed text-white flex justify-center gap-2 items-center text-lg font-medium'
         >
           {rideLoading && (
             <div
-              class="animate-spin inline-block size-4 border-[3px] border-current border-t-transparent text-white rounded-full"
-              role="status"
-              aria-label="loading"
-            >
-              <span class="sr-only">Loading...</span>
-            </div>
+              className='animate-spin inline-block size-4 border-[3px] border-current border-t-transparent rounded-full'
+              role='status'
+              aria-label='loading'
+            />
           )}
+
           Confirm date and time
         </button>
       </div>
+
       {openConfirm && (
-        <RideConfirmedModal isOpen={openConfirm} setIsOpen={setOpenConfirm} />
+        <RideConfirmedModal
+          isOpen={openConfirm}
+          setIsOpen={setOpenConfirm}
+        />
       )}
     </div>
   );
 };
 
-export default SchdeuleForLater;
+export default ScheduleForLater;
