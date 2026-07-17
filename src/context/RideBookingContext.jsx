@@ -148,7 +148,7 @@ export const RideBookingContextProvider = ({ children }) => {
           category: tab,
           isWheelChairAccessible: isWheelChairAccessible,
           isScheduled: isScheduled,
-          scheduledDate: scheduledDate,
+          scheduledDate: isScheduled ? scheduledDate : new Date().toISOString(),
           rideDate: new Date().toISOString(),
         })
       );

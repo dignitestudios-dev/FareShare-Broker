@@ -223,6 +223,7 @@ const WhereTo = () => {
           type="button"
           onClick={() => {
 
+            setIsScheduled(false)
             navigate("Request a ride", -1)
           }}
           className="w-10 h-10 rounded-full border-2 border-[#c00000] text-[#c00000] flex items-center justify-center"
