@@ -70,7 +70,9 @@ const ScheduleForLater = () => {
       return null;
     }
 
-    return selectedDateTime.format("YYYY-MM-DDTHH:mm:ss");
+    return selectedDateTime.format();
+    // e.g. "2026-07-17T15:38:00+05:00"
+
   }, [date, time, parseTime]);
 
   useEffect(() => {

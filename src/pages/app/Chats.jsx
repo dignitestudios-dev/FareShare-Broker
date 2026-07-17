@@ -18,20 +18,23 @@ export const Chats = () => {
   const [chatRoom, setChatRoom] = useState(null);
   const [messages, setMessages] = useState([]);
   const [messageLoading, setMessageLoading] = useState(false);
+  const [isSending, setIsSending] = useState(false);
   const [message, setMessage] = useState("");
   const messagesEndRef = useRef(null);
 
   async function sendMessage(chatRoomId, messageText, e) {
+    console.log("sendMessage called with:", chatRoomId, messageText, e);
     if (e?.preventDefault) {
       e.preventDefault();
     }
 
     const trimmedText = messageText?.trim();
-    if (!chatRoomId || !trimmedText) {
+    if (!chatRoomId || !trimmedText || isSending) {
       return;
     }
 
     try {
+      setIsSending(true);
       const docRef = collection(db, "chats", chatRoomId, "messages");
 
       await addDoc(docRef, {
@@ -41,6 +44,8 @@ export const Chats = () => {
       setMessage("");
     } catch (error) {
       console.error("Error adding message: ", error);
+    } finally {
+      setIsSending(false);
     }
   }
 
@@ -112,12 +117,15 @@ export const Chats = () => {
                 placeholder="Type your message here..."
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
+                disabled={isSending}
               />
               <button
-                onClick={() => {
-                  sendMessage(chatRoom, message);
+                type="button"
+                onClick={(e) => {
+                  sendMessage(chatRoom, message, e);
                 }}
-                className="w-12 h-12 shadow-md rounded-full bg-[#c00000] hover:opacity-95 text-xl text-white flex items-center justify-center font-medium"
+                disabled={isSending}
+                className="w-12 h-12 shadow-md rounded-full bg-[#c00000] hover:opacity-95 disabled:opacity-60 disabled:cursor-not-allowed text-xl text-white flex items-center justify-center font-medium"
               >
                 <BsSend />
               </button>
@@ -167,12 +175,15 @@ export const Chats = () => {
                 placeholder="Type your message here..."
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
+                disabled={isSending}
               />
               <button
-                onClick={() => {
-                  sendMessage(chatRoom, message);
+                type="button"
+                onClick={(e) => {
+                  sendMessage(chatRoom, message, e);
                 }}
-                className="w-12 h-12 shadow-md rounded-full bg-[#c00000] hover:opacity-95 text-xl text-white flex items-center justify-center font-medium"
+                disabled={isSending}
+                className="w-12 h-12 shadow-md rounded-full bg-[#c00000] hover:opacity-95 disabled:opacity-60 disabled:cursor-not-allowed text-xl text-white flex items-center justify-center font-medium"
               >
                 <BsSend />
               </button>
