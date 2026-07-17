@@ -7,9 +7,9 @@ import { NoData } from "../../../assets/export";
 import { FaArrowRight } from "react-icons/fa";
 import { HiOutlineUsers } from "react-icons/hi2";
 
-const ChatSidebar = ({ chatRoom, setChatRoom }) => {
+const ChatSidebar = ({ chatRoom, setChatRoom, chatRooms, setChatRooms, setchatSelected }) => {
   // Chat Rooms:
-  const [chatRooms, setChatRooms] = useState(null);
+
 
   const getChatRooms = async () => {
     const chatRooms = await api.get("/chat");
@@ -43,11 +43,15 @@ const ChatSidebar = ({ chatRoom, setChatRoom }) => {
         </div>
       ) : (
         chatRooms?.map((room, key) => {
+          console.log(room, "room")
           return (
             <button
               type="button"
               key={key}
-              onClick={() => setChatRoom(room?.chatId)}
+              onClick={() => {
+                setChatRoom(room?.chatId)
+                setchatSelected(room?.profile?.uid)
+              }}
               className={`w-full h-20 hover:bg-[#c00000]/[0.05] ${chatRoom == room?.chatId && "bg-[#c00000]/[0.05]"
                 } cursor-pointer border-b px-3 hidden lg:flex justify-start items-center gap-2`}
             >
@@ -74,8 +78,8 @@ const ChatSidebar = ({ chatRoom, setChatRoom }) => {
               </div>
               <button
                 className={`w-6 h-6 rounded-full ${chatRoom == room?.chatId
-                    ? "border-2 border-[#c00000] text-[#c00000]"
-                    : "border-2 border-gray-300 text-gray-300"
+                  ? "border-2 border-[#c00000] text-[#c00000]"
+                  : "border-2 border-gray-300 text-gray-300"
                   }  flex items-center justify-center  text-xs ml-auto font-normal`}
               >
                 <FaArrowRight />

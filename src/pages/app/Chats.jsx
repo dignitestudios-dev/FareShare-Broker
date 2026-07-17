@@ -16,14 +16,16 @@ import { NoData } from "../../assets/export";
 
 export const Chats = () => {
   const [chatRoom, setChatRoom] = useState(null);
+  const [chatRooms, setChatRooms] = useState(null);
+  const [chatSelected, setchatSelected] = useState(null);
+
   const [messages, setMessages] = useState([]);
   const [messageLoading, setMessageLoading] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [message, setMessage] = useState("");
   const messagesEndRef = useRef(null);
-
+  console.log("chatRoom", chatRoom);
   async function sendMessage(chatRoomId, messageText, e) {
-    console.log("sendMessage called with:", chatRoomId, messageText, e);
     if (e?.preventDefault) {
       e.preventDefault();
     }
@@ -32,14 +34,17 @@ export const Chats = () => {
     if (!chatRoomId || !trimmedText || isSending) {
       return;
     }
+    console.log("sendMessage called with:", chatRoomId, trimmedText, chatSelected);
 
     try {
       setIsSending(true);
       const docRef = collection(db, "chats", chatRoomId, "messages");
 
       await addDoc(docRef, {
-        text: trimmedText,
-        createdAt: Timestamp.now(),
+        msg: trimmedText,
+        created_at: Timestamp.now(),
+        // chatId: chatRoomId,
+        uid: JSON.parse(localStorage.getItem("broker"))?.uid,
       });
       setMessage("");
     } catch (error) {
@@ -56,7 +61,7 @@ export const Chats = () => {
 
         const docRef = collection(db, "chats", chatRoom, "messages");
 
-        const orderedQuery = query(docRef, orderBy("createdAt"));
+        const orderedQuery = query(docRef, orderBy("created_at"));
 
         const unsubscribe = onSnapshot(orderedQuery, (querySnapshot) => {
           const documentsArray = querySnapshot.docs.map((doc) => ({
@@ -137,8 +142,8 @@ export const Chats = () => {
             <div className="flex-1 min-h-0 overflow-y-auto px-2 py-2">
               {messages?.map((message) => {
                 if (
-                  message?.uid !==
-                  JSON.parse(localStorage.getItem("broker"))?._id
+                  message?.uid ==
+                  JSON.parse(localStorage.getItem("broker"))?.uid
                 ) {
                   return (
                     <div
@@ -146,7 +151,7 @@ export const Chats = () => {
                       className="mr-4 flex justify-end mb-4"
                     >
                       <div className=" py-3 px-4 bg-[#c00000] rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white">
-                        {message?.text}
+                        {message?.msg}
                       </div>
                     </div>
                   );
@@ -157,7 +162,7 @@ export const Chats = () => {
                       className="flex ml-4 justify-start mb-4"
                     >
                       <div className=" py-3 px-4 bg-gray-200 rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-gray-800">
-                        {message?.text}
+                        {message?.msg}
                       </div>
                     </div>
                   );
@@ -192,7 +197,7 @@ export const Chats = () => {
         )}
       </div>
 
-      <ChatSidebar setChatRoom={setChatRoom} chatRoom={chatRoom} />
+      <ChatSidebar setchatSelected={setchatSelected} setChatRoom={setChatRoom} chatRoom={chatRoom} setChatRooms={setChatRooms} chatRooms={chatRooms} />
     </div>
   );
 };
